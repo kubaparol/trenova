@@ -229,8 +229,9 @@ US-013: Usunięcie konta
 
 - Jako użytkownik, chcę mieć możliwość usunięcia mojego konta i danych, aby zachować kontrolę nad moimi informacjami.
 - Kryteria akceptacji:
-  - Użytkownik może zgłosić żądanie usunięcia konta poprzez kontakt ze wsparciem
-  - Po weryfikacji tożsamości, wszystkie dane użytkownika są usuwane z systemu
+  - System udostępnia formularz na dedykowanej stronie ustawień umożliwiający usunięcie konta
+  - Usunięcie konta wymaga potwierdzenia
+  - Po wyrażeniu chęci usunięcia konta i potwierdzeniu wszystkie dane użytkownika są usuwane z systemu
   - Użytkownik otrzymuje potwierdzenie usunięcia konta
 
 ### Scenariusze brzegowe
