@@ -42,7 +42,6 @@ Główne motywacje użytkowników Trenova to:
 ### 3.1. Uwierzytelnianie użytkownika
 
 - Rejestracja użytkownika z wymaganiem podania adresu e-mail i hasła
-- Potwierdzenie minimalnego wieku użytkownika (16 lat) podczas rejestracji
 - Logowanie przy użyciu adresu e-mail i hasła
 - Bezpieczna komunikacja z wykorzystaniem HTTPS
 - Implementacja uwierzytelniania przez Supabase
@@ -122,7 +121,6 @@ US-001: Rejestracja nowego użytkownika
 - Jako nowy użytkownik, chcę zarejestrować się w aplikacji, aby móc korzystać z jej funkcjonalności.
 - Kryteria akceptacji:
   - Użytkownik może wprowadzić adres e-mail i hasło
-  - Użytkownik musi potwierdzić, że ma co najmniej 16 lat
   - System waliduje format adresu e-mail i siłę hasła
   - Użytkownik otrzymuje potwierdzenie udanej rejestracji
   - W przypadku błędu system wyświetla odpowiedni komunikat
