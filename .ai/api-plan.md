@@ -402,33 +402,6 @@ type DeleteTrainingPlanOutput = {
 - 403: Forbidden (not user's plan)
 - 404: Plan not found
 
-### FAQ and Support
-
-| Action Name          | File Path                                | Description              |
-| -------------------- | ---------------------------------------- | ------------------------ |
-| getFaqs              | src/db/actions/faqs/get-all.ts           | Get list of FAQs         |
-| submitSupportRequest | src/db/actions/support/submit-request.ts | Submit a support request |
-
-#### getFaqs (src/db/actions/faqs/get-all.ts)
-
-Retrieves a list of frequently asked questions.
-
-**Input:** None
-
-**Output:**
-
-```typescript
-type FaqListOutput = {
-  items: {
-    id: string;
-    question: string;
-    answer: string;
-  }[];
-};
-```
-
-**Errors:** None
-
 #### submitSupportRequest (src/db/actions/support/submit-request.ts)
 
 Submits a support request.
@@ -505,7 +478,6 @@ Trenova will use Supabase Authentication services for handling user authenticati
 - AI models receive structured preference data and generate a complete workout plan
 - Generated plans maintain a consistent structure for frontend rendering
 - Rate limiting is applied to AI-generated content to prevent abuse
-- Cache frequently accessed resources like FAQs to improve performance
 - All database operations use Supabase's data access APIs with RLS policies
 
 ## 5. Error Handling
