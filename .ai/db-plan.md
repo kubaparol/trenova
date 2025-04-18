@@ -58,8 +58,7 @@ CREATE TABLE public.profiles (
   days_per_week smallint CHECK (days_per_week >= 1 AND days_per_week <= 7), -- Training days per week (1-7)
   session_duration_minutes smallint CHECK (session_duration_minutes IN (30, 45, 60, 90)), -- Preferred session duration
   equipment public.equipment_access, -- Type of equipment access
-  restrictions text[] NOT NULL DEFAULT '{}', -- Array of health restrictions/limitations
-  meets_age_requirement boolean NOT NULL DEFAULT false -- Confirms user is >= 16 years old
+  restrictions text[] NOT NULL DEFAULT '{}' -- Array of health restrictions/limitations
 );
 
 -- Add comments to the table and columns for clarity
@@ -72,7 +71,6 @@ COMMENT ON COLUMN public.profiles.days_per_week IS 'Number of days per week the 
 COMMENT ON COLUMN public.profiles.session_duration_minutes IS 'Preferred duration of a single training session in minutes.';
 COMMENT ON COLUMN public.profiles.equipment IS 'Level of access to training equipment.';
 COMMENT ON COLUMN public.profiles.restrictions IS 'List of any health restrictions or limitations provided by the user.';
-COMMENT ON COLUMN public.profiles.meets_age_requirement IS 'Indicates if the user confirmed they meet the minimum age requirement (>= 16).';
 ```
 
 ### 2.2. `training_plans`

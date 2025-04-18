@@ -43,7 +43,6 @@ export type Database = {
           gender: Database["public"]["Enums"]["user_gender"] | null;
           goal: Database["public"]["Enums"]["user_goal"] | null;
           id: string;
-          meets_age_requirement: boolean;
           restrictions: string[];
           session_duration_minutes: number | null;
           updated_at: string;
@@ -56,7 +55,6 @@ export type Database = {
           gender?: Database["public"]["Enums"]["user_gender"] | null;
           goal?: Database["public"]["Enums"]["user_goal"] | null;
           id: string;
-          meets_age_requirement?: boolean;
           restrictions?: string[];
           session_duration_minutes?: number | null;
           updated_at?: string;
@@ -69,7 +67,6 @@ export type Database = {
           gender?: Database["public"]["Enums"]["user_gender"] | null;
           goal?: Database["public"]["Enums"]["user_goal"] | null;
           id?: string;
-          meets_age_requirement?: boolean;
           restrictions?: string[];
           session_duration_minutes?: number | null;
           updated_at?: string;
