@@ -1,5 +1,5 @@
 import { SignUpView } from "@/components/views/SignUpView";
 
-export default async function SignUpPage() {
+export default function SignUpPage() {
   return <SignUpView />;
 }

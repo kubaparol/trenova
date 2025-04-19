@@ -1,5 +1,5 @@
 import { ForgotPasswordView } from "@/components/views/ForgotPasswordView";
 
-export default async function ForgotPasswordPage() {
+export default function ForgotPasswordPage() {
   return <ForgotPasswordView />;
 }
