@@ -5,18 +5,27 @@ import { AuthForm } from "../forms/AuthForm";
 import Link from "next/link";
 import { ProjectUrls } from "@/constants";
 import { useRouter } from "next/navigation";
+import { forgotPassword } from "@/db/actions/auth/forgot-password";
+import { toast } from "sonner";
 
 const forgotPasswordFormSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 
-type ForgotPasswordFormData = z.infer<typeof forgotPasswordFormSchema>;
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordFormSchema>;
 
 export function ForgotPasswordView() {
   const router = useRouter();
 
-  const handleForgotPassword = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+  const handleForgotPassword = async (data: ForgotPasswordFormData) => {
+    const result = await forgotPassword(data);
+
+    if (!result.success) {
+      toast.error("Error", {
+        description: result.message,
+      });
+      return;
+    }
 
     router.push(ProjectUrls.resetPasswordSent);
   };

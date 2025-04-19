@@ -4,17 +4,30 @@ import { z } from "zod";
 import { AuthForm } from "../forms/AuthForm";
 import Link from "next/link";
 import { ProjectUrls } from "@/constants";
+import { signIn } from "@/db/actions/auth/sign-in";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const signInFormSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });
 
-type SignInFormData = z.infer<typeof signInFormSchema>;
+export type SignInFormData = z.infer<typeof signInFormSchema>;
 
 export function SignInView() {
-  const handleSignIn = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+  const router = useRouter();
+
+  const handleSignIn = async (data: SignInFormData) => {
+    const result = await signIn(data);
+
+    if (!result.success) {
+      toast.error("Error", {
+        description: result.message,
+      });
+    }
+
+    router.push(ProjectUrls.home);
   };
 
   return (

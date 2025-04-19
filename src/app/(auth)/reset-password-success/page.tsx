@@ -1,5 +1,5 @@
 import { ResetPasswordSuccessView } from "@/components/views/ResetPasswordSuccessView";
 
-export default async function ResetPasswordSuccessPage() {
+export default function ResetPasswordSuccessPage() {
   return <ResetPasswordSuccessView />;
 }
