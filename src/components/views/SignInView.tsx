@@ -45,7 +45,7 @@ export function SignInView() {
             Don&apos;t have an account?{" "}
             <Link
               href={ProjectUrls.signUp}
-              className="underline underline-offset-4"
+              className="underline underline-offset-4 text-primary"
             >
               Sign up
             </Link>
@@ -53,7 +53,7 @@ export function SignInView() {
 
           <Link
             href={ProjectUrls.forgotPassword}
-            className="underline underline-offset-4"
+            className="underline underline-offset-4 text-primary"
           >
             Forgot password?
           </Link>

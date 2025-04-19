@@ -42,7 +42,7 @@ export function ForgotPasswordView() {
           Back to{" "}
           <Link
             href={ProjectUrls.signIn}
-            className="underline underline-offset-4"
+            className="underline underline-offset-4 text-primary"
           >
             Sign in
           </Link>
