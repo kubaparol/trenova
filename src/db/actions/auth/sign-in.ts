@@ -7,21 +7,29 @@ import { ServerActionResponse } from "@/types";
 export async function signIn(
   data: SignInFormData
 ): Promise<ServerActionResponse> {
-  const supabase = await supabaseClient();
+  try {
+    const supabase = await supabaseClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email: data.email,
-    password: data.password,
-  });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
 
-  if (error) {
+    if (error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+
+    return {
+      success: true,
+      message: "Signed in successfully",
+    };
+  } catch {
     return {
       success: false,
-      message: error.message,
+      message: "An error occurred while signing in",
     };
   }
-
-  return {
-    success: true,
-  };
 }
