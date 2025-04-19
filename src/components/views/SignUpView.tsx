@@ -31,6 +31,7 @@ export function SignUpView() {
       schema={signUpFormSchema}
       onSubmit={handleSignUp}
       submitText="Sign Up"
+      submittingText="Signing up..."
       fields={[
         {
           name: "email",

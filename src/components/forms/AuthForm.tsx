@@ -32,6 +32,7 @@ interface AuthFormProps<T extends Record<string, string>> {
   schema: ZodSchema;
   onSubmit: (data: T) => Promise<void>;
   submitText: string;
+  submittingText: string;
   fields: {
     name: Path<T>;
     label: string;
@@ -47,6 +48,7 @@ export function AuthForm<T extends Record<string, string>>({
   schema,
   onSubmit,
   submitText,
+  submittingText,
   fields,
   footer,
 }: AuthFormProps<T>) {
@@ -117,7 +119,7 @@ export function AuthForm<T extends Record<string, string>>({
 
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {submitText}
+              {isLoading ? submittingText : submitText}
             </Button>
           </form>
         </Form>
