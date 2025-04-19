@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { AuthForm } from "../forms/AuthForm";
 import Link from "next/link";
+import { ProjectUrls } from "@/constants";
 
 const signUpFormSchema = z
   .object({
@@ -55,7 +56,10 @@ export function SignUpView() {
       footer={
         <p className="text-sm">
           Already have an account?{" "}
-          <Link href="/login" className="underline underline-offset-4">
+          <Link
+            href={ProjectUrls.signIn}
+            className="underline underline-offset-4"
+          >
             Sign in
           </Link>
         </p>
