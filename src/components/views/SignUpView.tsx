@@ -4,6 +4,9 @@ import { z } from "zod";
 import { AuthForm } from "../forms/AuthForm";
 import Link from "next/link";
 import { ProjectUrls } from "@/constants";
+import { signUp } from "@/db/actions/auth/sign-up";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const signUpFormSchema = z
   .object({
@@ -18,11 +21,22 @@ const signUpFormSchema = z
     path: ["confirmPassword"],
   });
 
-type SignUpFormData = z.infer<typeof signUpFormSchema>;
+export type SignUpFormData = z.infer<typeof signUpFormSchema>;
 
 export function SignUpView() {
-  const handleSignUp = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+  const router = useRouter();
+
+  const handleSignUp = async (data: SignUpFormData) => {
+    const result = await signUp(data);
+
+    if (!result.success) {
+      toast.error("Error", {
+        description: result.message,
+      });
+      return;
+    }
+
+    router.push(ProjectUrls.signUpSuccess);
   };
 
   return (
