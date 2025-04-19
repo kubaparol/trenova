@@ -32,7 +32,7 @@ HomeLayout zostanie umieszczony w katalogu `src/components/layouts`, a HeroSecti
 
 - **Opis komponentu**: Górny pasek nawigacyjny, zazwyczaj widoczny na wielu stronach. Zawiera logo aplikacji oraz przyciski akcji "Zaloguj się" i "Zarejestruj się". Powinien być responsywny.
 - **Główne elementy**: Logo (obrazek lub tekst), komponent nawigacyjny (`<nav>`), przyciski (Shadcn/ui `Button`).
-- **Obsługiwane interakcje**: Kliknięcie "Zaloguj się" (nawigacja do `/login`), Kliknięcie "Zarejestruj się" (nawigacja do `/register`).
+- **Obsługiwane interakcje**: Kliknięcie "Zaloguj się" (nawigacja do `/login`), Kliknięcie "Zarejestruj się" (nawigacja do `/sign-up`).
 - **Obsługiwana walidacja**: Brak.
 - **Typy**: Brak specyficznych typów DTO/ViewModel.
 - **Propsy**: Brak (lub ewentualnie dane o stanie zalogowania użytkownika, jeśli ma się zmieniać dynamicznie, ale dla MVP landing page raczej statyczny).
@@ -41,7 +41,7 @@ HomeLayout zostanie umieszczony w katalogu `src/components/layouts`, a HeroSecti
 
 - **Opis komponentu**: Główna sekcja powitalna strony. Zawiera chwytliwy nagłówek (`<h1>`), krótki opis wartości Trenova oraz główny przycisk Call to Action (CTA), np. "Rozpocznij teraz" lub "Zarejestruj się za darmo". Może zawierać element graficzny (tło, ilustracja).
 - **Główne elementy**: Nagłówek (`<h1>`), paragrafy tekstu (`<p>`), główny przycisk CTA (Shadcn/ui `Button` z odpowiednim wariantem).
-- **Obsługiwane interakcje**: Kliknięcie głównego przycisku CTA (nawigacja do `/register`).
+- **Obsługiwane interakcje**: Kliknięcie głównego przycisku CTA (nawigacja do `/sign-up`).
 - **Obsługiwana walidacja**: Brak.
 - **Typy**: Brak specyficznych typów DTO/ViewModel. Treść statyczna.
 - **Propsy**: Brak.
@@ -127,13 +127,13 @@ Widok Landing Page jest w dużej mierze statyczny. Zarządzanie stanem będzie m
 Landing Page nie wymaga bezpośredniej integracji z API w celu pobierania danych do wyświetlenia treści (treść będzie statyczna w MVP).
 Integracja z API występuje pośrednio:
 
-- **Akcje użytkownika (kliknięcia CTA)** inicjują nawigację do stron (`/login`, `/register`), które będą odpowiedzialne za interakcję z API uwierzytelniania Supabase.
+- **Akcje użytkownika (kliknięcia CTA)** inicjują nawigację do stron (`/login`, `/sign-up`), które będą odpowiedzialne za interakcję z API uwierzytelniania Supabase.
 - Landing Page nie wysyła ani nie odbiera bezpośrednio danych z API backendu.
 
 ## 8. Interakcje użytkownika
 
 - **Kliknięcie "Zaloguj się"**: Użytkownik jest przenoszony na stronę logowania (`/login`). Implementacja: `<Link href="/login">` lub `router.push('/login')` w komponencie `Header`.
-- **Kliknięcie "Zarejestruj się" / Główny CTA**: Użytkownik jest przenoszony na stronę rejestracji (`/register`). Implementacja: `<Link href="/register">` lub `router.push('/register')` w komponencie `Header` i `HeroSection`.
+- **Kliknięcie "Zarejestruj się" / Główny CTA**: Użytkownik jest przenoszony na stronę rejestracji (`/sign-up`). Implementacja: `<Link href="/sign-up">` lub `router.push('/sign-up')` w komponencie `Header` i `HeroSection`.
 - **Kliknięcie pytania w FAQ**: Rozwija/zwija odpowiedź na kliknięte pytanie. Implementacja: Wewnętrzna logika komponentu Shadcn/ui `Accordion`.
 - **Kliknięcie linku w stopce**: Użytkownik jest przenoszony do odpowiedniej strony (np. `/privacy-policy`). Implementacja: `<Link href="...">` w komponencie `Footer`.
 - **Przewijanie strony**: Użytkownik może przewijać stronę w pionie, aby zobaczyć wszystkie sekcje.
@@ -141,7 +141,7 @@ Integracja z API występuje pośrednio:
 
 ## 9. Warunki i walidacja
 
-Landing Page nie zawiera formularzy ani pól wejściowych wymagających walidacji po stronie klienta. Walidacja (np. formatu email, siły hasła) będzie implementowana na dedykowanych stronach `/login` i `/register`.
+Landing Page nie zawiera formularzy ani pól wejściowych wymagających walidacji po stronie klienta. Walidacja (np. formatu email, siły hasła) będzie implementowana na dedykowanych stronach `/login` i `/sign-up`.
 
 ## 10. Obsługa błędów
 
@@ -158,12 +158,12 @@ Ponieważ strona jest głównie statyczna, główne potencjalne błędy dotyczą
     - Zdefiniuj potrzebne typy w `src/types.ts` lub `src/components/landing/types.ts`.
 2.  **Implementacja `Header`**:
     - Dodaj logo i przyciski "Zaloguj się", "Zarejestruj się" (używając Shadcn/ui `Button`).
-    - Dodaj nawigację do `/login` i `/register` za pomocą Next.js `<Link>`.
+    - Dodaj nawigację do `/login` i `/sign-up` za pomocą Next.js `<Link>`.
     - Zapewnij responsywność (np. ukrywanie tekstu przycisków na małych ekranach, menu hamburgerowe - jeśli wymagane w designie).
 3.  **Implementacja `HeroSection`**:
     - Dodaj główny nagłówek (`<h1>`), tekst marketingowy i główny przycisk CTA (Shadcn/ui `Button`).
     - Ostyluj sekcję za pomocą Tailwind CSS, dbając o czytelność i atrakcyjność wizualną.
-    - Podłącz nawigację CTA do `/register`.
+    - Podłącz nawigację CTA do `/sign-up`.
 4.  **Implementacja `BenefitsSection`**:
     - Przygotuj dane (tablicę `BenefitItem[]`) – na razie mogą być zahardkodowane.
     - Wyświetl listę korzyści, mapując dane do komponentów podrzędnych (np. `BenefitCard`).

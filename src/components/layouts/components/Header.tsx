@@ -33,7 +33,7 @@ export default function Header() {
             <Link href="/login">Zaloguj się</Link>
           </Button>
           <Button asChild>
-            <Link href="/register">Zarejestruj się</Link>
+            <Link href="/sign-up">Zarejestruj się</Link>
           </Button>
         </nav>
 
@@ -45,7 +45,7 @@ export default function Header() {
                 <Link href="/login">Zaloguj się</Link>
               </Button>
               <Button asChild className="w-full justify-start">
-                <Link href="/register">Zarejestruj się</Link>
+                <Link href="/sign-up">Zarejestruj się</Link>
               </Button>
             </div>
           </div>

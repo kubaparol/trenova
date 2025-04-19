@@ -14,7 +14,7 @@ export default function HeroSection() {
           specjalnie dla Ciebie.
         </p>
         <Button size="lg" asChild className="px-8 py-6 text-lg">
-          <Link href="/register">Rozpocznij za darmo</Link>
+          <Link href="/sign-up">Rozpocznij za darmo</Link>
         </Button>
       </div>
     </section>
