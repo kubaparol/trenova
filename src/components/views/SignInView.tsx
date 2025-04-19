@@ -51,7 +51,10 @@ export function SignInView() {
             </Link>
           </p>
 
-          <Link href="/login" className="underline underline-offset-4">
+          <Link
+            href={ProjectUrls.forgotPassword}
+            className="underline underline-offset-4"
+          >
             Forgot password?
           </Link>
         </div>
