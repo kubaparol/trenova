@@ -1,18 +1,17 @@
 "use server";
 
 import { supabaseClient } from "../../supabase.server";
-import { SignInFormData } from "@/components/views/SignInView";
-import { ServerActionResponse } from "@/types";
+import { ServerActionResponse, SignInInput } from "@/types";
 
 export async function signIn(
-  data: SignInFormData
+  input: SignInInput
 ): Promise<ServerActionResponse> {
   try {
     const supabase = await supabaseClient();
 
     const { error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
+      email: input.email,
+      password: input.password,
     });
 
     if (error) {
