@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ProjectUrls } from "@/constants";
 import { signIn } from "@/db/actions/auth/sign-in";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const signInFormSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -15,14 +16,18 @@ const signInFormSchema = z.object({
 export type SignInFormData = z.infer<typeof signInFormSchema>;
 
 export function SignInView() {
+  const router = useRouter();
+
   const handleSignIn = async (data: SignInFormData) => {
     const result = await signIn(data);
 
-    if (result?.error) {
+    if (!result.success) {
       toast.error("Error", {
-        description: result.error,
+        description: result.message,
       });
     }
+
+    router.push(ProjectUrls.home);
   };
 
   return (
