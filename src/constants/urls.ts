@@ -4,4 +4,5 @@ export const ProjectUrls = Object.freeze({
   signUp: "/sign-up",
   forgotPassword: "/forgot-password",
   resetPasswordSent: "/reset-password-sent",
+  resetPasswordSuccess: "/reset-password-success",
 });

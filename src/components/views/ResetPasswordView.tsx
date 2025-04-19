@@ -26,7 +26,7 @@ export function ResetPasswordView() {
   const handleResetPassword = async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    router.push(ProjectUrls.resetPasswordSent);
+    router.push(ProjectUrls.resetPasswordSuccess);
   };
 
   return (
