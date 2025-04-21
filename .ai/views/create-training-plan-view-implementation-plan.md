@@ -2,7 +2,7 @@
 
 ## 1. Przegląd
 
-Widok ten umożliwia zalogowanemu użytkownikowi wprowadzenie swoich preferencji treningowych oraz nazwy planu w celu wygenerowania nowego, spersonalizowanego planu treningowego przy użyciu AI. Po pomyślnym przesłaniu formularza, użytkownikowi pokazywana jest informacja o procesie generowania planu.
+Widok ten umożliwia zalogowanemu użytkownikowi wprowadzenie swoich preferencji treningowych oraz nazwy planu w celu wygenerowania nowego, spersonalizowanego planu treningowego przy użyciu AI. Po pomyślnym przesłaniu formularza, użytkownikowi pokazywana jest informacja o procesie generowania planu bezpośrednio w tym samym widoku.
 
 ## 2. Routing widoku
 
@@ -27,6 +27,9 @@ Widok powinien być dostępny pod ścieżką `/training-plans/new`. Dostęp do t
     │   ├── Sekcja "Ograniczenia"
     │   │   └── ShadcnTextarea (pole 'restrictions')
     │   └── ShadcnButton (przycisk Submit)
+    ├── PlanGenerationIndicator (Client Component - conditionally rendered)
+    │   └── ShadcnSpinner / ShadcnProgress (lub inna animacja)
+    │   └── Text ("Generating your plan...")
     └── ShadcnSonner
 ```
 
@@ -45,13 +48,14 @@ _Uwaga: Sekcje formularza zostaną zaimplementowane przy użyciu standardowych e
 
 ### `TrainingPreferencesForm` (Komponent Kliencki)
 
-- **Opis komponentu:** Rdzeń widoku; formularz zbudowany przy użyciu `Form` z Shadcn/ui (opartego na `react-hook-form`). Zawiera wszystkie pola wejściowe dla nazwy planu i preferencji treningowych, logikę walidacji oraz obsługę procesu wysyłania danych.
-- **Główne elementy:** Wykorzystuje komponenty Shadcn/ui: `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `Input`, `Select`, `SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`, `RadioGroup`, `RadioGroupItem`, `Slider` (opcjonalnie), `Textarea`, `Button`. Struktura oparta na polach zdefiniowanych w `TrainingPreferencesFormViewModel`.
+- **Opis komponentu:** Rdzeń widoku; formularz zbudowany przy użyciu `Form` z Shadcn/ui (opartego na `react-hook-form`). Zawiera wszystkie pola wejściowe dla nazwy planu i preferencji treningowych, logikę walidacji oraz obsługę procesu wysyłania danych. Warunkowo renderuje `PlanGenerationIndicator` podczas oczekiwania na odpowiedź API.
+- **Główne elementy:** Wykorzystuje komponenty Shadcn/ui: `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `Input`, `Select`, `SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`, `RadioGroup`, `RadioGroupItem`, `Slider` (opcjonalnie), `Textarea`, `Button`. Struktura oparta na polach zdefiniowanych w `TrainingPreferencesFormViewModel`. Warunkowo renderuje `PlanGenerationIndicator`.
 - **Obsługiwane interakcje:**
   - Zmiana wartości w polach formularza (`onChange`).
   - Wysłanie formularza (`onSubmit`).
   - Wyświetlanie błędów walidacji inline.
   - Wyświetlanie powiadomień toast o sukcesie/błędzie wysłania.
+  - Wyświetlanie wskaźnika generowania (`PlanGenerationIndicator`) podczas oczekiwania na odpowiedź API.
 - **Obsługiwana walidacja:** (Zdefiniowana w schemacie `TrainingPreferencesFormSchema` przy użyciu `zod`)
   - `name`: Wymagane, string, min. 3 znaki, max. 50 znaków.
   - `gender`: Wymagane, musi być jedną z wartości `Enums<'user_gender'>`.
@@ -65,8 +69,17 @@ _Uwaga: Sekcje formularza zostaną zaimplementowane przy użyciu standardowych e
   - `TrainingPreferencesFormViewModel` (dla stanu formularza)
   - `CreateTrainingPlanInput` (DTO dla API)
 - **Propsy:**
-  - `onSubmit: (data: TrainingPreferencesFormViewModel) => Promise<void>`: Funkcja wywoływana przy pomyślnym zwalidowaniu i wysłaniu formularza.
-  - `isSubmitting: boolean`: Flaga wskazująca, czy formularz jest w trakcie przetwarzania (np. oczekiwania na odpowiedź API), używana do deaktywacji przycisku Submit.
+  - `onSubmit: (data: TrainingPreferencesFormViewModel) => Promise<void>`: Funkcja wywoływana przy pomyślnym zwalidowaniu i wysłaniu formularza. Powinna zarządzać stanem ładowania.
+  - `isSubmitting: boolean`: Flaga wskazująca, czy formularz jest w trakcie przetwarzania (np. oczekiwania na odpowiedź API), używana do deaktywacji przycisku Submit i wyświetlania `PlanGenerationIndicator`.
+
+### `PlanGenerationIndicator` (Komponent Kliencki)
+
+- **Opis komponentu:** Prosty komponent wizualny wyświetlany podczas generowania planu treningowego przez AI. Informuje użytkownika, że proces jest w toku.
+- **Główne elementy:** Wskaźnik ładowania (np. `Spinner` z Shadcn lub niestandardowa animacja), tekst informacyjny (np. "Generowanie Twojego planu...").
+- **Obsługiwane interakcje:** Brak.
+- **Obsługiwana walidacja:** Brak.
+- **Typy:** Brak specyficznych typów propsów.
+- **Propsy:** Brak (komponent jest po prostu renderowany warunkowo).
 
 ## 5. Typy
 
@@ -163,10 +176,10 @@ Główne typy danych wymagane przez widok:
 
 - Komponent `TrainingPreferencesForm` (lub hook `useTrainingPlanForm`) będzie wywoływał akcję serwera `createTrainingPlan` (zdefiniowaną w `src/db/actions/training-plans/create.ts`).
 - **Typ Żądania:** `CreateTrainingPlanInput`. Przed wywołaniem API, dane z formularza (`TrainingPreferencesFormViewModel`) muszą zostać zmapowane do tego typu. Szczególną uwagę należy zwrócić na pole `restrictions`, które w formularzu jest stringiem, a w DTO tablicą stringów (np. przez podział stringa po przecinkach lub nowych liniach).
-- **Typ Odpowiedzi (Sukces):** `TrainingPlanDetailOutput`. W tym widoku odpowiedź nie jest bezpośrednio wykorzystywana, sukces sygnalizuje jedynie potrzebę nawigacji.
+- **Typ Odpowiedzi (Sukces):** `TrainingPlanDetailOutput`. Odpowiedź zawiera ID nowo utworzonego planu.
 - **Obsługa Odpowiedzi:**
-  - **Sukces:** Wyświetlenie powiadomienia toast o sukcesie (`title: "Sukces!"`, `description: "Generowanie planu rozpoczęte."`), nawigacja do `/training-plans/generating`.
-  - **Błąd:** Wyświetlenie powiadomienia toast o błędzie (`variant: "destructive"`, `title: "Błąd"`, odpowiedni `description` w zależności od typu błędu - patrz sekcja Obsługa Błędów). Ustawienie `isSubmitting` na `false`.
+  - **Sukces:** Ukrycie `PlanGenerationIndicator`. Wyświetlenie powiadomienia toast o sukcesie (`title: "Sukces!"`, `description: "Twój plan treningowy został wygenerowany."`). Nawigacja do widoku szczegółów planu (`/training-plans/${response.id}`).
+  - **Błąd:** Ukrycie `PlanGenerationIndicator`. Wyświetlenie powiadomienia toast o błędzie (`variant: "destructive"`, `title: "Błąd"`, odpowiedni `description` w zależności od typu błędu - patrz sekcja Obsługa Błędów). Ustawienie `isSubmitting` na `false`.
 
 ## 8. Interakcje użytkownika
 
@@ -175,11 +188,11 @@ Główne typy danych wymagane przez widok:
   - Jeśli formularz jest **niepoprawny**: `react-hook-form` zapobiega wysłaniu, a błędy są wyświetlane przy odpowiednich polach.
   - Jeśli formularz jest **poprawny**:
     1. Wywoływana jest funkcja `onSubmit` opakowana w `handleSubmit` z `react-hook-form`.
-    2. Stan `isSubmitting` ustawiany jest na `true`, przycisk Submit jest deaktywowany.
+    2. Stan `isSubmitting` ustawiany jest na `true`, przycisk Submit jest deaktywowany, a `PlanGenerationIndicator` jest wyświetlany.
     3. Dane są mapowane z `ViewModel` do `DTO`.
     4. Wywoływana jest akcja serwera `createTrainingPlan`.
-    5. **API zwraca sukces:** Wyświetlana jest informacja o generowaniu, a następnie użytkownik jest przekierowywany na `/training-plans/[id]`.
-    6. **API zwraca błąd:** Wyświetlany jest toast błędu, stan `isSubmitting` ustawiany jest na `false`, przycisk Submit jest ponownie aktywowany. Użytkownik pozostaje na stronie formularza.
+    5. **API zwraca sukces:** `PlanGenerationIndicator` jest ukrywany, wyświetlany jest toast sukcesu, a użytkownik jest przekierowywany na `/training-plans/[id]` nowo utworzonego planu. Stan `isSubmitting` resetowany (chociaż po nawigacji może to nie być konieczne).
+    6. **API zwraca błąd:** `PlanGenerationIndicator` jest ukrywany, wyświetlany jest toast błędu, stan `isSubmitting` ustawiany jest na `false`, przycisk Submit jest ponownie aktywowany. Użytkownik pozostaje na stronie formularza.
 
 ## 9. Warunki i walidacja
 
@@ -210,17 +223,18 @@ Główne typy danych wymagane przez widok:
 1.  **Utworzenie pliku strony:** Stworzyć plik dla nowej strony w `src/app/training-plans/new/page.tsx`. Upewnić się, że routing Next.js działa poprawnie i strona jest chroniona (wymaga zalogowania).
 2.  **Stworzenie komponentu `TrainingDataFormView`:** Zaimplementować podstawową strukturę strony w `page.tsx`.
 3.  **Definicja typów i schematu:** Zdefiniować `TrainingPreferencesFormViewModel` oraz `TrainingPreferencesFormSchema` (np. w osobnym pliku `src/components/training-plans/form.types.ts` lub w pliku komponentu formularza). Zdefiniować funkcję mapującą `mapViewModelToDto`.
-4.  **Implementacja Custom Hooka `useTrainingPlanForm` (opcjonalnie, ale zalecane):** Stworzyć hook (`src/hooks/useTrainingPlanForm.ts`?) enkapsulujący logikę `useForm`, `isSubmitting`, wywołanie API, obsługę błędów i sukcesu (nawigacja, toasty).
-5.  **Implementacja komponentu `TrainingPreferencesForm`:**
+4.  **Implementacja Custom Hooka `useTrainingPlanForm` (opcjonalnie, ale zalecane):** Stworzyć hook (`src/hooks/useTrainingPlanForm.ts`?) enkapsulujący logikę `useForm`, `isSubmitting`, wywołanie API, obsługę błędów i sukcesu (nawigacja, toasty). Hook powinien zarządzać stanem `isSubmitting`, który będzie kontrolował wyświetlanie `PlanGenerationIndicator`.
+5.  **Stworzenie komponentu `PlanGenerationIndicator`:** Zaimplementować prosty komponent (np. `src/components/training-plans/PlanGenerationIndicator.tsx`) wyświetlający spinner i tekst.
+6.  **Implementacja komponentu `TrainingPreferencesForm`:**
     - Stworzyć plik komponentu (np. `src/components/training-plans/TrainingPreferencesForm.tsx`).
     - Użyć hooka `useForm` (bezpośrednio lub przez `useTrainingPlanForm`) ze zdefiniowanym `resolver` i `ViewModel`.
     - Zbudować strukturę formularza przy użyciu komponentów `Form`, `FormField`, `FormItem` itd. z Shadcn/ui dla każdego pola w `ViewModel`.
     - Poprawnie skonfigurować komponenty wejściowe (`Input`, `Select`, `RadioGroup`, `Textarea`, `Slider`) i powiązać je z `react-hook-form` (`form.control`).
     - Dodać odpowiednie `label`, `placeholder` i `description` dla pól.
     - Zaimplementować logikę `onSubmit` przekazaną przez `handleSubmit` (bezpośrednio lub z custom hooka), która wywołuje mapowanie i akcję serwera.
-    - Powiązać stan `isSubmitting` z atrybutem `disabled` przycisku Submit.
-6.  **Integracja komponentów:** Użyć `TrainingPreferencesForm` wewnątrz `TrainingDataFormView`. Przekazać potrzebne propsy (jeśli nie używamy hooka wewnątrz formularza).
-7.  **Styling:** Dodać style Tailwind dla odpowiedniego layoutu sekcji formularza, odstępów itp.
-8.  **Obsługa Toastów:** Upewnić się, że `ToastProvider` jest skonfigurowany globalnie (zgodnie ze standardem Shadcn/ui) i że hook `useToast` jest poprawnie używany do wyświetlania powiadomień.
-9.  **Testowanie:** Przetestować walidację, proces wysyłania danych, obsługę sukcesu (nawigacja), obsługę różnych scenariuszy błędów API oraz responsywność widoku.
-10. **Dostępność:** Sprawdzić dostępność formularza przy użyciu narzędzi deweloperskich i nawigacji klawiaturą. Upewnić się, że wszystkie pola mają powiązane etykiety.
+    - Powiązać stan `isSubmitting` z atrybutem `disabled` przycisku Submit oraz z warunkowym renderowaniem komponentu `PlanGenerationIndicator` (np. `isSubmitting && <PlanGenerationIndicator />`).
+7.  **Integracja komponentów:** Użyć `TrainingPreferencesForm` wewnątrz `TrainingDataFormView`. Przekazać potrzebne propsy (jeśli nie używamy hooka wewnątrz formularza).
+8.  **Styling:** Dodać style Tailwind dla odpowiedniego layoutu sekcji formularza, odstępów itp. Ustylować `PlanGenerationIndicator`, aby dobrze prezentował się w kontekście formularza (np. jako overlay lub dedykowana sekcja).
+9.  **Obsługa Toastów:** Upewnić się, że `ToastProvider` jest skonfigurowany globalnie (zgodnie ze standardem Shadcn/ui) i że hook `useToast` jest poprawnie używany do wyświetlania powiadomień.
+10. **Testowanie:** Przetestować walidację, proces wysyłania danych (w tym widoczność wskaźnika generowania), obsługę sukcesu (nawigacja), obsługę różnych scenariuszy błędów API oraz responsywność widoku.
+11. **Dostępność:** Sprawdzić dostępność formularza i wskaźnika generowania przy użyciu narzędzi deweloperskich i nawigacji klawiaturą. Upewnić się, że stan ładowania jest komunikowany użytkownikom technologii wspomagających (np. przez `aria-live` regiony, jeśli wskaźnik jest bardziej złożony).

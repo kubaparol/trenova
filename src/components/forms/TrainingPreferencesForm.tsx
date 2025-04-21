@@ -36,6 +36,13 @@ import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const UserGenderEnum = {
   male: "male",
@@ -142,324 +149,345 @@ export function TrainingPreferencesForm({
   };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
-      <CardHeader>
-        <CardTitle>Nowy Plan Treningowy</CardTitle>
-        <CardDescription>
-          Wprowadź swoje preferencje, aby wygenerować spersonalizowany plan.
-        </CardDescription>
-      </CardHeader>
+    <>
+      <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle>Nowy Plan Treningowy</CardTitle>
+          <CardDescription>
+            Wprowadź swoje preferencje, aby wygenerować spersonalizowany plan.
+          </CardDescription>
+        </CardHeader>
 
-      <CardContent>
-        {error && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
+        <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-8"
-          >
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Szczegóły Planu</h3>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Szczegóły Planu</h3>
 
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nazwa Planu</FormLabel>
-
-                    <FormControl>
-                      <Input placeholder="Mój plan treningowy" {...field} />
-                    </FormControl>
-
-                    <FormDescription>
-                      Nadaj swojemu planowi unikalną nazwę.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <Separator />
-
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Informacje Osobiste</h3>
-
-              <div className="space-y-8">
                 <FormField
                   control={form.control}
-                  name="gender"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Płeć</FormLabel>
-
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="w-full">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Wybierz płeć" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value={UserGenderEnum.male}>
-                            Mężczyzna
-                          </SelectItem>
-                          <SelectItem value={UserGenderEnum.female}>
-                            Kobieta
-                          </SelectItem>
-                          <SelectItem value={UserGenderEnum.other}>
-                            Inna
-                          </SelectItem>
-                          <SelectItem value={UserGenderEnum.prefer_not_to_say}>
-                            Wolę nie podawać
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="experience"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Poziom Doświadczenia</FormLabel>
+                      <FormLabel>Nazwa Planu</FormLabel>
 
                       <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex space-x-4 justify-between"
-                        >
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem
-                                value={ExperienceLevelEnum.beginner}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Początkujący
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem
-                                value={ExperienceLevelEnum.intermediate}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Średniozaawansowany
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem
-                                value={ExperienceLevelEnum.advanced}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Zaawansowany
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
+                        <Input placeholder="Mój plan treningowy" {...field} />
                       </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="goal"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Główny Cel</FormLabel>
-
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="w-full">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Wybierz główny cel" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value={UserGoalEnum.weight_loss}>
-                            Utrata wagi
-                          </SelectItem>
-                          <SelectItem value={UserGoalEnum.muscle_gain}>
-                            Budowa mięśni
-                          </SelectItem>
-                          <SelectItem value={UserGoalEnum.general_fitness}>
-                            Ogólna sprawność
-                          </SelectItem>
-                          <SelectItem value={UserGoalEnum.strength_increase}>
-                            Zwiększenie siły
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <FormDescription>
+                        Nadaj swojemu planowi unikalną nazwę.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
 
-            <Separator />
+              <Separator />
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Dostępność i Sprzęt</h3>
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Informacje Osobiste</h3>
 
-              <div className="space-y-8">
-                <FormField
-                  control={form.control}
-                  name="days_per_week"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Dni treningowych w tygodniu</FormLabel>
+                <div className="space-y-8">
+                  <FormField
+                    control={form.control}
+                    name="gender"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Płeć</FormLabel>
 
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min={1}
-                          max={7}
-                          placeholder="3"
-                          {...field}
-                        />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="session_duration_minutes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        Preferowany czas trwania sesji (minuty)
-                      </FormLabel>
-
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min={15}
-                          max={180}
-                          placeholder="60"
-                          {...field}
-                        />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="equipment"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Dostępny Sprzęt</FormLabel>
-
-                      <FormControl>
-                        <RadioGroup
+                        <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          className="flex space-x-4"
                         >
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem
-                                value={EquipmentAccessEnum.none}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">Brak</FormLabel>
-                          </FormItem>
+                          <FormControl className="w-full">
+                            <SelectTrigger>
+                              <SelectValue placeholder="Wybierz płeć" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value={UserGenderEnum.male}>
+                              Mężczyzna
+                            </SelectItem>
+                            <SelectItem value={UserGenderEnum.female}>
+                              Kobieta
+                            </SelectItem>
+                            <SelectItem value={UserGenderEnum.other}>
+                              Inna
+                            </SelectItem>
+                            <SelectItem
+                              value={UserGenderEnum.prefer_not_to_say}
+                            >
+                              Wolę nie podawać
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
 
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem
-                                value={EquipmentAccessEnum.home_basic}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Podstawowy domowy
-                            </FormLabel>
-                          </FormItem>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem
-                                value={EquipmentAccessEnum.full_gym}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Pełna siłownia
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
+                  <FormField
+                    control={form.control}
+                    name="experience"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel>Poziom Doświadczenia</FormLabel>
+
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex space-x-4 justify-between"
+                          >
+                            <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem
+                                  value={ExperienceLevelEnum.beginner}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Początkujący
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem
+                                  value={ExperienceLevelEnum.intermediate}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Średniozaawansowany
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem
+                                  value={ExperienceLevelEnum.advanced}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Zaawansowany
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="goal"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Główny Cel</FormLabel>
+
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl className="w-full">
+                            <SelectTrigger>
+                              <SelectValue placeholder="Wybierz główny cel" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value={UserGoalEnum.weight_loss}>
+                              Utrata wagi
+                            </SelectItem>
+                            <SelectItem value={UserGoalEnum.muscle_gain}>
+                              Budowa mięśni
+                            </SelectItem>
+                            <SelectItem value={UserGoalEnum.general_fitness}>
+                              Ogólna sprawność
+                            </SelectItem>
+                            <SelectItem value={UserGoalEnum.strength_increase}>
+                              Zwiększenie siły
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Dostępność i Sprzęt</h3>
+
+                <div className="space-y-8">
+                  <FormField
+                    control={form.control}
+                    name="days_per_week"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Dni treningowych w tygodniu</FormLabel>
+
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={1}
+                            max={7}
+                            placeholder="3"
+                            {...field}
+                          />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="session_duration_minutes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          Preferowany czas trwania sesji (minuty)
+                        </FormLabel>
+
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={15}
+                            max={180}
+                            placeholder="60"
+                            {...field}
+                          />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="equipment"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel>Dostępny Sprzęt</FormLabel>
+
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex space-x-4"
+                          >
+                            <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem
+                                  value={EquipmentAccessEnum.none}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Brak
+                              </FormLabel>
+                            </FormItem>
+
+                            <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem
+                                  value={EquipmentAccessEnum.home_basic}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Podstawowy domowy
+                              </FormLabel>
+                            </FormItem>
+
+                            <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem
+                                  value={EquipmentAccessEnum.full_gym}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Pełna siłownia
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Ograniczenia</h3>
+
+                <FormField
+                  control={form.control}
+                  name="restrictions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ograniczenia lub uwagi</FormLabel>
+
+                      <FormControl>
+                        <Textarea
+                          placeholder="Np. kontuzja kolana, problemy z kręgosłupem..."
+                          className="min-h-[80px]"
+                          {...field}
+                        />
                       </FormControl>
+
+                      <FormDescription>
+                        Wpisz wszelkie ograniczenia zdrowotne, kontuzje lub inne
+                        uwagi.
+                      </FormDescription>
 
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
 
-            <Separator />
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                Generuj plan
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Ograniczenia</h3>
+      <Dialog open={isLoading} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md [&>button]:hidden">
+          <DialogHeader>
+            <DialogTitle>Generowanie planu</DialogTitle>
+            <DialogDescription>
+              Trwa generowanie Twojego spersonalizowanego planu treningowego.
+              Może to chwilę potrwać, proszę czekać...
+            </DialogDescription>
+          </DialogHeader>
 
-              <FormField
-                control={form.control}
-                name="restrictions"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ograniczenia lub uwagi</FormLabel>
-
-                    <FormControl>
-                      <Textarea
-                        placeholder="Np. kontuzja kolana, problemy z kręgosłupem..."
-                        className="min-h-[80px]"
-                        {...field}
-                      />
-                    </FormControl>
-
-                    <FormDescription>
-                      Wpisz wszelkie ograniczenia zdrowotne, kontuzje lub inne
-                      uwagi.
-                    </FormDescription>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isLoading ? "Trwa generowanie planu..." : "Generuj plan"}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+          <div className="flex justify-center py-4">
+            <Loader2 className="h-10 w-10 text-primary animate-spin" />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
