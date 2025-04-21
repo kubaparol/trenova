@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import HomeLayout from "@/components/layouts/HomeLayout";
+import { HomeLayout } from "@/components/layouts/HomeLayout";
 import { supabaseClient } from "@/db/supabase.server"; // Assuming this is the correct path
 
 interface RootLayoutProps {

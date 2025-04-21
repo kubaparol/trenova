@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { supabaseClient } from "@/db/supabase.server";
 import { redirect } from "next/navigation";
 import { ProjectUrls } from "@/constants";
+import { AuthLayout as AuthLayoutComponent } from "@/components/layouts/AuthLayout";
 
 interface AuthLayoutProps {
   readonly children: ReactNode;
@@ -19,9 +20,5 @@ export default async function AuthLayout(props: AuthLayoutProps) {
     redirect(ProjectUrls.home);
   }
 
-  return (
-    <div className="container mx-auto flex flex-1 flex-col px-4 py-6 md:px-6 min-h-screen w-full items-center justify-center">
-      {children}
-    </div>
-  );
+  return <AuthLayoutComponent>{children}</AuthLayoutComponent>;
 }
