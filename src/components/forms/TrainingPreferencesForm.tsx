@@ -249,7 +249,7 @@ export function TrainingPreferencesForm({
                           <RadioGroup
                             onValueChange={field.onChange}
                             defaultValue={field.value}
-                            className="flex space-x-4 justify-between"
+                            className="flex space-x-4 justify-between flex-wrap"
                           >
                             <FormItem className="flex items-center space-x-2 space-y-0">
                               <FormControl>
