@@ -145,7 +145,7 @@ Architektura UI opiera się na następujących zasadach:
 
 ### 2.7. Formularz danych treningowych
 
-- **Ścieżka**: `/training-plans/new`
+- **Ścieżka**: `/training-plans/create`
 - **Główny cel**: Zebrać dane do generowania planu treningowego i pokazać proces generowania
 - **Kluczowe informacje**:
   - Sekcje formularza dla różnych kategorii danych
@@ -163,21 +163,7 @@ Architektura UI opiera się na następujących zasadach:
   - Dostępne pola formularza
   - Wyraźna informacja o statusie generowania (np. wskaźnik postępu, komunikat)
 
-### 2.8. ~~Ekran generowania planu~~ (Usunięte - zintegrowane z formularzem/przejściem)
-
-~~- **Ścieżka**: `/training-plans/generating`~~
-~~- **Główny cel**: Pokazać proces generowania planu treningowego~~
-~~- **Kluczowe informacje**:~~
-~~ - Status procesu generowania~~
-~~ - Szacowany czas oczekiwania~~
-~~- **Kluczowe komponenty**:~~
-~~ - Wskaźnik postępu lub ładowania~~
-~~ - Komunikat tekstowy~~
-~~- **UX i dostępność**:~~
-~~ - Wyraźna informacja o statusie dla czytników ekranu~~
-~~ - Animacja niewymagająca treści wizualnych~~
-
-### 2.9. Profil użytkownika / preferencje
+### 2.8. Profil użytkownika / preferencje
 
 - **Ścieżka**: `/profile`
 - **Główny cel**: Umożliwić edycję preferencji treningowych i zarządzanie kontem
@@ -192,7 +178,7 @@ Architektura UI opiera się na następujących zasadach:
   - Wyraźne ostrzeżenia przed nieodwracalnymi akcjami
   - Dostępne formularze i przyciski
 
-### 2.10. FAQ
+### 2.9. FAQ
 
 - **Ścieżka**: `/faq`
 - **Główny cel**: Dostarczyć odpowiedzi na najczęstsze pytania
@@ -205,7 +191,7 @@ Architektura UI opiera się na następujących zasadach:
   - Łatwa nawigacja między sekcjami
   - Możliwość wyszukiwania (opcjonalnie)
 
-### 2.11. Formularz kontaktowy
+### 2.10. Formularz kontaktowy
 
 - **Ścieżka**: `/contact`
 - **Główny cel**: Umożliwić kontakt ze wsparciem technicznym
