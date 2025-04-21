@@ -1,10 +1,4 @@
-import {
-  Dumbbell,
-  HomeIcon,
-  LogOut,
-  LucideIcon,
-  SettingsIcon,
-} from "lucide-react";
+import { Dumbbell, LogOut, LucideIcon, SettingsIcon } from "lucide-react";
 
 import { ProjectUrls } from "@/constants/urls";
 import { signOut } from "@/db/actions/auth/sign-out";
@@ -27,11 +21,11 @@ export const useAppSidebarItems = (): AppSidebarItem[] => {
   };
 
   return [
-    {
-      title: "Dashboard",
-      icon: HomeIcon,
-      url: ProjectUrls.home,
-    },
+    // {
+    //   title: "Dashboard",
+    //   icon: HomeIcon,
+    //   url: ProjectUrls.home,
+    // },
     {
       title: "Training Plans",
       icon: Dumbbell,

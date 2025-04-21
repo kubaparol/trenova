@@ -18,9 +18,16 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
+import { PlusCircleIcon } from "lucide-react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
   const items = useAppSidebarItems();
+
+  const isActive = (url: string) => {
+    return pathname.startsWith(url);
+  };
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -40,15 +47,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup {...props} className=" h-full">
-          <SidebarGroupContent className=" h-full">
-            <SidebarMenu className="h-full">
+        <SidebarGroup {...props} className="h-full">
+          <SidebarGroupContent className="space-y-6 flex flex-col h-full">
+            <SidebarMenu>
+              <SidebarMenuItem className="flex items-center gap-2">
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Create Training Plan"
+                  className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+                >
+                  <Link href={ProjectUrls.createTrainingPlan}>
+                    <PlusCircleIcon />
+                    <span>Create Training Plan</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+
+            <SidebarMenu className="flex-1 ">
               {items.map((item, index) => (
                 <SidebarMenuItem
                   key={item.title}
                   className={index === items.length - 1 ? "mt-auto" : ""}
                 >
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive(item.url || "")}
+                  >
                     {item.url ? (
                       <Link href={item.url}>
                         <item.icon />
