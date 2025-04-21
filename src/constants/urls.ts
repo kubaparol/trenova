@@ -7,4 +7,7 @@ export const ProjectUrls = {
   resetPassword: "/reset-password",
   resetPasswordSent: "/reset-password-sent",
   resetPasswordSuccess: "/reset-password-success",
+  createTrainingPlan: "/training-plans/create",
+  trainingPlans: "/training-plans",
+  trainingPlan: (id: string) => `/training-plans/${id}`,
 } as const;

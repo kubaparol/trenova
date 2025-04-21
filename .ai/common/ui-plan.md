@@ -145,36 +145,25 @@ Architektura UI opiera się na następujących zasadach:
 
 ### 2.7. Formularz danych treningowych
 
-- **Ścieżka**: `/training-plans/new`
-- **Główny cel**: Zebrać dane do generowania planu treningowego
+- **Ścieżka**: `/training-plans/create`
+- **Główny cel**: Zebrać dane do generowania planu treningowego i pokazać proces generowania
 - **Kluczowe informacje**:
   - Sekcje formularza dla różnych kategorii danych
   - Wyjaśnienia i opisy pól
+  - Stan ładowania/generowania po wysłaniu formularza
 - **Kluczowe komponenty**:
   - Formularz podzielony na sekcje tematyczne
   - Selekty, radio buttony, slidery
-  - Przyciski akcji
+  - Przycisk akcji "Generuj plan"
+  - Komponent wskaźnika generowania (widoczny po wysłaniu)
 - **UX i dostępność**:
   - Jasne etykiety dla wszystkich pól
   - Logiczne grupowanie pól
   - Walidacja z jasnymi komunikatami
   - Dostępne pola formularza
+  - Wyraźna informacja o statusie generowania (np. wskaźnik postępu, komunikat)
 
-### 2.8. Ekran generowania planu
-
-- **Ścieżka**: `/training-plans/generating`
-- **Główny cel**: Pokazać proces generowania planu treningowego
-- **Kluczowe informacje**:
-  - Status procesu generowania
-  - Szacowany czas oczekiwania
-- **Kluczowe komponenty**:
-  - Wskaźnik postępu lub ładowania
-  - Komunikat tekstowy
-- **UX i dostępność**:
-  - Wyraźna informacja o statusie dla czytników ekranu
-  - Animacja niewymagająca treści wizualnych
-
-### 2.9. Profil użytkownika / preferencje
+### 2.8. Profil użytkownika / preferencje
 
 - **Ścieżka**: `/profile`
 - **Główny cel**: Umożliwić edycję preferencji treningowych i zarządzanie kontem
@@ -189,7 +178,7 @@ Architektura UI opiera się na następujących zasadach:
   - Wyraźne ostrzeżenia przed nieodwracalnymi akcjami
   - Dostępne formularze i przyciski
 
-### 2.10. FAQ
+### 2.9. FAQ
 
 - **Ścieżka**: `/faq`
 - **Główny cel**: Dostarczyć odpowiedzi na najczęstsze pytania
@@ -202,7 +191,7 @@ Architektura UI opiera się na następujących zasadach:
   - Łatwa nawigacja między sekcjami
   - Możliwość wyszukiwania (opcjonalnie)
 
-### 2.11. Formularz kontaktowy
+### 2.10. Formularz kontaktowy
 
 - **Ścieżka**: `/contact`
 - **Główny cel**: Umożliwić kontakt ze wsparciem technicznym
@@ -222,10 +211,10 @@ Architektura UI opiera się na następujących zasadach:
 1. Użytkownik trafia na stronę główną
 2. Klika przycisk "Zarejestruj się"
 3. Wypełnia formularz rejestracji i zatwierdza
-4. Po udanej rejestracji, jest przekierowywany do formularza danych treningowych
+4. Po udanej rejestracji, jest przekierowywany do formularza danych treningowych (`/training-plans/create`)
 5. Wypełnia formularz danych treningowych i klika "Generuj plan"
-6. Zostaje przekierowany do ekranu generowania planu
-7. Po zakończeniu generowania, zostaje przekierowany do widoku szczegółów planu
+6. W widoku formularza pojawia się stan ładowania/generowania planu
+7. Po zakończeniu generowania, zostaje przekierowany do widoku szczegółów nowo utworzonego planu (`/training-plans/[id]`)
 
 ### 3.2. Logowanie i przeglądanie planów
 
@@ -240,10 +229,10 @@ Architektura UI opiera się na następujących zasadach:
 
 1. Zalogowany użytkownik znajduje się na liście planów
 2. Klika pływający przycisk "Nowy plan"
-3. Zostaje przekierowany do formularza danych treningowych
+3. Zostaje przekierowany do formularza danych treningowych (`/training-plans/create`)
 4. Wypełnia lub modyfikuje dane i klika "Generuj plan"
-5. Zostaje przekierowany do ekranu generowania planu
-6. Po zakończeniu generowania, zostaje przekierowany do widoku szczegółów planu
+5. W widoku formularza pojawia się stan ładowania/generowania planu
+6. Po zakończeniu generowania, zostaje przekierowany do widoku szczegółów nowo utworzonego planu (`/training-plans/[id]`)
 
 ### 3.4. Zmiana nazwy planu
 
@@ -339,4 +328,4 @@ Architektura UI opiera się na następujących zasadach:
 - **ExerciseItem**: Prezentacja pojedynczego ćwiczenia
 - **DayAccordion**: Akordeon dnia treningowego
 - **PreferencesForm**: Formularz preferencji treningowych
-- **PlanGenerationIndicator**: Wskaźnik postępu generowania planu
+- **PlanGenerationIndicator**: Wskaźnik postępu/stanu generowania planu (używany w widoku formularza po wysłaniu)

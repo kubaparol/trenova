@@ -8,7 +8,7 @@ interface HomeLayoutProps {
   user: User | null;
 }
 
-export default function HomeLayout({ children, user }: HomeLayoutProps) {
+export function HomeLayout({ children, user }: HomeLayoutProps) {
   return (
     <div className="flex flex-col min-h-screen">
       <Header user={user} />

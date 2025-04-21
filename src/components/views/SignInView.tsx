@@ -27,7 +27,7 @@ export function SignInView() {
       });
     }
 
-    router.push(ProjectUrls.home);
+    router.push(ProjectUrls.trainingPlans);
   };
 
   return (
