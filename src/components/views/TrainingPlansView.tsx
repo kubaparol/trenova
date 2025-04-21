@@ -14,6 +14,16 @@ import { getUserTrainingPlans } from "@/db/actions/training-plans/get-user-plans
 import dayjs from "dayjs";
 import Link from "next/link";
 import { ProjectUrls } from "@/constants";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { DeleteTrainingPlanForm } from "../forms/DeleteTrainingPlanForm";
+import { deleteTrainingPlan } from "@/db/actions/training-plans/delete";
 
 export function TrainingPlansView() {
   return (
@@ -29,6 +39,12 @@ async function TrainingPlansViewLoader() {
   if (trainingPlans.total === 0) {
     return <TrainingPlansViewEmptyState />;
   }
+
+  const handleDeleteTrainingPlan = async (id: string) => {
+    "use server";
+
+    await deleteTrainingPlan({ id });
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -52,10 +68,30 @@ async function TrainingPlansViewLoader() {
               </Button>
             </Link>
 
-            <Button variant="destructive" className="flex-shrink-0">
-              <span className="sr-only">Delete</span>
-              <Trash2 size={16} />
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="flex-shrink-0">
+                  <span className="sr-only">Delete</span>
+                  <Trash2 size={16} />
+                </Button>
+              </AlertDialogTrigger>
+
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your training plan and remove all associated data from our
+                    servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+
+                <DeleteTrainingPlanForm
+                  trainingPlanId={plan.id}
+                  onSubmit={handleDeleteTrainingPlan}
+                />
+              </AlertDialogContent>
+            </AlertDialog>
           </CardFooter>
         </Card>
       ))}
@@ -92,14 +128,21 @@ function TrainingPlansViewEmptyState() {
       <div className="rounded-full bg-muted p-6 mb-6">
         <Users size={40} className="text-muted-foreground" />
       </div>
+
       <h2 className="text-2xl font-bold mb-2">
         You don&apos;t have any training plans yet
       </h2>
+
       <p className="text-muted-foreground mb-6 max-w-md">
         Create your first training plan to start tracking your workouts and
         progress
       </p>
-      <Button size="lg">Create your first plan</Button>
+
+      <Button asChild size="lg">
+        <Link href={ProjectUrls.createTrainingPlan}>
+          Create your first plan
+        </Link>
+      </Button>
     </div>
   );
 }

@@ -5,6 +5,8 @@ import type {
   DeleteTrainingPlanOutput,
 } from "@/types/api";
 import { supabaseClient } from "@/db/supabase.server";
+import { ProjectUrls } from "@/constants";
+import { revalidatePath } from "next/cache";
 
 /**
  * Deletes a specific training plan for the currently authenticated user.
@@ -38,6 +40,8 @@ export async function deleteTrainingPlan(
   if (error) {
     throw new Error(`Database error: ${error.message}`);
   }
+
+  revalidatePath(ProjectUrls.trainingPlans);
 
   return { message: "Training plan deleted successfully." };
 }

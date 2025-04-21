@@ -141,7 +141,7 @@ TrainingPlansPage (/app/training-plans/page.tsx) - Główny komponent strony (Cl
 
 - **Wejście na stronę:** Uruchamia pobieranie danych dla strony 1. Wyświetla stan ładowania, a następnie listę planów lub stan pusty.
 - **Kliknięcie karty planu / przycisku "Zobacz szczegóły":** Nawiguje użytkownika do `/training-plans/[id]`, gdzie `[id]` to ID klikniętego planu. Użyj `useRouter` z `next/navigation`.
-- **Kliknięcie przycisku "Usuń":** (Placeholder) Docelowo powinno wyświetlić modal potwierdzający, a po potwierdzeniu wywołać akcję usuwania i odświeżyć listę. Na razie przycisk może być nieaktywny lub wyświetlać komunikat "Wkrótce".
+- **Kliknięcie przycisku "Usuń":** Powinno wyświetlić modal potwierdzający, a po potwierdzeniu wywołać akcję usuwania i odświeżyć listę.
 - **Zmiana strony paginacji:** Użytkownik klika kontrolkę w `PaginationControls`. Komponent emituje nowy numer strony. `TrainingPlansPage` aktualizuje stan `currentPage`, co uruchamia ponowne pobranie danych przez hook `useUserTrainingPlans`.
 - **Kliknięcie FAB:** Nawiguje użytkownika do strony tworzenia nowego planu (np. `/training-plans/new`).
 - **Kliknięcie CTA w `EmptyState`:** Nawiguje użytkownika do strony tworzenia nowego planu.
