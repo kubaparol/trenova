@@ -9,6 +9,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Exercise, PlanDay } from "@/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "../ui/button";
+import { Pencil } from "lucide-react";
+import {
+  TrainingPlanNameFormValues,
+  UpdateTrainingPlanNameForm,
+} from "../forms/UpdateTrainingPlanNameForm";
+import { updateTrainingPlanName } from "@/db/actions/training-plans/update-name";
 
 interface TrainingPlanViewProps {
   id: string;
@@ -27,12 +42,47 @@ async function TrainingPlanViewLoader(props: TrainingPlanViewProps) {
 
   const trainingPlan = await getTrainingPlanById({ id });
 
+  const handleUpdateTrainingPlanName = async (
+    id: string,
+    values: TrainingPlanNameFormValues
+  ) => {
+    "use server";
+
+    await updateTrainingPlanName({ id, name: values.name });
+  };
+
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-          {trainingPlan.name}
-        </h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            {trainingPlan.name}
+          </h1>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1">
+                <Pencil className="h-4 w-4" />
+                <span>Chande Name</span>
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Zmień nazwę planu</DialogTitle>
+                <DialogDescription>
+                  Wprowadź nową nazwę dla swojego planu treningowego.
+                </DialogDescription>
+              </DialogHeader>
+
+              <UpdateTrainingPlanNameForm
+                trainingPlanId={id}
+                defaultValues={{ name: trainingPlan.name }}
+                onSubmit={handleUpdateTrainingPlanName}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
 
         {/* Placeholder for future action buttons */}
         <div className="h-8 mt-2">

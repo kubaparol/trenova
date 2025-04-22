@@ -5,6 +5,8 @@ import type {
   UpdateTrainingPlanNameOutput,
 } from "@/types/api";
 import { supabaseClient } from "@/db/supabase.server";
+import { revalidatePath } from "next/cache";
+import { ProjectUrls } from "@/constants";
 
 /**
  * Updates the name of a specific training plan for the currently authenticated user.
@@ -43,6 +45,9 @@ export async function updateTrainingPlanName(
   if (!data) {
     throw new Error("Not Found");
   }
+
+  revalidatePath(ProjectUrls.trainingPlan(data.id));
+  revalidatePath(ProjectUrls.trainingPlans);
 
   return data;
 }
