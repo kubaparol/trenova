@@ -34,7 +34,7 @@ export const useAppSidebarItems = (): AppSidebarItem[] => {
     {
       title: "Settings",
       icon: SettingsIcon,
-      url: ProjectUrls.home,
+      url: ProjectUrls.settings,
     },
     {
       title: "Logout",

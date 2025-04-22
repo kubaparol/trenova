@@ -163,20 +163,24 @@ Architektura UI opiera się na następujących zasadach:
   - Dostępne pola formularza
   - Wyraźna informacja o statusie generowania (np. wskaźnik postępu, komunikat)
 
-### 2.8. Profil użytkownika / preferencje
+### 2.8. Ustawienia konta
 
-- **Ścieżka**: `/profile`
-- **Główny cel**: Umożliwić edycję preferencji treningowych i zarządzanie kontem
+- **Ścieżka**: `/settings`
+- **Główny cel**: Umożliwić zarządzanie kontem użytkownika, w tym jego usunięcie.
 - **Kluczowe informacje**:
-  - Formularz edycji preferencji treningowych
-  - Sekcja zarządzania kontem (zmiana hasła, usunięcie konta)
+  - Sekcja zarządzania kontem:
+    - Opcja usunięcia konta
+  - Proces usuwania konta:
+    - Przycisk "Usuń konto"
+    - Modal potwierdzający z polem tekstowym do wpisania frazy potwierdzającej (np. "USUŃ KONTO")
 - **Kluczowe komponenty**:
-  - Formularz preferencji treningowych
-  - Przyciski akcji dla zarządzania kontem
+  - Sekcja ustawień konta
+  - Przycisk "Usuń konto" (Destructive action)
+  - Modal potwierdzający z inputem tekstowym
 - **UX i dostępność**:
-  - Logiczny podział na sekcje
-  - Wyraźne ostrzeżenia przed nieodwracalnymi akcjami
-  - Dostępne formularze i przyciski
+  - Czytelny podział sekcji zarządzania kontem
+  - Wyraźne ostrzeżenie w modalu przed nieodwracalną akcją usunięcia konta
+  - Dostępne przyciski i pola formularza w modalu
 
 ### 2.9. FAQ
 
@@ -262,11 +266,12 @@ Architektura UI opiera się na następujących zasadach:
 
 ### 3.7. Usunięcie konta
 
-1. Zalogowany użytkownik przechodzi do profilu
+1. Zalogowany użytkownik przechodzi do strony Ustawienia (`/settings`)
 2. Przechodzi do sekcji zarządzania kontem
 3. Klika przycisk "Usuń konto"
 4. Potwierdza chęć usunięcia w modal'u
-5. Zostaje wylogowany i przekierowany na stronę główną
+5. Wpisuje wymaganą frazę potwierdzającą w polu tekstowym modala i zatwierdza
+6. Zostaje wylogowany i przekierowany na stronę główną
 
 ## 4. Układ i struktura nawigacji
 
@@ -286,7 +291,7 @@ Architektura UI opiera się na następujących zasadach:
 - **Górny pasek (header)** zawiera:
   - Logo aplikacji (link do listy planów)
   - Link do listy planów
-  - Link do profilu/preferencji
+  - Link do Ustawień (`/settings`)
   - Przycisk wylogowania
 - **Pływający przycisk akcji (FAB)** dla kluczowej akcji "Nowy plan" widoczny na ekranie listy planów
 - **Nawigacja kontekstowa** w widoku szczegółów planu:

@@ -78,11 +78,11 @@ type SignInOutput = {
 
 ### User Profiles
 
-| Action Name            | File Path                                   | Description                   |
-| ---------------------- | ------------------------------------------- | ----------------------------- |
-| getCurrentUserProfile  | src/db/actions/profiles/get-current.ts      | Get current user's profile    |
-| updateUserProfile      | src/db/actions/profiles/update.ts           | Update current user's profile |
-| requestAccountDeletion | src/db/actions/profiles/request-deletion.ts | Request account deletion      |
+| Action Name           | File Path                                 | Description                   |
+| --------------------- | ----------------------------------------- | ----------------------------- |
+| getCurrentUserProfile | src/db/actions/profiles/get-current.ts    | Get current user's profile    |
+| updateUserProfile     | src/db/actions/profiles/update.ts         | Update current user's profile |
+| deleteAccount         | src/db/actions/profiles/delete-account.ts | Delete the user's account     |
 
 #### getCurrentUserProfile (src/db/actions/profiles/get-current.ts)
 
@@ -167,18 +167,17 @@ type ProfileOutput = {
 - 401: Unauthorized
 - 404: Profile not found
 
-#### requestAccountDeletion (src/db/actions/profiles/request-deletion.ts)
+#### deleteAccount (src/db/actions/profiles/delete-account.ts)
 
-Requests account deletion (initiates the process rather than immediately deleting).
+Deletes the user's account immediately.
 
-**Input:** None (uses session context)
+**Input:** None (uses session context; performs immediate deletion after confirmation)
 
 **Output:**
 
 ```typescript
-type DeletionRequestOutput = {
+type DeleteAccountOutput = {
   message: string;
-  deletion_request_id: string;
 };
 ```
 

@@ -41,10 +41,9 @@ export type ProfileUpdateInput = Partial<
   >
 >;
 
-/** Output for the account deletion request action. */
-export interface DeletionRequestOutput {
+/** Output for deleting the account. */
+export interface DeleteAccountOutput {
   message: string;
-  deletion_request_id: string;
 }
 
 // --- Training Plans ---
