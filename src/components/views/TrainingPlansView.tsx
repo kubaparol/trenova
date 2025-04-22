@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "../ui/button";
-import { ArrowRight, Trash2, Users } from "lucide-react";
+import { ArrowRight, Trash2, Dumbbell } from "lucide-react";
 import { getUserTrainingPlans } from "@/db/actions/training-plans/get-user-plans";
 import dayjs from "dayjs";
 import Link from "next/link";
@@ -126,7 +126,7 @@ function TrainingPlansViewEmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
       <div className="rounded-full bg-muted p-6 mb-6">
-        <Users size={40} className="text-muted-foreground" />
+        <Dumbbell size={40} className="text-muted-foreground" />
       </div>
 
       <h2 className="text-2xl font-bold mb-2">
