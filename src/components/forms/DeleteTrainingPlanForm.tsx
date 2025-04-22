@@ -2,12 +2,12 @@
 
 import { useTransition } from "react";
 import {
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface DeleteTrainingPlanFormProps {
   trainingPlanId: string;
@@ -25,6 +25,10 @@ export function DeleteTrainingPlanForm({
     startTransition(async () => {
       await onSubmit(trainingPlanId);
     });
+
+    toast.success("Success", {
+      description: "Training plan deleted successfully.",
+    });
   };
 
   return (
@@ -32,12 +36,10 @@ export function DeleteTrainingPlanForm({
       <AlertDialogFooter>
         <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
 
-        <AlertDialogAction asChild>
-          <Button type="submit" disabled={isPending}>
-            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isPending ? "Deleting..." : "Delete"}
-          </Button>
-        </AlertDialogAction>
+        <Button type="submit" variant="destructive" disabled={isPending}>
+          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isPending ? "Deleting..." : "Delete"}
+        </Button>
       </AlertDialogFooter>
     </form>
   );
