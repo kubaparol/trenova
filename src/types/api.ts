@@ -1,4 +1,4 @@
-import type { Tables, Enums } from "@/db/database.types";
+import type { Tables } from "@/db/database.types";
 
 // --- Generic Types ---
 
@@ -33,25 +33,6 @@ export interface ChangePasswordInput {
 export interface ChangePasswordOutput {
   message: string;
 }
-
-// --- User Profiles ---
-
-/** Output for retrieving the current user's profile. Directly maps to the database row. */
-export type ProfileOutput = Tables<"profiles">; // Using Tables<'profiles'> directly as Row is default
-
-/** Input for updating the user's profile. Uses a subset of updateable fields. */
-export type ProfileUpdateInput = Partial<
-  Pick<
-    Tables<"profiles">, // Pick from the Row type (default)
-    | "gender"
-    | "experience"
-    | "goal"
-    | "days_per_week"
-    | "session_duration_minutes"
-    | "equipment"
-    | "restrictions"
-  >
->;
 
 /** Output for deleting the account. */
 export interface DeleteAccountOutput {
@@ -106,28 +87,27 @@ export interface PlanDetails {
   days: PlanDay[];
 }
 
-/** Defines the structure for training preferences, used in creation and as a snapshot. References database Enums. */
+/** Defines the structure for training preferences, used only during plan creation. */
 export interface TrainingPreferences {
-  gender: Enums<"user_gender">;
-  experience: Enums<"experience_level">;
-  goal: Enums<"user_goal">;
-  days_per_week: number;
-  session_duration_minutes: number;
-  equipment: Enums<"equipment_access">;
+  gender: "male" | "female" | "other" | "prefer_not_to_say";
+  experience: "beginner" | "intermediate" | "advanced";
+  goal: "weight_loss" | "muscle_gain" | "general_fitness" | "strength_increase";
+  days_per_week: number; // Assuming 1-7
+  session_duration_minutes: number; // Assuming 15-120
+  equipment: "none" | "home_basic" | "full_gym";
   restrictions: string[];
 }
 
 /**
  * Output for fetching a detailed training plan.
  * Derives from the base training_plans table row but provides specific types
- * for the JSON fields 'plan_details' and 'preferences_snapshot'.
+ * for the JSON field 'plan_details'.
  */
 export type TrainingPlanDetailOutput = Pick<
   Tables<"training_plans">,
   "id" | "name" | "created_at" | "user_id"
 > & {
   plan_details: PlanDetails;
-  preferences_snapshot: TrainingPreferences; // Reuse TrainingPreferences for the snapshot
 };
 
 /** Input for creating a new training plan. */

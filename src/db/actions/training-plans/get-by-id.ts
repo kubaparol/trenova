@@ -4,7 +4,6 @@ import type {
   GetTrainingPlanInput,
   TrainingPlanDetailOutput,
   PlanDetails,
-  TrainingPreferences,
 } from "@/types/api";
 import { supabaseClient } from "@/db/supabase.server";
 
@@ -35,7 +34,7 @@ export async function getTrainingPlanById(
 
   const { data: planData, error: dbError } = await supabase
     .from("training_plans")
-    .select("id, name, created_at, user_id, plan_details, preferences_snapshot")
+    .select("id, name, created_at, user_id, plan_details")
     .eq("id", input.id)
     .eq("user_id", userId)
     .single();
@@ -54,7 +53,5 @@ export async function getTrainingPlanById(
     created_at: planData.created_at,
     user_id: planData.user_id,
     plan_details: planData.plan_details as unknown as PlanDetails,
-    preferences_snapshot:
-      planData.preferences_snapshot as unknown as TrainingPreferences,
   };
 }

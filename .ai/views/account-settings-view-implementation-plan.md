@@ -184,7 +184,7 @@ Reprezentuje wewnętrzny stan komponentu `DeleteAccountConfirmationModal`.
   - **Żądanie:** `ChangePasswordInput`.
   - **Odpowiedź (sukces):** `Promise<ChangePasswordOutput>`.
   - **Odpowiedź (błąd):** Funkcja rzuca błędy (np. `Error("Unauthorized")`, `Error("Incorrect current password")`, `Error("Failed to update password...")`).
-- **Endpoint (Usuwanie Konta):** Funkcja `deleteAccount` z `src/db/actions/profiles/delete-account.ts`. Jest to Server Action, wywoływana w `onConfirm` komponentu `DeleteAccountConfirmationModal`.
+- **Endpoint (Usuwanie Konta):** Funkcja `deleteAccount` z `src/db/actions/auth/delete-account.ts`. Jest to Server Action, wywoływana w `onConfirm` komponentu `DeleteAccountConfirmationModal`.
 - **Wywołanie (Usuwanie Konta):** W komponencie `DeleteAccountConfirmationModal`, po kliknięciu przycisku "Potwierdź usunięcie" (i przejściu walidacji), należy wywołać `await deleteAccount()`.
 - **Typy żądania/odpowiedzi (Usuwanie Konta):**
   - **Żądanie:** Brak jawnych parametrów (kontekst użytkownika brany z sesji po stronie serwera).

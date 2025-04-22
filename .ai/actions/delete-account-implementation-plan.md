@@ -6,7 +6,7 @@ Ta akcja bazy danych (`deleteAccount`) jest przeznaczona do natychmiastowego i t
 
 ## 2. Szczegóły Wywołania Funkcji
 
-- **Ścieżka Funkcji:** `src/db/actions/profiles/delete-account.ts`
+- **Ścieżka Funkcji:** `src/db/actions/auth/delete-account.ts`
 - **Nazwa Funkcji:** `deleteAccount`
 - **Argumenty:** Brak. Akcja pobiera tożsamość użytkownika z kontekstu sesji serwerowej.
 - **Uwierzytelnienie:** Funkcja wewnętrznie tworzy klienta administracyjnego Supabase po stronie serwera (`supabaseClient()` z kluczem serwisowym) i weryfikuje uwierzytelnienie użytkownika za pomocą `supabase.auth.getUser()`. Rzuca błąd `Error("Unauthorized")`, jeśli użytkownik nie jest uwierzytelniony.
@@ -39,7 +39,7 @@ Ta akcja bazy danych (`deleteAccount`) jest przeznaczona do natychmiastowego i t
 3.  **Weryfikacja Uwierzytelnienia:** Funkcja wywołuje `supabase.auth.getUser()` na utworzonym kliencie. Jeśli wystąpi błąd lub `user` jest `null`, rzuca `Error("Unauthorized")`. Zapisuje `userId` dla dalszych kroków.
 4.  **Operacja Usunięcia Użytkownika:** Wykonuje wywołanie `supabase.auth.admin.deleteUser(userId)`.
 5.  **Obsługa Błędów Supabase:** Sprawdza wynik operacji `deleteUser`. Jeśli wystąpił błąd, rzuca `Error("Database error: Failed to delete user - [Komunikat błędu Supabase]")`.
-6.  **Poleganie na Cascade Delete:** Funkcja nie wykonuje dodatkowych operacji kasowania w tabelach `profiles` czy `training_plans`. Zakłada się, że ograniczenia `ON DELETE CASCADE` w bazie danych zadziałają poprawnie po usunięciu użytkownika z `auth.users`.
+6.  **Poleganie na Cascade Delete:** Funkcja nie wykonuje dodatkowych operacji kasowania w tabelach `training_plans`. Zakłada się, że ograniczenia `ON DELETE CASCADE` w bazie danych zadziałają poprawnie po usunięciu użytkownika z `auth.users`.
 7.  **Zwrot Wyniku:** Jeśli usunięcie w `auth.users` powiodło się, funkcja zwraca obiekt `DeleteAccountOutput` z komunikatem sukcesu.
 
 ## 6. Względy Bezpieczeństwa
@@ -63,7 +63,7 @@ Ta akcja bazy danych (`deleteAccount`) jest przeznaczona do natychmiastowego i t
 
 ## 9. Etapy Wdrożenia
 
-1.  **Utworzenie Pliku:** Utwórz plik `src/db/actions/profiles/delete-account.ts`.
+1.  **Utworzenie Pliku:** Utwórz plik `src/db/actions/auth/delete-account.ts`.
 2.  **Importy:** Dodaj niezbędne importy: `supabaseClient` z `@/db/supabase.server`, typ `DeleteAccountOutput` z `@/types/api`.
 3.  **Zdefiniowanie Funkcji:** Zdefiniuj asynchroniczną funkcję `deleteAccount` nieprzyjmującą argumentów i zwracającą `Promise<DeleteAccountOutput>`.
 4.  **Implementacja Tworzenia Klienta Supabase Admin:** Dodaj `const supabase = await supabaseClient();`, upewniając się, że jest to klient administracyjny. Możliwe, że `supabaseClient` wymagać będzie modyfikacji lub dodatkowego wariantu, aby jawnie zażądać klienta admina.

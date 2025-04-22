@@ -30,7 +30,7 @@ Ta akcja bazy danych (`getTrainingPlanById`) pobiera **szczegółowe dane** poje
 2.  **Utworzenie Klienta Supabase:** Funkcja wywołuje `await createServerSupabaseClient()` (zaimportowany z `@/db/supabase.server.ts`), aby uzyskać instancję klienta Supabase po stronie serwera.
 3.  **Pobranie ID Użytkownika:** Funkcja wywołuje `supabase.auth.getUser()` na utworzonym kliencie, aby uzyskać ID aktualnie uwierzytelnionego użytkownika. Rzuca błąd `Error("User not authenticated")`, jeśli użytkownik nie jest zalogowany lub wystąpił błąd.
 4.  **Zapytanie o Dane:** Wykonywane jest zapytanie do Supabase przy użyciu utworzonego klienta, aby pobrać plan:
-    `SELECT id, name, created_at, user_id, plan_details, preferences_snapshot FROM training_plans WHERE id = $1 AND user_id = $2 LIMIT 1`. Zamiast `$1` używany jest `input.id`, a zamiast `$2` używane jest `userId` pobrane w kroku 3.
+    `SELECT id, name, created_at, user_id, plan_details FROM training_plans WHERE id = $1 AND user_id = $2 LIMIT 1`. Zamiast `$1` używany jest `input.id`, a zamiast `$2` używane jest `userId` pobrane w kroku 3.
 5.  **Przetwarzanie Wyniku:**
     - Sprawdzany jest potencjalny błąd zwrócony przez Supabase (`error`). Rzucany jest wyjątek `Error("Failed to retrieve training plan: <database error message>")` w przypadku błędu.
     - Sprawdzane jest, czy zapytanie zwróciło jakiekolwiek dane (`data`). Jeśli `data` jest `null` lub puste (co oznacza, że plan o podanym `id` nie istnieje lub użytkownik nie ma do niego dostępu zgodnie z RLS i warunkiem `user_id`), rzucany jest wyjątek `Error("Training plan not found or access denied")`.
@@ -63,7 +63,7 @@ Ta akcja bazy danych (`getTrainingPlanById`) pobiera **szczegółowe dane** poje
 3.  **Implementacja Tworzenia Klienta:** Dodaj logikę importu i wywołania `await createServerSupabaseClient()` na początku funkcji.
 4.  **Implementacja Pobierania ID Użytkownika:** Dodaj logikę wywołania `supabase.auth.getUser()`. Sprawdź wynik i rzuć `Error("User not authenticated")` w przypadku braku użytkownika lub błędu. Przechowaj `userId`.
 5.  **Implementacja Logiki Zapytania:**
-    - Użyj utworzonego `supabase` i pobranego `userId` oraz `input.id` do wykonania zapytania `SELECT id, name, created_at, user_id, plan_details, preferences_snapshot FROM training_plans WHERE id = input.id AND user_id = userId LIMIT 1`. Użyj `.single()` lub `.maybeSingle()` w Supabase JS Client.
+    - Użyj utworzonego `supabase` i pobranego `userId` oraz `input.id` do wykonania zapytania `SELECT id, name, created_at, user_id, plan_details FROM training_plans WHERE id = input.id AND user_id = userId LIMIT 1`. Użyj `.single()` lub `.maybeSingle()` w Supabase JS Client.
 6.  **Obsługa Błędów Supabase:** Sprawdź pole `error` w wyniku zapytania. Jeśli `error` istnieje, rzuć `Error("Failed to retrieve training plan: ${error.message}")`.
 7.  **Obsługa Braku Danych:** Sprawdź, czy `data` jest `null` (jeśli użyto `.maybeSingle()`) lub czy wystąpił błąd oznaczający brak wiersza (jeśli użyto `.single()`). Jeśli planu nie znaleziono (lub dostęp zablokowany), rzuć `Error("Training plan not found or access denied")`.
 8.  **Formatowanie i Zwrot Wyniku:** Jeśli dane (`data`) istnieją i nie ma błędu, zwróć `data` (powinno już pasować do `TrainingPlanDetailOutput`).

@@ -139,7 +139,6 @@ export async function createTrainingPlan(
     user_id: userId,
     name: input.name,
     plan_details: planDetails as unknown as Json,
-    preferences_snapshot: input.preferences as unknown as Json,
   };
 
   const { data: insertedPlanData, error: insertError } = await supabase
@@ -158,15 +157,12 @@ export async function createTrainingPlan(
   }
 
   const planDetailsFromDb = insertedPlanData.plan_details;
-  const prefsSnapshotFromDb = insertedPlanData.preferences_snapshot;
 
   if (
     typeof planDetailsFromDb !== "object" ||
     planDetailsFromDb === null ||
     !planDetailsFromDb.hasOwnProperty("days") ||
-    !Array.isArray((planDetailsFromDb as { days: unknown }).days) ||
-    typeof prefsSnapshotFromDb !== "object" ||
-    prefsSnapshotFromDb === null
+    !Array.isArray((planDetailsFromDb as { days: unknown }).days)
   ) {
     throw new Error(
       "Database error: Returned plan data has unexpected structure"

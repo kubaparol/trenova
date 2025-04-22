@@ -2,11 +2,10 @@
 
 ## 1. Resources
 
-| Resource      | Database Table        | Description                                   |
-| ------------- | --------------------- | --------------------------------------------- |
-| Users         | auth.users            | User authentication managed by Supabase Auth  |
-| Profiles      | public.profiles       | User profiles containing training preferences |
-| TrainingPlans | public.training_plans | User's saved training plans                   |
+| Resource      | Database Table        | Description                                  |
+| ------------- | --------------------- | -------------------------------------------- |
+| Users         | auth.users            | User authentication managed by Supabase Auth |
+| TrainingPlans | public.training_plans | User's saved training plans                  |
 
 ## 2. Server Actions
 
@@ -105,124 +104,16 @@ type ChangePasswordOutput = {
 - 401: Unauthorized
 - 403: Current password incorrect
 
-### User Profiles
-
-| Action Name           | File Path                                 | Description                   |
-| --------------------- | ----------------------------------------- | ----------------------------- |
-| getCurrentUserProfile | src/db/actions/profiles/get-current.ts    | Get current user's profile    |
-| updateUserProfile     | src/db/actions/profiles/update.ts         | Update current user's profile |
-| deleteAccount         | src/db/actions/profiles/delete-account.ts | Delete the user's account     |
-
-#### getCurrentUserProfile (src/db/actions/profiles/get-current.ts)
-
-Retrieves the current user's profile.
-
-**Input:** None (uses session context)
-
-**Output:**
-
-```typescript
-type ProfileOutput = {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  gender: "male" | "female" | "other" | "prefer_not_to_say" | null;
-  experience: "beginner" | "intermediate" | "advanced" | null;
-  goal:
-    | "weight_loss"
-    | "muscle_gain"
-    | "general_fitness"
-    | "strength_increase"
-    | null;
-  days_per_week: number | null;
-  session_duration_minutes: number | null;
-  equipment: "none" | "home_basic" | "full_gym" | null;
-  restrictions: string[];
-};
-```
-
-**Errors:**
-
-- 401: Unauthorized
-- 404: Profile not found
-
-#### updateUserProfile (src/db/actions/profiles/update.ts)
-
-Updates the current user's profile data.
-
-**Input:**
-
-```typescript
-type ProfileUpdateInput = {
-  gender?: "male" | "female" | "other" | "prefer_not_to_say";
-  experience?: "beginner" | "intermediate" | "advanced";
-  goal?:
-    | "weight_loss"
-    | "muscle_gain"
-    | "general_fitness"
-    | "strength_increase";
-  days_per_week?: number;
-  session_duration_minutes?: number;
-  equipment?: "none" | "home_basic" | "full_gym";
-  restrictions?: string[];
-};
-```
-
-**Output:**
-
-```typescript
-type ProfileOutput = {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  gender: "male" | "female" | "other" | "prefer_not_to_say" | null;
-  experience: "beginner" | "intermediate" | "advanced" | null;
-  goal:
-    | "weight_loss"
-    | "muscle_gain"
-    | "general_fitness"
-    | "strength_increase"
-    | null;
-  days_per_week: number | null;
-  session_duration_minutes: number | null;
-  equipment: "none" | "home_basic" | "full_gym" | null;
-  restrictions: string[];
-};
-```
-
-**Errors:**
-
-- 400: Invalid input
-- 401: Unauthorized
-- 404: Profile not found
-
-#### deleteAccount (src/db/actions/profiles/delete-account.ts)
-
-Deletes the user's account immediately.
-
-**Input:** None (uses session context; performs immediate deletion after confirmation)
-
-**Output:**
-
-```typescript
-type DeleteAccountOutput = {
-  message: string;
-};
-```
-
-**Errors:**
-
-- 401: Unauthorized
-
 ### Training Plans
 
-| Action Name            | File Path                                       | Description                                 |
-| ---------------------- | ----------------------------------------------- | ------------------------------------------- |
-| getUserTrainingPlans   | src/db/actions/training-plans/get-user-plans.ts | Get all training plans for the current user |
-| getTrainingPlanById    | src/db/actions/training-plans/get-by-id.ts      | Get a specific training plan                |
-| createTrainingPlan     | src/db/actions/training-plans/create.ts         | Create a new training plan using AI         |
-| updateTrainingPlanName | src/db/actions/training-plans/update-name.ts    | Update a training plan's name               |
-| deleteTrainingPlan     | src/db/actions/training-plans/delete.ts         | Delete a training plan                      |
+| Action Name            | File Path                                       | Description                                       |
+| ---------------------- | ----------------------------------------------- | ------------------------------------------------- |
+| getUserTrainingPlans   | src/db/actions/training-plans/get-user-plans.ts | Get all training plans for the current user       |
+| getTrainingPlanById    | src/db/actions/training-plans/get-by-id.ts      | Get a specific training plan                      |
+| createTrainingPlan     | src/db/actions/training-plans/create.ts         | Create a new training plan using AI               |
+| updateTrainingPlanName | src/db/actions/training-plans/update-name.ts    | Update a training plan's name                     |
+| deleteTrainingPlan     | src/db/actions/training-plans/delete.ts         | Delete a training plan                            |
+| deleteAccount          | src/db/actions/auth/delete-account.ts           | Delete the user's account and all associated data |
 
 #### getUserTrainingPlans (src/db/actions/training-plans/get-user-plans.ts)
 
@@ -256,6 +147,8 @@ type TrainingPlanListOutput = {
 **Errors:**
 
 - 401: Unauthorized
+- 403: Forbidden (not user's plan)
+- 404: Plan not found
 
 #### getTrainingPlanById (src/db/actions/training-plans/get-by-id.ts)
 
@@ -310,7 +203,7 @@ type TrainingPlanDetailOutput = {
 
 #### createTrainingPlan (src/db/actions/training-plans/create.ts)
 
-Creates a new training plan using AI based on user profile or provided preferences.
+Creates a new training plan using AI based on provided preferences.
 
 **Input:**
 
@@ -354,15 +247,7 @@ type TrainingPlanDetailOutput = {
       }[];
     }[];
   };
-  preferences_snapshot: {
-    gender: string;
-    experience: string;
-    goal: string;
-    days_per_week: number;
-    session_duration_minutes: number;
-    equipment: string;
-    restrictions: string[];
-  };
+  // preferences_snapshot removed as preferences are not persistently stored per-plan
 };
 ```
 
@@ -370,6 +255,7 @@ type TrainingPlanDetailOutput = {
 
 - 400: Invalid input
 - 401: Unauthorized
+- 404: Plan not found
 - 429: Too many requests (AI generation rate limit)
 - 500: AI generation error
 
@@ -457,6 +343,24 @@ type SupportRequestOutput = {
 
 - 400: Invalid input
 
+#### deleteAccount (src/db/actions/auth/delete-account.ts)
+
+Deletes the user's account and all associated data (including training plans) immediately.
+
+**Input:** None (uses session context; performs immediate deletion after confirmation)
+
+**Output:**
+
+```typescript
+type DeleteAccountOutput = {
+  message: string;
+};
+```
+
+**Errors:**
+
+- 401: Unauthorized
+
 ## 3. Authentication and Authorization
 
 Trenova will use Supabase Authentication services for handling user authentication, which will be integrated with Next.js Server Actions:
@@ -481,10 +385,8 @@ Trenova will use Supabase Authentication services for handling user authenticati
 
 ## 4. Validation and Business Logic
 
-### User Profiles Validation
+### Training Plan Preferences Validation (Used during `createTrainingPlan`)
 
-- Email format must be valid
-- Password must meet strength requirements (minimum 8 characters, including at least one uppercase letter, one lowercase letter, and one number)
 - Gender must be one of: "male", "female", "other", "prefer_not_to_say"
 - Experience level must be one of: "beginner", "intermediate", "advanced"
 - Goal must be one of: "weight_loss", "muscle_gain", "general_fitness", "strength_increase"
@@ -496,9 +398,12 @@ Trenova will use Supabase Authentication services for handling user authenticati
 ### Training Plan Validation
 
 - Name must be between 1 and 255 characters
-- Preferences must conform to the same validation rules as user profiles
 - User must be authenticated to create or manage training plans
 - Users can only access their own training plans
+- AI models receive structured preference data (provided in the `createTrainingPlan` call) and generate a complete workout plan
+- Generated plans maintain a consistent structure for frontend rendering
+- Rate limiting is applied to AI-generated content to prevent abuse
+- All database operations use Supabase's data access APIs with RLS policies
 
 ### Password Change Validation
 
@@ -510,7 +415,6 @@ Trenova will use Supabase Authentication services for handling user authenticati
 ### Business Logic Implementation
 
 - Training plan generation uses OpenRouter.ai to connect to AI models
-- AI models receive structured preference data and generate a complete workout plan
 - Generated plans maintain a consistent structure for frontend rendering
 - Rate limiting is applied to AI-generated content to prevent abuse
 - All database operations use Supabase's data access APIs with RLS policies

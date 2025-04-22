@@ -34,52 +34,12 @@ export type Database = {
   };
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          created_at: string;
-          days_per_week: number | null;
-          equipment: Database["public"]["Enums"]["equipment_access"] | null;
-          experience: Database["public"]["Enums"]["experience_level"] | null;
-          gender: Database["public"]["Enums"]["user_gender"] | null;
-          goal: Database["public"]["Enums"]["user_goal"] | null;
-          id: string;
-          restrictions: string[];
-          session_duration_minutes: number | null;
-          updated_at: string;
-        };
-        Insert: {
-          created_at?: string;
-          days_per_week?: number | null;
-          equipment?: Database["public"]["Enums"]["equipment_access"] | null;
-          experience?: Database["public"]["Enums"]["experience_level"] | null;
-          gender?: Database["public"]["Enums"]["user_gender"] | null;
-          goal?: Database["public"]["Enums"]["user_goal"] | null;
-          id: string;
-          restrictions?: string[];
-          session_duration_minutes?: number | null;
-          updated_at?: string;
-        };
-        Update: {
-          created_at?: string;
-          days_per_week?: number | null;
-          equipment?: Database["public"]["Enums"]["equipment_access"] | null;
-          experience?: Database["public"]["Enums"]["experience_level"] | null;
-          gender?: Database["public"]["Enums"]["user_gender"] | null;
-          goal?: Database["public"]["Enums"]["user_goal"] | null;
-          id?: string;
-          restrictions?: string[];
-          session_duration_minutes?: number | null;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
       training_plans: {
         Row: {
           created_at: string;
           id: string;
           name: string;
           plan_details: Json;
-          preferences_snapshot: Json;
           user_id: string;
         };
         Insert: {
@@ -87,7 +47,6 @@ export type Database = {
           id?: string;
           name: string;
           plan_details: Json;
-          preferences_snapshot: Json;
           user_id: string;
         };
         Update: {
@@ -95,7 +54,6 @@ export type Database = {
           id?: string;
           name?: string;
           plan_details?: Json;
-          preferences_snapshot?: Json;
           user_id?: string;
         };
         Relationships: [];
@@ -108,14 +66,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      equipment_access: "none" | "home_basic" | "full_gym";
-      experience_level: "beginner" | "intermediate" | "advanced";
-      user_gender: "male" | "female" | "other" | "prefer_not_to_say";
-      user_goal:
-        | "weight_loss"
-        | "muscle_gain"
-        | "general_fitness"
-        | "strength_increase";
+      [_ in never]: never;
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -233,16 +184,6 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {
-      equipment_access: ["none", "home_basic", "full_gym"],
-      experience_level: ["beginner", "intermediate", "advanced"],
-      user_gender: ["male", "female", "other", "prefer_not_to_say"],
-      user_goal: [
-        "weight_loss",
-        "muscle_gain",
-        "general_fitness",
-        "strength_increase",
-      ],
-    },
+    Enums: {},
   },
 } as const;

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Trash2 } from "lucide-react";
 import { DeleteAccountForm } from "../forms/DeleteAccountForm";
-import { deleteAccount } from "@/db/actions/profiles/delete-account";
+import { deleteAccount } from "@/db/actions/auth/delete-account";
 import ChangePasswordForm, {
   ChangePasswordFormValues,
 } from "../forms/ChangePasswordForm";
