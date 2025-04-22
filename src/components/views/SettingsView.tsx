@@ -14,6 +14,13 @@ import ChangePasswordForm, {
   ChangePasswordFormValues,
 } from "../forms/ChangePasswordForm";
 import { changePassword } from "@/db/actions/auth/change-password";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export function SettingsView() {
   const handleChangePassword = async (values: ChangePasswordFormValues) => {
@@ -29,39 +36,52 @@ export function SettingsView() {
   };
 
   return (
-    <>
-      <ChangePasswordForm onSubmit={handleChangePassword} />
+    <div className="space-y-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Zmiana hasła</CardTitle>
+          <CardDescription>
+            Zaktualizuj swoje hasło, aby zwiększyć bezpieczeństwo konta.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ChangePasswordForm onSubmit={handleChangePassword} />
+        </CardContent>
+      </Card>
 
-      <div className="space-y-6">
-        <header className="space-y-1">
-          <h3 className="text-lg font-medium">Usunięcie konta</h3>
-          <p className="text-sm text-muted-foreground">
+      <Card className="border-destructive/20">
+        <CardHeader>
+          <CardTitle className="text-destructive">Usunięcie konta</CardTitle>
+          <CardDescription>
             Usunięcie konta jest nieodwracalne. Wszystkie Twoje dane zostaną
             trwale usunięte.
-          </p>
-        </header>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive" className="gap-1">
+                <Trash2 className="h-4 w-4" />
+                Usuń konto
+              </Button>
+            </DialogTrigger>
 
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="destructive" className="gap-1">
-              <Trash2 className="h-4 w-4" />
-              Usuń konto
-            </Button>
-          </DialogTrigger>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle className="text-destructive">
+                  Usuń konto
+                </DialogTitle>
+                <DialogDescription>
+                  Ta akcja jest <strong>nieodwracalna</strong>. Spowoduje trwałe
+                  usunięcie Twojego konta i wszystkich powiązanych danych.
+                </DialogDescription>
+              </DialogHeader>
 
-          <DialogContent className="sm:max-w-lg">
-            <DialogHeader>
-              <DialogTitle className="text-destructive">Usuń konto</DialogTitle>
-              <DialogDescription>
-                Ta akcja jest <strong>nieodwracalna</strong>. Spowoduje trwałe
-                usunięcie Twojego konta i wszystkich powiązanych danych.
-              </DialogDescription>
-            </DialogHeader>
-
-            <DeleteAccountForm onSubmit={handleDeleteAccount} />
-          </DialogContent>
-        </Dialog>
-      </div>
-    </>
+              <DeleteAccountForm onSubmit={handleDeleteAccount} />
+            </DialogContent>
+          </Dialog>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
