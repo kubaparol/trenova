@@ -49,11 +49,10 @@ export function UpdateTrainingPlanNameForm({
     },
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = (values: TrainingPlanNameFormValues) => {
     startTransition(async () => {
       try {
-        await onSubmit(trainingPlanId, form.getValues());
+        await onSubmit(trainingPlanId, values);
 
         toast.success("Success", {
           description: "Nazwa planu zaktualizowana pomyślnie.",
@@ -77,7 +76,7 @@ export function UpdateTrainingPlanNameForm({
     <Form {...form}>
       <DialogClose ref={closeButtonRef} className="hidden" type="button" />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="name"

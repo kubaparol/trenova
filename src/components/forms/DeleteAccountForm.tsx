@@ -40,11 +40,8 @@ export function DeleteAccountForm({ onSubmit }: DeleteAccountFormProps) {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = (values: DeleteAccountFormValues) => {
     startTransition(async () => {
-      const values = form.getValues();
-
       try {
         await onSubmit(values);
 
@@ -73,7 +70,7 @@ export function DeleteAccountForm({ onSubmit }: DeleteAccountFormProps) {
     <Form {...form}>
       <DialogClose ref={closeButtonRef} className="hidden" type="button" />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="confirmationInput"
