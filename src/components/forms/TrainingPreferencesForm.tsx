@@ -36,14 +36,13 @@ import { z } from "zod";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import Image from "next/image";
 
 const UserGenderEnum = {
   male: "male",
@@ -493,19 +492,28 @@ export function TrainingPreferencesForm({
         </CardContent>
       </Card>
 
-      <Dialog open={isLoading} onOpenChange={() => {}}>
+      <Dialog open={isLoading}>
         <DialogContent className="sm:max-w-md [&>button]:hidden">
-          <DialogHeader>
-            <DialogTitle>Generowanie planu</DialogTitle>
-            <DialogDescription>
+          <DialogTitle className="sr-only">
+            Generowanie planu treningowego
+          </DialogTitle>
+
+          <div className="flex justify-center">
+            <Image
+              src="/robot-loader.svg"
+              alt="Robot generating training plan"
+              width={220}
+              height={200}
+              priority
+            />
+          </div>
+
+          <DialogDescription asChild>
+            <p className="text-center text-sm text-muted-foreground">
               Trwa generowanie Twojego spersonalizowanego planu treningowego.
               Może to chwilę potrwać, proszę czekać...
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex justify-center py-4">
-            <Loader2 className="h-10 w-10 text-primary animate-spin" />
-          </div>
+            </p>
+          </DialogDescription>
         </DialogContent>
       </Dialog>
     </>
