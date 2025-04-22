@@ -59,9 +59,14 @@ export default function Header({ user: initialUser }: HeaderProps) {
         {/* Desktop navigation */}
         <nav className="hidden md:flex items-center space-x-4">
           {currentUser ? (
-            <Button variant="ghost" onClick={handleLogout}>
-              Wyloguj się
-            </Button>
+            <>
+              <Button variant="default" asChild>
+                <Link href={ProjectUrls.trainingPlans}>Dashboard</Link>
+              </Button>
+              <Button variant="ghost" onClick={handleLogout}>
+                Wyloguj się
+              </Button>
+            </>
           ) : (
             <>
               <Button variant="ghost" asChild>
@@ -79,13 +84,22 @@ export default function Header({ user: initialUser }: HeaderProps) {
           <div className="absolute top-16 left-0 right-0 bg-background z-50 border-b md:hidden">
             <div className="container mx-auto py-4 px-4 flex flex-col space-y-2">
               {currentUser ? (
-                <Button
-                  variant="ghost"
-                  onClick={handleLogout}
-                  className="w-full justify-start"
-                >
-                  Wyloguj się
-                </Button>
+                <>
+                  <Button
+                    variant="default"
+                    asChild
+                    className="w-full justify-start"
+                  >
+                    <Link href={ProjectUrls.trainingPlans}>Dashboard</Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleLogout}
+                    className="w-full justify-start"
+                  >
+                    Wyloguj się
+                  </Button>
+                </>
               ) : (
                 <>
                   <Button
