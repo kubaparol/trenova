@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Slider } from "@/components/ui/slider";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -87,16 +88,21 @@ const trainingPreferencesSchema = z.object({
       required_error: "Proszę wybrać główny cel",
     }
   ),
-  days_per_week: z.coerce
+
+  days_per_week: z
     .number()
-    .int({ message: "Wartość musi być liczbą całkowitą" })
     .min(1, { message: "Minimum 1 dzień w tygodniu" })
-    .max(7, { message: "Maksimum 7 dni w tygodniu" }),
-  session_duration_minutes: z.coerce
+    .max(7, { message: "Maksimum 7 dni w tygodniu" })
+    .refine((value) => value >= 1, {
+      message: "Must be at least 1 minute",
+    }),
+  session_duration_minutes: z
     .number()
-    .int({ message: "Wartość musi być liczbą całkowitą" })
     .min(15, { message: "Minimum 15 minut" })
-    .max(180, { message: "Maksimum 180 minut" }),
+    .max(180, { message: "Maksimum 180 minut" })
+    .refine((value) => value >= 1, {
+      message: "Must be at least 1 minute",
+    }),
   equipment: z.enum(["none", "home_basic", "full_gym"], {
     required_error: "Proszę wybrać dostępny sprzęt",
   }),
@@ -124,8 +130,8 @@ export function TrainingPreferencesForm({
       gender: undefined,
       experience: undefined,
       goal: undefined,
-      days_per_week: undefined,
-      session_duration_minutes: undefined,
+      days_per_week: 0,
+      session_duration_minutes: 0,
       equipment: undefined,
       restrictions: "",
     },
@@ -338,15 +344,22 @@ export function TrainingPreferencesForm({
                     name="days_per_week"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Dni treningowych w tygodniu</FormLabel>
+                        <div className="flex items-center justify-between">
+                          <FormLabel>Dni treningowych w tygodniu</FormLabel>
+
+                          <span className="text-sm font-medium">
+                            {field.value} {field.value === 1 ? "dzień" : "dni"}
+                          </span>
+                        </div>
 
                         <FormControl>
-                          <Input
-                            type="number"
+                          <Slider
+                            id="days_per_week"
                             min={1}
                             max={7}
-                            placeholder="3"
-                            {...field}
+                            step={1}
+                            value={[field.value]}
+                            onValueChange={(value) => field.onChange(value[0])}
                           />
                         </FormControl>
 
@@ -360,17 +373,24 @@ export function TrainingPreferencesForm({
                     name="session_duration_minutes"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>
-                          Preferowany czas trwania sesji (minuty)
-                        </FormLabel>
+                        <div className="flex items-center justify-between">
+                          <FormLabel>
+                            Preferowany czas trwania sesji (minuty)
+                          </FormLabel>
+
+                          <span className="text-sm font-medium">
+                            {field.value} min
+                          </span>
+                        </div>
 
                         <FormControl>
-                          <Input
-                            type="number"
+                          <Slider
+                            id="session_duration_minutes"
                             min={15}
                             max={180}
-                            placeholder="60"
-                            {...field}
+                            step={1}
+                            value={[field.value]}
+                            onValueChange={(value) => field.onChange(value[0])}
                           />
                         </FormControl>
 
