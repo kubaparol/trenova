@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { PlusCircleIcon } from "lucide-react";
+import Logo from "@/components/shared/Logo";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
@@ -39,7 +40,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="h-12 w-fit py-4 data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href={ProjectUrls.home} className="flex items-center">
-                <span className="text-xl font-bold text-primary">Trenova</span>
+                <Logo />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
