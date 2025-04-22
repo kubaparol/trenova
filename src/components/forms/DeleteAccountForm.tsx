@@ -89,7 +89,11 @@ export function DeleteAccountForm({ onSubmit }: DeleteAccountFormProps) {
         />
 
         <DialogFooter>
-          <Button type="submit" disabled={isPending || !isConfirmButtonEnabled}>
+          <Button
+            type="submit"
+            variant="destructive"
+            disabled={isPending || !isConfirmButtonEnabled}
+          >
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isPending ? "Deleting..." : "Delete"}
           </Button>
