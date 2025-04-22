@@ -8,6 +8,7 @@ import { ProjectUrls } from "@/constants";
 import { User } from "@supabase/supabase-js";
 import { supabaseClient } from "@/db/supabase.client";
 import { signOut } from "@/db/actions/auth/sign-out";
+import Logo from "@/components/shared/Logo";
 
 interface HeaderProps {
   user: User | null;
@@ -41,7 +42,7 @@ export default function Header({ user: initialUser }: HeaderProps) {
     <header className="w-full py-4 px-4 md:px-6 lg:px-8 border-b">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="flex items-center">
-          <span className="text-xl font-bold text-primary">Trenova</span>
+          <Logo />
         </Link>
 
         {/* Mobile menu button */}
