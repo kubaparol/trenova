@@ -6,6 +6,7 @@ import { Database } from "./database.types";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export const supabaseClient = async () => {
   const cookieStore = await cookies();
@@ -21,6 +22,18 @@ export const supabaseClient = async () => {
             cookieStore.set(name, value, options)
           );
         } catch {}
+      },
+    },
+  });
+};
+
+export const supabaseAdmin = async () => {
+  const cookieStore = await cookies();
+
+  return createServerClient<Database>(supabaseUrl, supabaseServiceRoleKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
       },
     },
   });

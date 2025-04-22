@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Slider } from "@/components/ui/slider";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,14 +36,13 @@ import { z } from "zod";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import Image from "next/image";
 
 const UserGenderEnum = {
   male: "male",
@@ -87,16 +87,21 @@ const trainingPreferencesSchema = z.object({
       required_error: "Proszę wybrać główny cel",
     }
   ),
-  days_per_week: z.coerce
+
+  days_per_week: z
     .number()
-    .int({ message: "Wartość musi być liczbą całkowitą" })
     .min(1, { message: "Minimum 1 dzień w tygodniu" })
-    .max(7, { message: "Maksimum 7 dni w tygodniu" }),
-  session_duration_minutes: z.coerce
+    .max(7, { message: "Maksimum 7 dni w tygodniu" })
+    .refine((value) => value >= 1, {
+      message: "Must be at least 1 minute",
+    }),
+  session_duration_minutes: z
     .number()
-    .int({ message: "Wartość musi być liczbą całkowitą" })
     .min(15, { message: "Minimum 15 minut" })
-    .max(180, { message: "Maksimum 180 minut" }),
+    .max(180, { message: "Maksimum 180 minut" })
+    .refine((value) => value >= 1, {
+      message: "Must be at least 1 minute",
+    }),
   equipment: z.enum(["none", "home_basic", "full_gym"], {
     required_error: "Proszę wybrać dostępny sprzęt",
   }),
@@ -124,8 +129,8 @@ export function TrainingPreferencesForm({
       gender: undefined,
       experience: undefined,
       goal: undefined,
-      days_per_week: undefined,
-      session_duration_minutes: undefined,
+      days_per_week: 0,
+      session_duration_minutes: 0,
       equipment: undefined,
       restrictions: "",
     },
@@ -338,15 +343,22 @@ export function TrainingPreferencesForm({
                     name="days_per_week"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Dni treningowych w tygodniu</FormLabel>
+                        <div className="flex items-center justify-between">
+                          <FormLabel>Dni treningowych w tygodniu</FormLabel>
+
+                          <span className="text-sm font-medium">
+                            {field.value} {field.value === 1 ? "dzień" : "dni"}
+                          </span>
+                        </div>
 
                         <FormControl>
-                          <Input
-                            type="number"
+                          <Slider
+                            id="days_per_week"
                             min={1}
                             max={7}
-                            placeholder="3"
-                            {...field}
+                            step={1}
+                            value={[field.value]}
+                            onValueChange={(value) => field.onChange(value[0])}
                           />
                         </FormControl>
 
@@ -360,17 +372,24 @@ export function TrainingPreferencesForm({
                     name="session_duration_minutes"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>
-                          Preferowany czas trwania sesji (minuty)
-                        </FormLabel>
+                        <div className="flex items-center justify-between">
+                          <FormLabel>
+                            Preferowany czas trwania sesji (minuty)
+                          </FormLabel>
+
+                          <span className="text-sm font-medium">
+                            {field.value} min
+                          </span>
+                        </div>
 
                         <FormControl>
-                          <Input
-                            type="number"
+                          <Slider
+                            id="session_duration_minutes"
                             min={15}
                             max={180}
-                            placeholder="60"
-                            {...field}
+                            step={1}
+                            value={[field.value]}
+                            onValueChange={(value) => field.onChange(value[0])}
                           />
                         </FormControl>
 
@@ -473,19 +492,28 @@ export function TrainingPreferencesForm({
         </CardContent>
       </Card>
 
-      <Dialog open={isLoading} onOpenChange={() => {}}>
+      <Dialog open={isLoading}>
         <DialogContent className="sm:max-w-md [&>button]:hidden">
-          <DialogHeader>
-            <DialogTitle>Generowanie planu</DialogTitle>
-            <DialogDescription>
+          <DialogTitle className="sr-only">
+            Generowanie planu treningowego
+          </DialogTitle>
+
+          <div className="flex justify-center">
+            <Image
+              src="/robot-loader.svg"
+              alt="Robot generating training plan"
+              width={220}
+              height={200}
+              priority
+            />
+          </div>
+
+          <DialogDescription asChild>
+            <p className="text-center text-sm text-muted-foreground">
               Trwa generowanie Twojego spersonalizowanego planu treningowego.
               Może to chwilę potrwać, proszę czekać...
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex justify-center py-4">
-            <Loader2 className="h-10 w-10 text-primary animate-spin" />
-          </div>
+            </p>
+          </DialogDescription>
         </DialogContent>
       </Dialog>
     </>

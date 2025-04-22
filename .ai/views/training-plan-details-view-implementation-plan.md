@@ -122,7 +122,6 @@ Głównym typem danych dla tego widoku jest `TrainingPlanDetailOutput` zdefiniow
     "id" | "name" | "created_at" | "user_id"
   > & {
     plan_details: PlanDetails; // Zawiera PlanDay[]
-    preferences_snapshot: TrainingPreferences; // Może być nieużywane w tym widoku
   };
   ```
   Nie przewiduje się potrzeby tworzenia dodatkowych, złożonych typów ViewModel dla tego widoku, ponieważ struktura `TrainingPlanDetailOutput` jest wystarczająco dopasowana do potrzeb UI.

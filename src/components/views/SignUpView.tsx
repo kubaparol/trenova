@@ -36,7 +36,9 @@ export function SignUpView() {
       return;
     }
 
-    router.push(ProjectUrls.signUpSuccess);
+    if (result.success) {
+      router.push(ProjectUrls.signUpSuccess);
+    }
   };
 
   return (

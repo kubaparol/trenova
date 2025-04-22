@@ -35,7 +35,6 @@ Ta akcja bazy danych (`createTrainingPlan`) tworzy nowy plan treningowy dla **ak
     "id" | "name" | "created_at" | "user_id"
   > & {
     plan_details: PlanDetails;
-    preferences_snapshot: TrainingPreferences;
   };
   ```
 - **Błędy:** W przypadku niepowodzenia, funkcja rzuca wyjątek (`Error`) z odpowiednim komunikatem:
@@ -59,7 +58,6 @@ Ta akcja bazy danych (`createTrainingPlan`) tworzy nowy plan treningowy dla **ak
     - `user_id`: Pobrany z `auth.getUser()`.
     - `name`: Z `input.name`.
     - `plan_details`: Sparsowana i zweryfikowana odpowiedź AI (w formacie JSONB).
-    - `preferences_snapshot`: Obiekt `input.preferences` (w formacie JSONB).
 10. **Operacja Zapisu w Bazie Danych:** Wykonuje zapytanie do Supabase przy użyciu utworzonego klienta:
     `supabase.from('training_plans').insert(dataToInsert).select().single()`
 11. **Sprawdzenie Wyniku Zapisu:** Analizowany jest wynik operacji `insert()`:
@@ -106,7 +104,7 @@ Ta akcja bazy danych (`createTrainingPlan`) tworzy nowy plan treningowy dla **ak
     - Obsłuż błędy odpowiedzi AI (sieciowe, statusy błędów, rate limit).
     - Sparsuj i zweryfikuj strukturę odpowiedzi AI. Rzuć błąd w przypadku problemów.
 8.  **Implementacja Zapisu do Bazy Danych:**
-    - Przygotuj obiekt `dataToInsert` z `userId`, `input.name`, `plan_details` (wynik AI), `preferences_snapshot` (`input.preferences`).
+    - Przygotuj obiekt `dataToInsert` z `userId`, `input.name`, `plan_details` (wynik AI).
     - Wywołaj `supabase.from('training_plans').insert(dataToInsert).select().single()`.
     - Sprawdź `error` i `data` z wyniku. Rzuć odpowiednie błędy bazy danych.
 9.  **Implementacja Zwracania Sukcesu:** Jeśli wszystko się powiodło, dokonaj konwersji typu `data` na `TrainingPlanDetailOutput` (jeśli konieczne) i zwróć wynik.

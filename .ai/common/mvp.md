@@ -14,7 +14,7 @@ Użytkownicy często mają trudność ze stworzeniem spersonalizowanego planu tr
 
 2. Formularz:
 
-- Formularz zbierający kluczowe dane:
+- Formularz zbierający kluczowe dane _do wygenerowania bieżącego planu_ (dane te nie są trwale zapisywane jako profil użytkownika):
 
   - Cel główny: (np. Redukcja masy ciała, Budowa masy mięśniowej, Poprawa kondycji ogólnej, Zwiększenie siły - wybór z predefiniowanej listy).
 
@@ -32,7 +32,7 @@ Użytkownicy często mają trudność ze stworzeniem spersonalizowanego planu tr
 
 3. Generowanie planu treningowego przez AI:
 
-- Na podstawie danych z formularza, system generuje jeden podstawowy plan treningowy.
+- Na podstawie danych z formularza _wypełnionego w bieżącej sesji_, system generuje jeden podstawowy plan treningowy.
 
 - Format planu: Prosta lista ćwiczeń na poszczególne dni treningowe, zawierająca:
 
@@ -76,7 +76,7 @@ Użytkownicy często mają trudność ze stworzeniem spersonalizowanego planu tr
 
 ## Kryteria sukcesu
 
-- **Ukończenie procesu**: Użytkownicy są w stanie pomyślnie przejść proces od rejestracji, przez wypełnienie formularza, aż po wygenerowanie i wyświetlenie swojego pierwszego planu treningowego.
+- **Ukończenie procesu**: Użytkownicy są w stanie pomyślnie przejść proces od rejestracji, przez wypełnienie formularza _generowania planu_, aż po wygenerowanie i wyświetlenie swojego pierwszego planu treningowego.
 
 - **Trafność generowanych planów**: Pierwsze opinie użytkowników (np. z krótkiej ankiety po wygenerowaniu planu) wskazują, że wygenerowany plan jest postrzegany jako sensowny i dopasowany do ich danych wejściowych (nawet jeśli wymagałby drobnych korekt w przyszłości).
 
