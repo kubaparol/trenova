@@ -166,10 +166,14 @@ Architektura UI opiera się na następujących zasadach:
 ### 2.8. Ustawienia konta
 
 - **Ścieżka**: `/settings`
-- **Główny cel**: Umożliwić zarządzanie kontem użytkownika, w tym jego usunięcie.
+- **Główny cel**: Umożliwić zarządzanie kontem użytkownika, w tym jego usunięcie oraz zmiana hasł.
 - **Kluczowe informacje**:
   - Sekcja zarządzania kontem:
+    - Opcja zmiany hasła
     - Opcja usunięcia konta
+  - Proces zmiany hasła:
+    - Pola do aktualnego hasła, nowego oraz potwierdzenie nowego
+    - Przycisk wysyłający formularz
   - Proces usuwania konta:
     - Przycisk "Usuń konto"
     - Modal potwierdzający z polem tekstowym do wpisania frazy potwierdzającej (np. "USUŃ KONTO")
@@ -264,14 +268,21 @@ Architektura UI opiera się na następujących zasadach:
 7. Zostaje przekierowany do ekranu potwierdzenia zmiany hasła
 8. Klika przycisk "Zaloguj się" i przechodzi do ekranu logowania
 
-### 3.7. Usunięcie konta
+### 3.8. Zmiana hasła
 
-1. Zalogowany użytkownik przechodzi do strony Ustawienia (`/settings`)
-2. Przechodzi do sekcji zarządzania kontem
-3. Klika przycisk "Usuń konto"
-4. Potwierdza chęć usunięcia w modal'u
-5. Wpisuje wymaganą frazę potwierdzającą w polu tekstowym modala i zatwierdza
-6. Zostaje wylogowany i przekierowany na stronę główną
+1. Zalogowany użytkownik przechodzi do strony Ustawienia (`/settings`).
+2. W sekcji zarządzania kontem wybiera opcję "Zmień hasło".
+3. System wyświetla formularz zmiany hasła z trzema polami:
+   - Aktualne hasło
+   - Nowe hasło
+   - Potwierdzenie nowego hasła
+4. Użytkownik uzupełnia formularz, wpisując swoje aktualne hasło oraz nową wartość (w obu polach nowego hasła).
+5. Po zatwierdzeniu formularza system waliduje:
+   a. Poprawność aktualnego hasła.
+   b. Zgodność nowego hasła i jego potwierdzenia.
+6. W przypadku wykrycia błędów system wyświetla odpowiednie komunikaty, umożliwiające korektę danych.
+7. Po poprawnej walidacji system aktualizuje hasło użytkownika.
+8. Użytkownik otrzymuje potwierdzenie zmiany hasła i pozostaje zalogowany na stronie ustawień.
 
 ## 4. Układ i struktura nawigacji
 

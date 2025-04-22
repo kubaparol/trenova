@@ -10,8 +10,18 @@ import {
 import { Trash2 } from "lucide-react";
 import { DeleteAccountForm } from "../forms/DeleteAccountForm";
 import { deleteAccount } from "@/db/actions/profiles/delete-account";
+import ChangePasswordForm, {
+  ChangePasswordFormValues,
+} from "../forms/ChangePasswordForm";
+import { changePassword } from "@/db/actions/auth/change-password";
 
 export function SettingsView() {
+  const handleChangePassword = async (values: ChangePasswordFormValues) => {
+    "use server";
+
+    await changePassword(values);
+  };
+
   const handleDeleteAccount = async () => {
     "use server";
 
@@ -19,35 +29,39 @@ export function SettingsView() {
   };
 
   return (
-    <div className="space-y-6">
-      <header className="space-y-1">
-        <h3 className="text-lg font-medium">Usunięcie konta</h3>
-        <p className="text-sm text-muted-foreground">
-          Usunięcie konta jest nieodwracalne. Wszystkie Twoje dane zostaną
-          trwale usunięte.
-        </p>
-      </header>
+    <>
+      <ChangePasswordForm onSubmit={handleChangePassword} />
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="destructive" className="gap-1">
-            <Trash2 className="h-4 w-4" />
-            Usuń konto
-          </Button>
-        </DialogTrigger>
+      <div className="space-y-6">
+        <header className="space-y-1">
+          <h3 className="text-lg font-medium">Usunięcie konta</h3>
+          <p className="text-sm text-muted-foreground">
+            Usunięcie konta jest nieodwracalne. Wszystkie Twoje dane zostaną
+            trwale usunięte.
+          </p>
+        </header>
 
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="text-destructive">Usuń konto</DialogTitle>
-            <DialogDescription>
-              Ta akcja jest <strong>nieodwracalna</strong>. Spowoduje trwałe
-              usunięcie Twojego konta i wszystkich powiązanych danych.
-            </DialogDescription>
-          </DialogHeader>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="destructive" className="gap-1">
+              <Trash2 className="h-4 w-4" />
+              Usuń konto
+            </Button>
+          </DialogTrigger>
 
-          <DeleteAccountForm onSubmit={handleDeleteAccount} />
-        </DialogContent>
-      </Dialog>
-    </div>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="text-destructive">Usuń konto</DialogTitle>
+              <DialogDescription>
+                Ta akcja jest <strong>nieodwracalna</strong>. Spowoduje trwałe
+                usunięcie Twojego konta i wszystkich powiązanych danych.
+              </DialogDescription>
+            </DialogHeader>
+
+            <DeleteAccountForm onSubmit={handleDeleteAccount} />
+          </DialogContent>
+        </Dialog>
+      </div>
+    </>
   );
 }

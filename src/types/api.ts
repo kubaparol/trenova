@@ -22,6 +22,18 @@ export interface SignInInput {
   password: string;
 }
 
+/** Input for the change password action. */
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+/** Output for the change password action. */
+export interface ChangePasswordOutput {
+  message: string;
+}
+
 // --- User Profiles ---
 
 /** Output for retrieving the current user's profile. Directly maps to the database row. */

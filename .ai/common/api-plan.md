@@ -19,6 +19,7 @@
 | signOut              | src/db/actions/auth/signout.ts                | Sign out a user           |
 | requestPasswordReset | src/db/actions/auth/request-password-reset.ts | Request password reset    |
 | resetPassword        | src/db/actions/auth/reset-password.ts         | Reset password with token |
+| changePassword       | src/db/actions/auth/change-password.ts        | Change user's password    |
 
 #### signUp (src/db/actions/auth/signup.ts)
 
@@ -75,6 +76,34 @@ type SignInOutput = {
 
 - 400: Invalid credentials
 - 401: Authentication failed
+
+#### changePassword (src/db/actions/auth/change-password.ts)
+
+Changes the logged-in user's password.
+
+**Input:**
+
+```typescript
+type ChangePasswordInput = {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+```
+
+**Output:**
+
+```typescript
+type ChangePasswordOutput = {
+  message: string;
+};
+```
+
+**Errors:**
+
+- 400: Invalid input (password mismatch, new password strength)
+- 401: Unauthorized
+- 403: Current password incorrect
 
 ### User Profiles
 
@@ -470,6 +499,13 @@ Trenova will use Supabase Authentication services for handling user authenticati
 - Preferences must conform to the same validation rules as user profiles
 - User must be authenticated to create or manage training plans
 - Users can only access their own training plans
+
+### Password Change Validation
+
+- Current password must be provided and match the user's actual current password.
+- New password must meet the strength requirements (same as registration).
+- New password and confirmation must match.
+- User must be authenticated.
 
 ### Business Logic Implementation
 

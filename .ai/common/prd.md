@@ -232,9 +232,18 @@ US-013: Usunięcie konta
   - Po wyrażeniu chęci usunięcia konta i potwierdzeniu wszystkie dane użytkownika są usuwane z systemu
   - Użytkownik otrzymuje potwierdzenie usunięcia konta
 
+US-014: Zmiana hasła
+
+- Jako użytkownik, chcę mieć możliwość zmiany mojego hasła, aby zachować bezpieczeństwo nad moim kontem.
+- Kryteria akceptacji:
+  - System udostępnia formularz na dedykowanej stronie ustawień umożliwiający zmianę hasła
+  - System waliduje dane wprowadzone przez użytkownika
+  - W przypadku błędów system wyświetla konkretne komunikaty przy odpowiednich polach
+  - Użytkownik może poprawić błędy i kontynuować
+
 ### Scenariusze brzegowe
 
-US-014: Obsługa błędów w formularzu
+US-015: Obsługa błędów w formularzu
 
 - Jako użytkownik, chcę otrzymywać jasne komunikaty o błędach w formularzu, aby móc je poprawić.
 - Kryteria akceptacji:
@@ -242,7 +251,7 @@ US-014: Obsługa błędów w formularzu
   - W przypadku błędów system wyświetla konkretne komunikaty przy odpowiednich polach
   - Użytkownik może poprawić błędy i kontynuować
 
-US-015: Obsługa błędów generowania planu
+US-016: Obsługa błędów generowania planu
 
 - Jako użytkownik, chcę być poinformowany o problemach z generowaniem planu, aby wiedzieć, co się dzieje.
 - Kryteria akceptacji:
@@ -250,7 +259,7 @@ US-015: Obsługa błędów generowania planu
   - System oferuje opcję ponownej próby
   - Użytkownik może wrócić do formularza, aby zmodyfikować dane
 
-US-016: Odzyskiwanie hasła
+US-017: Odzyskiwanie hasła
 
 - Jako użytkownik, który zapomniał hasła, chcę mieć możliwość jego zresetowania, aby odzyskać dostęp do konta.
 - Kryteria akceptacji:
