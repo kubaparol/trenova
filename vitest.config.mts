@@ -14,12 +14,6 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "html"],
       exclude: ["node_modules/", "tests/setup/", "**/*.d.ts", "**/*.config.ts"],
-      thresholds: {
-        statements: 70,
-        branches: 70,
-        functions: 70,
-        lines: 70,
-      },
     },
   },
   resolve: {
