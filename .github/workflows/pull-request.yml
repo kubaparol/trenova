@@ -5,6 +5,11 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened, edited]
 
+# Add permissions at workflow level
+permissions:
+  contents: read
+  pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -79,19 +84,9 @@ jobs:
         with:
           header: pr-status
           message: |
-            ## 🚀 PR Status: ${{ needs.unit-test.result == 'success' && needs.lint.result == 'success' && '✅ All checks passed!' || '❌ Some checks failed' }}
+            ## 🚀 Pull Request Status: ${{ needs.unit-test.result == 'success' && needs.lint.result == 'success' && '✅ All checks passed!' || '❌ Some checks failed' }}
 
             | Check | Status |
             | ----- | ------ |
             | Lint | ${{ needs.lint.result == 'success' && '✅ Passed' || '❌ Failed' }} |
             | Tests | ${{ needs.unit-test.result == 'success' && '✅ Passed' || '❌ Failed' }} |
-
-            <details>
-              <summary>View Test Coverage Details</summary>
-              
-              ```
-              $(cat coverage/text-summary.txt || echo "Coverage information not available")
-              ```
-            </details>
-
-            *Last updated: $(date -u "+%Y-%m-%d %H:%M:%S UTC")*
