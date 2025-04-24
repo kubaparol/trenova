@@ -84,6 +84,9 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ vars.SUPABASE_SERVICE_ROLE_KEY }}
           OPENROUTER_API_KEY: ${{ vars.OPENROUTER_API_KEY }}
 
+      - name: Remove build cache
+        run: rm -rf .next/cache
+
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         id: deploy
