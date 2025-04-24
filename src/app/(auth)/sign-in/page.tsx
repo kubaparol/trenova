@@ -3,6 +3,8 @@ import { supabaseClient } from "@/db/supabase.server";
 import { redirect } from "next/navigation";
 import { ProjectUrls } from "@/constants";
 
+export const runtime = "edge";
+
 export default async function SignInPage() {
   const supabase = await supabaseClient();
   const {
