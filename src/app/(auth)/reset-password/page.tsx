@@ -4,7 +4,9 @@ import { redirect } from "next/navigation";
 import { ProjectUrls } from "@/constants";
 import { PageProps } from "@/types";
 
-export default async function ResetPasswordPage({ searchParams }: PageProps) {
+export default async function ResetPasswordPage(props: PageProps) {
+  const searchParams = await props.searchParams;
+
   const supabase = await supabaseClient();
   const token = searchParams?.token as string;
 
