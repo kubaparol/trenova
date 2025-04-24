@@ -1,6 +1,6 @@
 export type PageProps = {
-  params?: { id: string; page: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: Promise<{ id: string; page: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export type ServerActionResponse = {
