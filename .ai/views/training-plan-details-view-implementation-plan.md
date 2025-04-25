@@ -21,6 +21,7 @@ TrainingPlanDetailPage (Server Component, /src/app/training-plans/[id]/page.tsx)
 └── Success State:
     ├── PlanHeader (Client Component, np. w src/components/training-plans/)
     │   └── Shadcn Heading (Nazwa planu)
+    │   └── PlanDescription (Client Component, np. w src/components/training-plans/) - Wyświetla opis planu
     │   └── (Opcjonalnie: Placeholder na przyszłe przyciski akcji - Shadcn Button)
     │
     └── PlanDaysAccordion (Client Component, np. w src/components/training-plans/)
@@ -56,6 +57,15 @@ TrainingPlanDetailPage (Server Component, /src/app/training-plans/[id]/page.tsx)
 - **Obsługiwana walidacja:** Brak walidacji dla samego wyświetlania nazwy.
 - **Typy:** Przyjmuje `planName: string`. Opcjonalnie `planId: string` dla przyszłych akcji.
 - **Propsy:** `{ planName: string; planId: string; }`
+
+### `PlanDescription` (Client Component)
+
+- **Opis komponentu:** Wyświetla AI-generowany opis planu treningowego.
+- **Główne elementy:** Paragraf (`<p>`) lub `div` z tekstem opisu.
+- **Obsługiwane interakcje:** Brak bezpośrednich interakcji.
+- **Obsługiwana walidacja:** Brak walidacji; wyświetla przekazany tekst.
+- **Typy:** Przyjmuje `description: string`.
+- **Propsy:** `{ description: string; }`
 
 ### `PlanDaysAccordion` (Client Component)
 
@@ -122,6 +132,7 @@ Głównym typem danych dla tego widoku jest `TrainingPlanDetailOutput` zdefiniow
     "id" | "name" | "created_at" | "user_id"
   > & {
     plan_details: PlanDetails; // Zawiera PlanDay[]
+    description: string; // AI-generowany opis planu
   };
   ```
   Nie przewiduje się potrzeby tworzenia dodatkowych, złożonych typów ViewModel dla tego widoku, ponieważ struktura `TrainingPlanDetailOutput` jest wystarczająco dopasowana do potrzeb UI.
@@ -190,6 +201,7 @@ Głównym typem danych dla tego widoku jest `TrainingPlanDetailOutput` zdefiniow
     // return (
     //   <div>
     //     <PlanHeader planName={planData.name} planId={planData.id} />
+    //     <PlanDescription description={planData.description} />
     //     <PlanDaysAccordion days={planData.plan_details.days} />
     //   </div>
     // );
@@ -235,38 +247,42 @@ Głównym typem danych dla tego widoku jest `TrainingPlanDetailOutput` zdefiniow
 2.  **Implementacja `TrainingPlanDetailPage` (Server Component):**
     - Dodaj logikę pobierania danych z `getTrainingPlanById` używając `async/await` i `try...catch`.
     - Implementuj obsługę stanów ładowania (np. za pomocą Next.js `loading.tsx` lub warunkowo w komponencie) i błędów (renderowanie komponentu `Alert`).
-    - W przypadku sukcesu, przekaż pobrane dane (`planData`) jako propsy do komponentów `PlanHeader` i `PlanDaysAccordion`.
+    - W przypadku sukcesu, przekaż pobrane dane (`planData`) jako propsy do komponentów `PlanHeader`, `PlanDescription` i `PlanDaysAccordion`.
 3.  **Implementacja `PlanHeader`:**
     - Przyjmij `planName` i `planId` jako propsy.
     - Wyświetl nazwę planu używając komponentu `Heading` z Shadcn/ui.
     - (Opcjonalnie) Dodaj placeholder na przyszłe przyciski akcji.
-4.  **Implementacja `PlanDaysAccordion`:**
+4.  **Implementacja `PlanDescription`:**
+    - Przyjmij `description` jako props.
+    - Wyświetl opis w komponencie `<p>` lub `<div>`.
+    - Zastosuj odpowiednie style Tailwind dla czytelności (np. `text-muted-foreground`).
+5.  **Implementacja `PlanDaysAccordion`:**
     - Przyjmij `days` jako props.
     - Użyj komponentów `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionContent` z Shadcn/ui.
     - Iteruj po tablicy `days`, renderując `AccordionItem` dla każdego dnia.
     - W `AccordionTrigger` wyświetl `day.day`.
     - W `AccordionContent` renderuj komponent `DayWorkout`, przekazując mu `day`.
     - Obsłuż przypadek pustej tablicy `days`.
-5.  **Implementacja `DayWorkout`:**
+6.  **Implementacja `DayWorkout`:**
     - Przyjmij `day` jako props.
     - Renderuj komponent `ExerciseList`, przekazując mu `day.exercises`.
-6.  **Implementacja `ExerciseList`:**
+7.  **Implementacja `ExerciseList`:**
     - Przyjmij `exercises` jako props.
     - Iteruj po tablicy `exercises`, renderując `ExerciseListItem` dla każdego ćwiczenia.
     - Użyj `ul` lub `ol` dla listy.
     - Obsłuż przypadek pustej tablicy `exercises`.
-7.  **Implementacja `ExerciseListItem`:**
+8.  **Implementacja `ExerciseListItem`:**
     - Przyjmij `exercise` jako props.
     - Wyświetl `exercise.name`.
     - Wyświetl `exercise.sets`.
     - Warunkowo wyświetl `exercise.repetitions` LUB `exercise.duration_minutes`/`exercise.duration_seconds`.
     - Wyświetl `exercise.rest_time_seconds`.
     - Zastosuj odpowiednie stylowanie Tailwind dla czytelności.
-8.  **Styling:** Zastosuj Tailwind i klasy Shadcn/ui we wszystkich komponentach, aby zapewnić spójny wygląd i responsywność (mobile-first).
-9.  **Testowanie:**
+9.  **Styling:** Zastosuj Tailwind i klasy Shadcn/ui we wszystkich komponentach, aby zapewnić spójny wygląd i responsywność (mobile-first).
+10. **Testowanie:**
     - Przetestuj ręcznie na różnych urządzeniach/rozmiarach ekranu.
     - Sprawdź obsługę błędów (wpisując nieprawidłowe ID, ID planu innego użytkownika, symulując błędy serwera).
     - Sprawdź przypadek z pustymi dniami lub ćwiczeniami.
     - Sprawdź dostępność (nawigacja klawiaturą, screen reader).
     - (Opcjonalnie) Napisz testy jednostkowe/integracyjne dla komponentów (np. z Vitest/RTL) i E2E (np. z Playwright).
-10. **Refaktoryzacja i czyszczenie kodu:** Upewnij się, że kod jest zgodny z wytycznymi projektu (linting, formatowanie, nazewnictwo). Usuń zbędne `console.log`.
+11. **Refaktoryzacja i czyszczenie kodu:** Upewnij się, że kod jest zgodny z wytycznymi projektu (linting, formatowanie, nazewnictwo). Usuń zbędne `console.log`.

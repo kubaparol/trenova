@@ -130,12 +130,14 @@ Architektura UI opiera się na następujących zasadach:
 - **Główny cel**: Wyświetlić szczegóły konkretnego planu treningowego
 - **Kluczowe informacje**:
   - Nazwa planu
+  - Opis planu (AI-generated)
   - Plany treningowe podzielone na dni
   - Listy ćwiczeń dla każdego dnia
   - Dane o powtórzeniach, seriach i czasie odpoczynku
 - **Kluczowe komponenty**:
   - Akordeony dla dni treningowych
   - Listy ćwiczeń
+  - Sekcja z opisem planu (np. pod nagłówkiem)
   - Przyciski akcji (zmiana nazwy, usunięcie)
 - **UX i dostępność**:
   - Przejrzysta prezentacja danych
@@ -270,7 +272,7 @@ Architektura UI opiera się na następujących zasadach:
 
 ### 3.8. Zmiana hasła
 
-1. Zalogowany użytkownik przechodzi do strony Ustawienia (`/settings`).
+1. Zalogowany użytkownik przechodzi do strony Ustawień (`/settings`).
 2. W sekcji zarządzania kontem wybiera opcję "Zmień hasło".
 3. System wyświetla formularz zmiany hasła z trzema polami:
    - Aktualne hasło
@@ -343,5 +345,6 @@ Architektura UI opiera się na następujących zasadach:
 - **TrainingPlanCard**: Karta planu treningowego
 - **ExerciseItem**: Prezentacja pojedynczego ćwiczenia
 - **DayAccordion**: Akordeon dnia treningowego
+- **PlanDescription**: Komponent wyświetlający opis planu
 - **PreferencesForm**: Formularz preferencji treningowych
 - **PlanGenerationIndicator**: Wskaźnik postępu/stanu generowania planu (używany w widoku formularza po wysłaniu)

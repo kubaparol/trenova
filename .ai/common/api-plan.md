@@ -170,6 +170,7 @@ type TrainingPlanDetailOutput = {
   name: string;
   created_at: string;
   user_id: string;
+  description: string;
   plan_details: {
     days: {
       day: string;
@@ -234,6 +235,7 @@ type TrainingPlanDetailOutput = {
   name: string;
   created_at: string;
   user_id: string;
+  description: string;
   plan_details: {
     days: {
       day: string;

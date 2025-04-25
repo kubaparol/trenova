@@ -33,7 +33,7 @@ Użytkownicy często mają trudność ze stworzeniem spersonalizowanego planu tr
 3. Generowanie planu treningowego przez AI:
 
 - Na podstawie danych z formularza _wypełnionego w bieżącej sesji_, system generuje jeden podstawowy plan treningowy.
-
+- Plan zawiera również krótki, AI-generowany opis wyjaśniający jego założenia, cel i potencjalne korzyści.
 - Format planu: Prosta lista ćwiczeń na poszczególne dni treningowe, zawierająca:
 
   - Nazwę ćwiczenia.
@@ -46,7 +46,7 @@ Użytkownicy często mają trudność ze stworzeniem spersonalizowanego planu tr
 
 4. Zarządzanie planami:
 
-- **Przeglądanie**: Możliwość wyświetlenia wygenerowanego planu treningowego w czytelnej formie (np. podział na dni treningowe). Użytkownik może mieć w systemie zapisanych kilka planów. Lista zapisanych planów.
+- **Przeglądanie**: Możliwość wyświetlenia wygenerowanego planu treningowego w czytelnej formie (np. podział na dni treningowe, wyświetlenie opisu planu). Użytkownik może mieć w systemie zapisanych kilka planów. Lista zapisanych planów.
 
 - **Edycja (minimalna)**: Możliwość zmiany nazwy planu (np. "Mój plan na masę - Marzec"). Na tym etapie MVP nie zakładamy edycji poszczególnych ćwiczeń, serii czy powtórzeń w ramach wygenerowanego planu, aby nie komplikować logiki i interakcji z AI.
 
