@@ -50,20 +50,21 @@ Ta akcja bazy danych (`createTrainingPlan`) tworzy nowy plan treningowy dla **ak
 2.  **Walidacja Danych Wejściowych:** Funkcja waliduje obiekt `input` przy użyciu odpowiedniego schematu Zod. Jeśli walidacja nie powiedzie się, rzuca `Error("Invalid input: ...")`.
 3.  **Utworzenie Klienta Supabase:** Funkcja wywołuje `await supabaseClient()` (zaimportowany z `@/db/supabase.server`).
 4.  **Weryfikacja Uwierzytelnienia:** Funkcja wywołuje `supabase.auth.getUser()` na utworzonym kliencie. Jeśli wystąpi błąd lub `user` jest `null`, rzuca `Error("Unauthorized")`. Zapisuje `userId` dla dalszych kroków.
-5.  **Konstrukcja Promptu AI:** Funkcja konstruuje bezpieczny prompt dla modelu AI (w OpenRouter.ai) na podstawie zweryfikowanych `input.preferences`.
+5.  **Konstrukcja Promptu AI:** Funkcja konstruuje bezpieczny prompt dla modelu AI (w OpenRouter.ai) na podstawie zweryfikowanych `input.preferences`. Prompt powinien instruować AI, aby wygenerowało zarówno szczegóły planu (`plan_details`), jak i jego opis (`description`).
 6.  **Wywołanie API AI:** Funkcja wysyła żądanie do OpenRouter.ai (używając `fetch` lub dedykowanego klienta, odczytując klucz API ze zmiennych środowiskowych).
 7.  **Obsługa Błędów AI:** Przechwytuje błędy sieciowe, błędy odpowiedzi (statusy inne niż 2xx), błędy rate limiting (np. status 429). Rzuca odpowiedni `Error("AI generation error: ...")` lub `Error("AI rate limit exceeded")`.
-8.  **Przetwarzanie Odpowiedzi AI:** Parsuje odpowiedź AI. Waliduje strukturę odpowiedzi, aby upewnić się, że pasuje do oczekiwanego formatu `PlanDetails` (np. za pomocą Zod lub ręcznej weryfikacji). Jeśli parsowanie lub walidacja struktury zawiodą, rzuca `Error("AI generation error: Invalid response structure")`.
+8.  **Przetwarzanie Odpowiedzi AI:** Parsuje odpowiedź AI. Waliduje strukturę odpowiedzi, aby upewnić się, że zawiera zarówno oczekiwany format `PlanDetails` dla `plan_details`, jak i tekstowy `description`. Jeśli parsowanie lub walidacja struktury zawiodą, rzuca `Error("AI generation error: Invalid response structure")`.
 9.  **Przygotowanie Danych do Zapisu:** Tworzy obiekt do wstawienia do tabeli `training_plans`, zawierający:
     - `user_id`: Pobrany z `auth.getUser()`.
     - `name`: Z `input.name`.
+    - `description`: Sparsowana i zweryfikowana odpowiedź AI.
     - `plan_details`: Sparsowana i zweryfikowana odpowiedź AI (w formacie JSONB).
 10. **Operacja Zapisu w Bazie Danych:** Wykonuje zapytanie do Supabase przy użyciu utworzonego klienta:
     `supabase.from('training_plans').insert(dataToInsert).select().single()`
 11. **Sprawdzenie Wyniku Zapisu:** Analizowany jest wynik operacji `insert()`:
-    - Jeśli `error` istnieje, rzucany jest `Error(\"Database error: \${error.message}\")`.
+    - Jeśli `error` istnieje, rzucany jest `Error("Database error: ${error.message}")`.
     - Jeśli `data` jest `null` (co nie powinno się zdarzyć przy sukcesie `insert().select().single()` z poprawnym RLS), rzucany jest `Error("Database error: Failed to retrieve inserted plan")`.
-12. **Formatowanie Wyniku:** Mapuje zwrócone `data` (obiekt `Tables<'training_plans'>`) na typ `TrainingPlanDetailOutput` (powinny być zgodne, ale jawna konwersja typu może być potrzebna).
+12. **Formatowanie Wyniku:** Mapuje zwrócone `data` (obiekt `Tables<'training_plans'>`) na typ `TrainingPlanDetailOutput` (powinny być zgodne, ale jawna konwersja typu może być potrzebna). Upewnij się, że pole `description` jest zawarte w mapowaniu.
 13. **Zwrot Wyniku:** Funkcja zwraca obiekt `TrainingPlanDetailOutput` lub rzuca wyjątek w przypadku błędu.
 
 ## 6. Względy Bezpieczeństwa
@@ -99,14 +100,14 @@ Ta akcja bazy danych (`createTrainingPlan`) tworzy nowy plan treningowy dla **ak
 5.  **Implementacja Tworzenia Klienta Supabase:** Dodaj `const supabase = await supabaseClient();`.
 6.  **Implementacja Weryfikacji Uwierzytelnienia:** Dodaj logikę `supabase.auth.getUser()` i rzucenia `Error("Unauthorized")`. Zapisz `userId`.
 7.  **Implementacja Logiki AI:**
-    - Skonstruuj prompt na podstawie `input.preferences`.
+    - Skonstruuj prompt na podstawie `input.preferences`, prosząc o wygenerowanie `plan_details` i `description`.
     - Wywołaj API OpenRouter.ai (np. przez `fetch`), odczytując klucz API ze zmiennych środowiskowych.
     - Obsłuż błędy odpowiedzi AI (sieciowe, statusy błędów, rate limit).
-    - Sparsuj i zweryfikuj strukturę odpowiedzi AI. Rzuć błąd w przypadku problemów.
+    - Sparsuj i zweryfikuj strukturę odpowiedzi AI (zarówno `plan_details`, jak i `description`). Rzuć błąd w przypadku problemów.
 8.  **Implementacja Zapisu do Bazy Danych:**
-    - Przygotuj obiekt `dataToInsert` z `userId`, `input.name`, `plan_details` (wynik AI).
+    - Przygotuj obiekt `dataToInsert` z `userId`, `input.name`, `description` (wynik AI), `plan_details` (wynik AI).
     - Wywołaj `supabase.from('training_plans').insert(dataToInsert).select().single()`.
     - Sprawdź `error` i `data` z wyniku. Rzuć odpowiednie błędy bazy danych.
 9.  **Implementacja Zwracania Sukcesu:** Jeśli wszystko się powiodło, dokonaj konwersji typu `data` na `TrainingPlanDetailOutput` (jeśli konieczne) i zwróć wynik.
-10. **Typowanie i Komentarze JSDoc:** Upewnij się, że funkcja jest poprawnie otypowana i zawiera JSDoc opisujący jej działanie, argumenty, zwracaną wartość i rzucane błędy.
+10. **Typowanie i Komentarze JSDoc:** Upewnij się, że funkcja jest poprawnie otypowana i zawiera JSDoc opisujący jej działanie, argumenty, zwracaną wartość (w tym `description`) i rzucane błędy.
 11. **Konfiguracja Zmiennych Środowiskowych:** Upewnij się, że `OPENROUTER_API_KEY` jest dostępna jako zmienna środowiskowa serwera.

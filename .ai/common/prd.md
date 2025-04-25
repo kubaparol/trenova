@@ -68,12 +68,13 @@ Główne motywacje użytkowników Trenova to:
   - Sugerowaną liczbę serii
   - Sugerowaną liczbę powtórzeń lub czas trwania
   - Sugerowany czas odpoczynku między seriami
+  - Krótki opis planu wygenerowany przez AI
 - Możliwość generowania nieograniczonej liczby planów
 
 ### 3.4. Zarządzanie planami treningowymi
 
 - Wyświetlanie listy zapisanych planów treningowych
-- Przeglądanie szczegółów planu treningowego z podziałem na dni treningowe
+- Przeglądanie szczegółów planu treningowego z podziałem na dni treningowe oraz wyświetlenie opisu planu
 - Możliwość zmiany nazwy planu
 - Możliwość usunięcia planu
 
@@ -170,7 +171,7 @@ US-006: Generowanie planu treningowego
 - Kryteria akceptacji:
   - System wykorzystuje AI do generowania planu na podstawie danych z formularza
   - Podczas generowania system wyświetla informację o postępie
-  - Wygenerowany plan zawiera wszystkie wymagane elementy (nazwy ćwiczeń, serie, powtórzenia, czas odpoczynku)
+  - Wygenerowany plan zawiera wszystkie wymagane elementy (nazwy ćwiczeń, serie, powtórzenia, czas odpoczynku) oraz krótki opis planu
   - Po wygenerowaniu plan jest zapisywany i wyświetlany użytkownikowi
 
 US-007: Przeglądanie listy planów
@@ -186,6 +187,7 @@ US-008: Przeglądanie szczegółów planu
 - Jako zalogowany użytkownik, chcę przeglądać szczegóły mojego planu treningowego, aby wiedzieć, jakie ćwiczenia wykonywać.
 - Kryteria akceptacji:
   - System wyświetla plan z podziałem na dni treningowe
+  - System wyświetla krótki opis planu
   - Dla każdego ćwiczenia wyświetlane są: nazwa, liczba serii, powtórzeń i czas odpoczynku
   - Interfejs jest czytelny i łatwy w nawigacji
 

@@ -85,6 +85,7 @@ export interface PlanDay {
 /** Defines the structure for the 'plan_details' JSON field in the training_plans table. */
 export interface PlanDetails {
   days: PlanDay[];
+  description: string;
 }
 
 /** Defines the structure for training preferences, used only during plan creation. */
@@ -105,7 +106,7 @@ export interface TrainingPreferences {
  */
 export type TrainingPlanDetailOutput = Pick<
   Tables<"training_plans">,
-  "id" | "name" | "created_at" | "user_id"
+  "id" | "name" | "created_at" | "user_id" | "description"
 > & {
   plan_details: PlanDetails;
 };

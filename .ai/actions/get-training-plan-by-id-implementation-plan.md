@@ -34,7 +34,7 @@ Ta akcja bazy danych (`getTrainingPlanById`) pobiera **szczegółowe dane** poje
 5.  **Przetwarzanie Wyniku:**
     - Sprawdzany jest potencjalny błąd zwrócony przez Supabase (`error`). Rzucany jest wyjątek `Error("Failed to retrieve training plan: <database error message>")` w przypadku błędu.
     - Sprawdzane jest, czy zapytanie zwróciło jakiekolwiek dane (`data`). Jeśli `data` jest `null` lub puste (co oznacza, że plan o podanym `id` nie istnieje lub użytkownik nie ma do niego dostępu zgodnie z RLS i warunkiem `user_id`), rzucany jest wyjątek `Error("Training plan not found or access denied")`.
-6.  **Formatowanie Wyniku:** Jeśli dane zostały pomyślnie pobrane, są one zwracane bezpośrednio, ponieważ struktura zapytania pasuje do typu `TrainingPlanDetailOutput` (zakładając poprawne typowanie w Supabase).
+6.  **Formatowanie Wyniku:** Jeśli dane zostały pomyślnie pobrane, są one zwracane bezpośrednio, ponieważ struktura zapytania pasuje do typu `TrainingPlanDetailOutput` (zakładając poprawne typowanie w Supabase). Należy upewnić się, że zapytanie zawiera pole `description`.
 7.  **Zwrot Wyniku:** Funkcja zwraca pobrany obiekt planu treningowego lub rzuca wyjątek w przypadku błędu.
 
 ## 6. Względy Bezpieczeństwa
@@ -67,7 +67,7 @@ Ta akcja bazy danych (`getTrainingPlanById`) pobiera **szczegółowe dane** poje
 6.  **Obsługa Błędów Supabase:** Sprawdź pole `error` w wyniku zapytania. Jeśli `error` istnieje, rzuć `Error("Failed to retrieve training plan: ${error.message}")`.
 7.  **Obsługa Braku Danych:** Sprawdź, czy `data` jest `null` (jeśli użyto `.maybeSingle()`) lub czy wystąpił błąd oznaczający brak wiersza (jeśli użyto `.single()`). Jeśli planu nie znaleziono (lub dostęp zablokowany), rzuć `Error("Training plan not found or access denied")`.
 8.  **Formatowanie i Zwrot Wyniku:** Jeśli dane (`data`) istnieją i nie ma błędu, zwróć `data` (powinno już pasować do `TrainingPlanDetailOutput`).
-9.  **Typowanie:** Upewnij się, że funkcja, jej argumenty, zmienne i zwracana wartość są poprawnie otypowane przy użyciu typów z `src/types/api.ts` i `src/db/database.types.ts`.
+9.  **Typowanie:** Upewnij się, że funkcja, jej argumenty, zmienne i zwracana wartość są poprawnie otypowane przy użyciu typów z `src/types/api.ts` i `src/db/database.types.ts`. Sprawdź, czy typ `TrainingPlanDetailOutput` zawiera `description`.
 10. **Testowanie:** Napisz testy jednostkowe dla tej akcji:
     - Zamockuj `createServerSupabaseClient` i zwracany przez niego mock klienta Supabase.
     - Zamockuj `mockSupabaseClient.auth.getUser()` zwracając użytkownika lub błąd/null.

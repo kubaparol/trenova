@@ -16,8 +16,9 @@ function createAIPrompt(preferences: TrainingPreferences): string {
   // TODO: Refine this prompt for better results and safety
   // TODO: Consider using a more robust templating method if prompt becomes complex
   return `
-Generate a detailed weekly workout plan based on the following user preferences.
-Return the response ONLY as a JSON object conforming to this TypeScript interface:
+Generate a detailed weekly workout plan and a concise, encouraging description for it based on the following user preferences.
+The description should explain the plan's focus and expected benefits.
+Return the response ONLY as a single JSON object conforming to this TypeScript interface:
 \`\`\`typescript
 interface Exercise {
   name: string; // e.g., "Bench Press", "Squats"
@@ -34,6 +35,7 @@ interface PlanDay {
 }
 
 interface PlanDetails {
+  description: string; // A concise, encouraging description of the plan
   days: PlanDay[]; // Array representing the whole week or cycle
 }
 \`\`\`
@@ -115,14 +117,22 @@ export async function createTrainingPlan(
     }
 
     try {
-      planDetails = JSON.parse(rawContent) as PlanDetails;
+      // Parse the entire response which should include description and days
+      const parsedResponse = JSON.parse(rawContent);
+
       if (
-        !planDetails ||
-        typeof planDetails !== "object" ||
-        !Array.isArray(planDetails.days)
+        !parsedResponse ||
+        typeof parsedResponse !== "object" ||
+        typeof parsedResponse.description !== "string" || // Validate description
+        !Array.isArray(parsedResponse.days) // Validate days array
       ) {
-        throw new Error("Invalid response structure received from AI.");
+        throw new Error(
+          "Invalid response structure received from AI (missing or invalid description/days)."
+        );
       }
+
+      // Assign to planDetails for insertion (casting might be needed depending on strictness)
+      planDetails = parsedResponse as PlanDetails;
     } catch {
       throw new Error("AI generation error: Invalid JSON response");
     }
@@ -138,6 +148,7 @@ export async function createTrainingPlan(
   const dataToInsert = {
     user_id: userId,
     name: input.name,
+    description: planDetails.description, // Add description here
     plan_details: planDetails as unknown as Json,
   };
 
@@ -154,19 +165,6 @@ export async function createTrainingPlan(
 
   if (!insertedPlanData) {
     throw new Error("Database error: Failed to retrieve inserted plan");
-  }
-
-  const planDetailsFromDb = insertedPlanData.plan_details;
-
-  if (
-    typeof planDetailsFromDb !== "object" ||
-    planDetailsFromDb === null ||
-    !planDetailsFromDb.hasOwnProperty("days") ||
-    !Array.isArray((planDetailsFromDb as { days: unknown }).days)
-  ) {
-    throw new Error(
-      "Database error: Returned plan data has unexpected structure"
-    );
   }
 
   return insertedPlanData as unknown as TrainingPlanDetailOutput;
