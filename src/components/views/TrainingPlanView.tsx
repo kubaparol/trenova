@@ -24,6 +24,7 @@ import {
   UpdateTrainingPlanNameForm,
 } from "../forms/UpdateTrainingPlanNameForm";
 import { updateTrainingPlanName } from "@/db/actions/training-plans/update-name";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 interface TrainingPlanViewProps {
   id: string;
@@ -52,18 +53,16 @@ async function TrainingPlanViewLoader(props: TrainingPlanViewProps) {
   };
 
   return (
-    <>
-      <div className="mb-6">
+    <Card className="w-full">
+      <CardHeader>
         <div className="flex items-center gap-4">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-            {trainingPlan.name}
-          </h1>
+          <PlanHeader name={trainingPlan.name} />
 
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1">
                 <Pencil className="h-4 w-4" />
-                <span>Chande Name</span>
+                <span>Change Name</span>
               </Button>
             </DialogTrigger>
 
@@ -84,22 +83,13 @@ async function TrainingPlanViewLoader(props: TrainingPlanViewProps) {
           </Dialog>
         </div>
 
-        {/* Placeholder for future action buttons */}
-        <div className="h-8 mt-2">
-          {/* Action buttons like "Rename" or "Delete" would go here */}
-        </div>
-      </div>
+        <PlanDescription description={trainingPlan.description} />
+      </CardHeader>
 
-      <>
-        {trainingPlan.plan_details.days.length === 0 ? (
-          <p className="text-gray-500 italic">
-            No training days defined for this plan.
-          </p>
-        ) : (
-          <PlanDaysAccordion days={trainingPlan.plan_details.days} />
-        )}
-      </>
-    </>
+      <CardContent>
+        <PlanDaysAccordion days={trainingPlan.plan_details.days} />
+      </CardContent>
+    </Card>
   );
 }
 
@@ -123,9 +113,9 @@ function TrainingPlanViewSkeleton() {
 }
 
 const PlanDaysAccordion = ({ days }: { days: PlanDay[] }) => {
-  if (days.length === 0) {
+  if (!days || days.length === 0) {
     return (
-      <p className="text-gray-500 italic">
+      <p className="text-muted-foreground italic">
         No training days defined for this plan.
       </p>
     );
@@ -139,7 +129,7 @@ const PlanDaysAccordion = ({ days }: { days: PlanDay[] }) => {
             {day.day}
           </AccordionTrigger>
           <AccordionContent>
-            <DayWorkout exercises={day.exercises} />
+            <ExerciseList exercises={day.exercises} />
           </AccordionContent>
         </AccordionItem>
       ))}
@@ -147,19 +137,29 @@ const PlanDaysAccordion = ({ days }: { days: PlanDay[] }) => {
   );
 };
 
-const DayWorkout = ({ exercises }: { exercises: Exercise[] }) => {
-  return <ExerciseList exercises={exercises} />;
+const PlanHeader = ({ name }: { name: string }) => {
+  return (
+    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
+      {name}
+    </h1>
+  );
+};
+
+const PlanDescription = ({ description }: { description: string }) => {
+  return <p className="text-muted-foreground mb-6">{description}</p>;
 };
 
 const ExerciseList = ({ exercises }: { exercises: Exercise[] }) => {
-  if (exercises.length === 0) {
+  if (!exercises || exercises.length === 0) {
     return (
-      <p className="text-gray-500 italic">No exercises defined for this day.</p>
+      <p className="text-muted-foreground italic">
+        No exercises scheduled for this day.
+      </p>
     );
   }
 
   return (
-    <ul className="space-y-1">
+    <ul className="divide-y divide-border">
       {exercises.map((exercise, index) => (
         <ExerciseListItem key={index} exercise={exercise} />
       ))}
@@ -168,8 +168,8 @@ const ExerciseList = ({ exercises }: { exercises: Exercise[] }) => {
 };
 
 const ExerciseListItem = ({ exercise }: { exercise: Exercise }) => {
-  // Format duration if present
-  const formatDuration = () => {
+  // Format duration or repetitions
+  const formatWorkload = () => {
     if (exercise.duration_minutes || exercise.duration_seconds) {
       const minutes = exercise.duration_minutes
         ? `${exercise.duration_minutes}m`
@@ -177,18 +177,19 @@ const ExerciseListItem = ({ exercise }: { exercise: Exercise }) => {
       const seconds = exercise.duration_seconds
         ? `${exercise.duration_seconds}s`
         : "";
-      return `Duration: ${minutes} ${seconds}`.trim();
+      return `${minutes} ${seconds}`.trim();
     }
-    return `Reps: ${exercise.repetitions}`;
+    return `${exercise.repetitions} reps`;
   };
 
   return (
-    <li className="py-3 border-b last:border-0 border-gray-100">
-      <div className="font-medium text-base">{exercise.name}</div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1 text-sm text-gray-600">
-        <div>Sets: {exercise.sets}</div>
-        <div>{formatDuration()}</div>
-        <div>Rest: {exercise.rest_time_seconds}s</div>
+    <li className="py-3 border-b last:border-b-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <span className="font-medium">{exercise.name}</span>
+        <div className="text-sm text-muted-foreground">
+          {exercise.sets} sets × {formatWorkload()},{" "}
+          {exercise.rest_time_seconds}s rest
+        </div>
       </div>
     </li>
   );
