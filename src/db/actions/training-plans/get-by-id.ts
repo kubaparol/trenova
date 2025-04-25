@@ -34,7 +34,7 @@ export async function getTrainingPlanById(
 
   const { data: planData, error: dbError } = await supabase
     .from("training_plans")
-    .select("id, name, created_at, user_id, plan_details")
+    .select("id, name, created_at, user_id, description, plan_details")
     .eq("id", input.id)
     .eq("user_id", userId)
     .single();
@@ -52,6 +52,7 @@ export async function getTrainingPlanById(
     name: planData.name,
     created_at: planData.created_at,
     user_id: planData.user_id,
+    description: planData.description,
     plan_details: planData.plan_details as unknown as PlanDetails,
   };
 }
