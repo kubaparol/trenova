@@ -37,6 +37,7 @@ export type Database = {
       training_plans: {
         Row: {
           created_at: string;
+          description: string;
           id: string;
           name: string;
           plan_details: Json;
@@ -44,6 +45,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
+          description?: string;
           id?: string;
           name: string;
           plan_details: Json;
@@ -51,6 +53,7 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          description?: string;
           id?: string;
           name?: string;
           plan_details?: Json;
