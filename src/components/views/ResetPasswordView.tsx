@@ -22,15 +22,11 @@ const resetPasswordFormSchema = z
 
 export type ResetPasswordFormData = z.infer<typeof resetPasswordFormSchema>;
 
-interface ResetPasswordViewProps {
-  token: string;
-}
-
-export function ResetPasswordView({ token }: ResetPasswordViewProps) {
+export function ResetPasswordView() {
   const router = useRouter();
 
   const handleResetPassword = async (data: ResetPasswordFormData) => {
-    const result = await resetPassword({ ...data, token });
+    const result = await resetPassword(data);
 
     if (!result.success) {
       toast.error("Error", {

@@ -1,7 +1,4 @@
 import { ReactNode } from "react";
-import { supabaseClient } from "@/db/supabase.server";
-import { redirect } from "next/navigation";
-import { ProjectUrls } from "@/constants";
 import { AuthLayout } from "@/components/layouts/AuthLayout";
 
 interface AuthLayoutProps {
@@ -10,15 +7,6 @@ interface AuthLayoutProps {
 
 export default async function AuthRootLayout(props: AuthLayoutProps) {
   const { children } = props;
-
-  const supabase = await supabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user) {
-    redirect(ProjectUrls.home);
-  }
 
   return <AuthLayout>{children}</AuthLayout>;
 }
