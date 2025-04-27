@@ -8,10 +8,9 @@ export function ResetPasswordSuccessView() {
       icon={CheckCircle}
       iconClassName="text-green-600"
       title="Password Reset Successful"
-      description="Your password has been successfully changed. You can now sign in using your new password."
-      additionalContent="For security purposes, you've been logged out of all your active sessions."
-      linkHref={ProjectUrls.signIn}
-      linkText="Go to sign in"
+      description="Your password has been successfully changed. You can now go to application."
+      linkHref={ProjectUrls.trainingPlans}
+      linkText="Go to application"
     />
   );
 }

@@ -12,8 +12,9 @@ export default async function ResetPasswordSentPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  if (user) {
     redirect(ProjectUrls.home);
   }
+
   return <ResetPasswordSentView />;
 }
