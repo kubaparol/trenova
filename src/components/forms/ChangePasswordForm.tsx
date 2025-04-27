@@ -19,16 +19,18 @@ import {
 
 const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, "Aktualne hasło jest wymagane"),
-    newPassword: z.string().min(8, "Nowe hasło musi mieć co najmniej 8 znaków"),
-    confirmNewPassword: z.string().min(1, "Potwierdzenie hasła jest wymagane"),
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z
+      .string()
+      .min(8, "New password must be at least 8 characters long"),
+    confirmNewPassword: z.string().min(1, "Password confirmation is required"),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
-    message: "Hasła nie są identyczne",
+    message: "Passwords do not match",
     path: ["confirmNewPassword"],
   })
   .refine((data) => data.currentPassword !== data.newPassword, {
-    message: "Nowe hasło musi być różne od aktualnego",
+    message: "New password must be different from the current one",
     path: ["newPassword"],
   });
 
@@ -58,8 +60,8 @@ export default function ChangePasswordForm({
       try {
         await onSubmit(values);
 
-        toast.success("Sukces", {
-          description: "Hasło zostało pomyślnie zmienione.",
+        toast.success("Success", {
+          description: "Your password has been changed successfully.",
         });
 
         form.reset();
@@ -67,9 +69,9 @@ export default function ChangePasswordForm({
         const message =
           error instanceof Error
             ? error.message
-            : "Wystąpił nieoczekiwany błąd podczas zmiany hasła.";
+            : "An unexpected error occurred while changing the password.";
 
-        toast.error("Błąd", { description: message });
+        toast.error("Error", { description: message });
       }
     });
   };
@@ -85,12 +87,12 @@ export default function ChangePasswordForm({
           name="currentPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Aktualne hasło</FormLabel>
+              <FormLabel>Current Password</FormLabel>
 
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Wprowadź aktualne hasło"
+                  placeholder="Enter your current password"
                   disabled={isPending}
                   {...field}
                 />
@@ -106,12 +108,12 @@ export default function ChangePasswordForm({
           name="newPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nowe hasło</FormLabel>
+              <FormLabel>New Password</FormLabel>
 
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Wprowadź nowe hasło"
+                  placeholder="Enter your new password"
                   disabled={isPending}
                   {...field}
                 />
@@ -127,12 +129,12 @@ export default function ChangePasswordForm({
           name="confirmNewPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Potwierdź nowe hasło</FormLabel>
+              <FormLabel>Confirm New Password</FormLabel>
 
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Potwierdź nowe hasło"
+                  placeholder="Confirm your new password"
                   disabled={isPending}
                   {...field}
                 />
@@ -147,10 +149,10 @@ export default function ChangePasswordForm({
           {isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Zapisywanie...
+              Saving...
             </>
           ) : (
-            "Zmień hasło"
+            "Change Password"
           )}
         </Button>
       </form>

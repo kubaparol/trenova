@@ -24,7 +24,7 @@ export default function BenefitsSection() {
     <section className="py-16 md:py-24 px-4 bg-muted/50">
       <div className="container mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-          Dlaczego warto wybrać Trenova?
+          Why Choose Trenova?
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {benefits.map((benefit, index) => (
@@ -39,26 +39,26 @@ export default function BenefitsSection() {
 export const benefits: BenefitItem[] = [
   {
     icon: <Dumbbell className="h-6 w-6" />,
-    title: "Pełna personalizacja",
+    title: "Fully Personalized",
     description:
-      "Plany treningowe dostosowane do Twoich celów, możliwości i preferencji.",
+      "Training plans adapted to your goals, abilities, and preferences.",
   },
   {
     icon: <Clock className="h-6 w-6" />,
-    title: "Oszczędność czasu",
+    title: "Time Saving",
     description:
-      "Gotowy plan treningowy w kilka minut, bez konieczności samodzielnego planowania.",
+      "Get a ready-made training plan in minutes, without the need for manual planning.",
   },
   {
     icon: <Brain className="h-6 w-6" />,
-    title: "Ekspertyza AI",
+    title: "AI Expertise",
     description:
-      "Wykorzystujemy zaawansowane algorytmy AI oparte na wiedzy ekspertów fitness.",
+      "We utilize advanced AI algorithms based on the knowledge of fitness experts.",
   },
   {
     icon: <PiggyBank className="h-6 w-6" />,
-    title: "Niższy koszt",
+    title: "Lower Cost",
     description:
-      "Znacznie tańsze niż indywidualne konsultacje z trenerem personalnym.",
+      "Significantly cheaper than individual consultations with a personal trainer.",
   },
 ];

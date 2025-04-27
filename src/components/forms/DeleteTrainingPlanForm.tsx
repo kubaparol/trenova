@@ -23,11 +23,16 @@ export function DeleteTrainingPlanForm({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     startTransition(async () => {
-      await onSubmit(trainingPlanId);
-    });
-
-    toast.success("Success", {
-      description: "Training plan deleted successfully.",
+      try {
+        await onSubmit(trainingPlanId);
+        toast.success("Training plan deleted successfully.");
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred while deleting the plan.";
+        toast.error("Deletion failed", { description: message });
+      }
     });
   };
 
