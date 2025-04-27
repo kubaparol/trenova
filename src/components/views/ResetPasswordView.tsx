@@ -29,7 +29,7 @@ export function ResetPasswordView() {
     const result = await resetPassword(data);
 
     if (!result.success) {
-      toast.error("Error", {
+      toast.error("Password Reset Failed", {
         description: result.message,
       });
       return;
