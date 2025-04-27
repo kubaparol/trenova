@@ -4,14 +4,17 @@ import { supabaseClient } from "@/db/supabase.server";
 import { ServerActionResponse } from "@/types";
 import { ForgotPasswordFormData } from "@/components/views/ForgotPasswordView";
 import { ProjectUrls } from "@/constants";
+import { headers } from "next/headers";
 
 export async function forgotPassword(
   data: ForgotPasswordFormData
 ): Promise<ServerActionResponse> {
   try {
+    const origin = (await headers()).get("origin");
     const supabase = await supabaseClient();
+
     const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/${ProjectUrls.resetPassword}`,
+      redirectTo: `${origin}/auth-callback?redirect_to=${ProjectUrls.resetPassword}`,
     });
 
     if (error) {
