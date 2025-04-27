@@ -37,7 +37,7 @@ export function SignUpView() {
     }
 
     if (result.success) {
-      router.push(ProjectUrls.signUpSuccess);
+      router.push(ProjectUrls.signUpVerify);
     }
   };
 

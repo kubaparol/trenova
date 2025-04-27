@@ -1,8 +1,7 @@
-import { SignUpSuccessView } from "@/components/views/SignUpSuccessView";
+import { SignUpVerifyView } from "@/components/views/SignUpVerifyView";
 import { ProjectUrls } from "@/constants";
 import { supabaseClient } from "@/db/supabase.server";
 import { redirect } from "next/navigation";
-
 export const runtime = "edge";
 
 export default async function SignUpSuccessPage() {
@@ -11,9 +10,9 @@ export default async function SignUpSuccessPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  if (user) {
     redirect(ProjectUrls.home);
   }
 
-  return <SignUpSuccessView />;
+  return <SignUpVerifyView />;
 }

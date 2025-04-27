@@ -2,6 +2,7 @@ export const ProjectUrls = {
   home: "/",
   signIn: "/sign-in",
   signUp: "/sign-up",
+  signUpVerify: "/sign-up-verify",
   signUpSuccess: "/sign-up-success",
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",

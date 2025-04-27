@@ -1,19 +1,22 @@
 "use server";
 
+import { ProjectUrls } from "@/constants";
 import { supabaseClient } from "@/db/supabase.server";
 import { ServerActionResponse, SignUpInput } from "@/types";
+import { headers } from "next/headers";
 
 export async function signUp(
   input: SignUpInput
 ): Promise<ServerActionResponse> {
   try {
+    const origin = (await headers()).get("origin");
     const supabase = await supabaseClient();
 
     const { error } = await supabase.auth.signUp({
       email: input.email,
       password: input.password,
       options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+        emailRedirectTo: `${origin}/auth-callback?redirect_to=${ProjectUrls.signUpSuccess}`,
       },
     });
 
