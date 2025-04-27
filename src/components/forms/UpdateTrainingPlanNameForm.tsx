@@ -22,8 +22,8 @@ import { toast } from "sonner";
 const trainingPlanNameSchema = z.object({
   name: z
     .string()
-    .min(3, { message: "Nazwa planu musi mieć co najmniej 3 znaki" })
-    .max(50, { message: "Nazwa planu nie może przekraczać 50 znaków" }),
+    .min(3, { message: "Plan name must be at least 3 characters long" })
+    .max(50, { message: "Plan name cannot exceed 50 characters" }),
 });
 
 export type TrainingPlanNameFormValues = z.infer<typeof trainingPlanNameSchema>;
@@ -54,18 +54,18 @@ export function UpdateTrainingPlanNameForm({
       try {
         await onSubmit(trainingPlanId, values);
 
-        toast.success("Success", {
-          description: "Nazwa planu zaktualizowana pomyślnie.",
-        });
+        toast.success("Plan name updated successfully.");
 
         if (closeButtonRef.current) {
           closeButtonRef.current.click();
         }
       } catch (err) {
         const message =
-          err instanceof Error ? err.message : "An unexpected error occurred";
+          err instanceof Error
+            ? err.message
+            : "An unexpected error occurred while updating the plan name.";
 
-        toast.error("Error", {
+        toast.error("Update Failed", {
           description: message,
         });
       }
@@ -82,15 +82,13 @@ export function UpdateTrainingPlanNameForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nazwa Planu</FormLabel>
+              <FormLabel>Plan Name</FormLabel>
 
               <FormControl>
-                <Input placeholder="Mój plan treningowy" {...field} />
+                <Input placeholder="My Training Plan" {...field} />
               </FormControl>
 
-              <FormDescription>
-                Nadaj swojemu planowi unikalną nazwę.
-              </FormDescription>
+              <FormDescription>Give your plan a unique name.</FormDescription>
 
               <FormMessage />
             </FormItem>

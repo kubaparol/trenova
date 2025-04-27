@@ -39,9 +39,9 @@ export function SettingsView() {
     <div className="space-y-8">
       <Card>
         <CardHeader>
-          <CardTitle>Zmiana hasła</CardTitle>
+          <CardTitle>Change Password</CardTitle>
           <CardDescription>
-            Zaktualizuj swoje hasło, aby zwiększyć bezpieczeństwo konta.
+            Update your password to enhance account security.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -51,10 +51,10 @@ export function SettingsView() {
 
       <Card className="border-destructive/20">
         <CardHeader>
-          <CardTitle className="text-destructive">Usunięcie konta</CardTitle>
+          <CardTitle className="text-destructive">Delete Account</CardTitle>
           <CardDescription>
-            Usunięcie konta jest nieodwracalne. Wszystkie Twoje dane zostaną
-            trwale usunięte.
+            Deleting your account is irreversible. All your data will be
+            permanently removed.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -62,18 +62,18 @@ export function SettingsView() {
             <DialogTrigger asChild>
               <Button variant="destructive" className="gap-1">
                 <Trash2 className="h-4 w-4" />
-                Usuń konto
+                Delete Account
               </Button>
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
                 <DialogTitle className="text-destructive">
-                  Usuń konto
+                  Delete Account
                 </DialogTitle>
                 <DialogDescription>
-                  Ta akcja jest <strong>nieodwracalna</strong>. Spowoduje trwałe
-                  usunięcie Twojego konta i wszystkich powiązanych danych.
+                  This action is <strong>irreversible</strong>. It will
+                  permanently delete your account and all associated data.
                 </DialogDescription>
               </DialogHeader>
 

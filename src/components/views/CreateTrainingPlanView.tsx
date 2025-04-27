@@ -33,7 +33,7 @@ export function CreateTrainingPlanView() {
       },
     });
 
-    toast.success("Success!", {
+    toast.success("Training Plan Created!", {
       description: `Training plan "${result.name}" created successfully.`,
     });
 

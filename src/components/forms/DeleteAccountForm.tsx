@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
-const CONFIRMATION_TEXT = "USUŃ KONTO";
+const CONFIRMATION_TEXT = "DELETE ACCOUNT";
 
 const deleteAccountSchema = z.object({
   confirmationInput: z.string(),
@@ -46,7 +46,7 @@ export function DeleteAccountForm({ onSubmit }: DeleteAccountFormProps) {
         await onSubmit(values);
 
         toast.success("Success", {
-          description: "Konto zostało usunięte pomyślnie.",
+          description: "Your account has been deleted successfully.",
         });
 
         if (closeButtonRef.current) {
@@ -77,8 +77,8 @@ export function DeleteAccountForm({ onSubmit }: DeleteAccountFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Aby potwierdzić, wpisz &quot;{CONFIRMATION_TEXT}&quot; w polu
-                poniżej:
+                To confirm, type &quot;{CONFIRMATION_TEXT}&quot; in the field
+                below:
               </FormLabel>
 
               <FormControl>

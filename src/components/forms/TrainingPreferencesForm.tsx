@@ -73,37 +73,31 @@ const EquipmentAccessEnum = {
 const trainingPreferencesSchema = z.object({
   name: z
     .string()
-    .min(3, { message: "Nazwa planu musi mieć co najmniej 3 znaki" })
-    .max(50, { message: "Nazwa planu nie może przekraczać 50 znaków" }),
+    .min(3, { message: "Plan name must be at least 3 characters long" })
+    .max(50, { message: "Plan name cannot exceed 50 characters" }),
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"], {
-    required_error: "Proszę wybrać płeć",
+    required_error: "Please select your gender",
   }),
   experience: z.enum(["beginner", "intermediate", "advanced"], {
-    required_error: "Proszę wybrać poziom doświadczenia",
+    required_error: "Please select your experience level",
   }),
   goal: z.enum(
     ["weight_loss", "muscle_gain", "general_fitness", "strength_increase"],
     {
-      required_error: "Proszę wybrać główny cel",
+      required_error: "Please select your main goal",
     }
   ),
 
   days_per_week: z
     .number()
-    .min(1, { message: "Minimum 1 dzień w tygodniu" })
-    .max(7, { message: "Maksimum 7 dni w tygodniu" })
-    .refine((value) => value >= 1, {
-      message: "Must be at least 1 minute",
-    }),
+    .min(1, { message: "Minimum 1 day per week" })
+    .max(7, { message: "Maximum 7 days per week" }),
   session_duration_minutes: z
     .number()
-    .min(15, { message: "Minimum 15 minut" })
-    .max(180, { message: "Maksimum 180 minut" })
-    .refine((value) => value >= 1, {
-      message: "Must be at least 1 minute",
-    }),
+    .min(15, { message: "Minimum 15 minutes" })
+    .max(180, { message: "Maximum 180 minutes" }),
   equipment: z.enum(["none", "home_basic", "full_gym"], {
-    required_error: "Proszę wybrać dostępny sprzęt",
+    required_error: "Please select your available equipment",
   }),
   restrictions: z.string().optional(),
 });
@@ -143,9 +137,11 @@ export function TrainingPreferencesForm({
       await onSubmit(data);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "An unexpected error occurred";
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred while creating the plan.";
       setError(message);
-      toast.error("Error", {
+      toast.error("Plan Creation Failed", {
         description: message,
       });
     } finally {
@@ -157,9 +153,9 @@ export function TrainingPreferencesForm({
     <>
       <Card className="w-full max-w-3xl mx-auto">
         <CardHeader>
-          <CardTitle>Nowy Plan Treningowy</CardTitle>
+          <CardTitle>New Training Plan</CardTitle>
           <CardDescription>
-            Wprowadź swoje preferencje, aby wygenerować spersonalizowany plan.
+            Enter your preferences to generate a personalized plan.
           </CardDescription>
         </CardHeader>
 
@@ -176,21 +172,21 @@ export function TrainingPreferencesForm({
               className="space-y-8"
             >
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Szczegóły Planu</h3>
+                <h3 className="text-lg font-medium">Plan Details</h3>
 
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nazwa Planu</FormLabel>
+                      <FormLabel>Plan Name</FormLabel>
 
                       <FormControl>
-                        <Input placeholder="Mój plan treningowy" {...field} />
+                        <Input placeholder="My Training Plan" {...field} />
                       </FormControl>
 
                       <FormDescription>
-                        Nadaj swojemu planowi unikalną nazwę.
+                        Give your plan a unique name.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -201,7 +197,7 @@ export function TrainingPreferencesForm({
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Informacje Osobiste</h3>
+                <h3 className="text-lg font-medium">Personal Information</h3>
 
                 <div className="space-y-8">
                   <FormField
@@ -209,7 +205,7 @@ export function TrainingPreferencesForm({
                     name="gender"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Płeć</FormLabel>
+                        <FormLabel>Gender</FormLabel>
 
                         <Select
                           onValueChange={field.onChange}
@@ -217,23 +213,23 @@ export function TrainingPreferencesForm({
                         >
                           <FormControl className="w-full">
                             <SelectTrigger>
-                              <SelectValue placeholder="Wybierz płeć" />
+                              <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
                             <SelectItem value={UserGenderEnum.male}>
-                              Mężczyzna
+                              Male
                             </SelectItem>
                             <SelectItem value={UserGenderEnum.female}>
-                              Kobieta
+                              Female
                             </SelectItem>
                             <SelectItem value={UserGenderEnum.other}>
-                              Inna
+                              Other
                             </SelectItem>
                             <SelectItem
                               value={UserGenderEnum.prefer_not_to_say}
                             >
-                              Wolę nie podawać
+                              Prefer not to say
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -248,7 +244,7 @@ export function TrainingPreferencesForm({
                     name="experience"
                     render={({ field }) => (
                       <FormItem className="space-y-3">
-                        <FormLabel>Poziom Doświadczenia</FormLabel>
+                        <FormLabel>Experience Level</FormLabel>
 
                         <FormControl>
                           <RadioGroup
@@ -263,7 +259,7 @@ export function TrainingPreferencesForm({
                                 />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Początkujący
+                                Beginner
                               </FormLabel>
                             </FormItem>
                             <FormItem className="flex items-center space-x-2 space-y-0">
@@ -273,7 +269,7 @@ export function TrainingPreferencesForm({
                                 />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Średniozaawansowany
+                                Intermediate
                               </FormLabel>
                             </FormItem>
                             <FormItem className="flex items-center space-x-2 space-y-0">
@@ -283,7 +279,7 @@ export function TrainingPreferencesForm({
                                 />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Zaawansowany
+                                Advanced
                               </FormLabel>
                             </FormItem>
                           </RadioGroup>
@@ -299,7 +295,7 @@ export function TrainingPreferencesForm({
                     name="goal"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Główny Cel</FormLabel>
+                        <FormLabel>Main Goal</FormLabel>
 
                         <Select
                           onValueChange={field.onChange}
@@ -307,21 +303,21 @@ export function TrainingPreferencesForm({
                         >
                           <FormControl className="w-full">
                             <SelectTrigger>
-                              <SelectValue placeholder="Wybierz główny cel" />
+                              <SelectValue placeholder="Select main goal" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
                             <SelectItem value={UserGoalEnum.weight_loss}>
-                              Utrata wagi
+                              Weight Loss
                             </SelectItem>
                             <SelectItem value={UserGoalEnum.muscle_gain}>
-                              Budowa mięśni
+                              Muscle Gain
                             </SelectItem>
                             <SelectItem value={UserGoalEnum.general_fitness}>
-                              Ogólna sprawność
+                              General Fitness
                             </SelectItem>
                             <SelectItem value={UserGoalEnum.strength_increase}>
-                              Zwiększenie siły
+                              Strength Increase
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -335,7 +331,9 @@ export function TrainingPreferencesForm({
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Dostępność i Sprzęt</h3>
+                <h3 className="text-lg font-medium">
+                  Availability & Equipment
+                </h3>
 
                 <div className="space-y-8">
                   <FormField
@@ -344,10 +342,10 @@ export function TrainingPreferencesForm({
                     render={({ field }) => (
                       <FormItem>
                         <div className="flex items-center justify-between">
-                          <FormLabel>Dni treningowych w tygodniu</FormLabel>
+                          <FormLabel>Training Days per Week</FormLabel>
 
                           <span className="text-sm font-medium">
-                            {field.value} {field.value === 1 ? "dzień" : "dni"}
+                            {field.value} {field.value === 1 ? "day" : "days"}
                           </span>
                         </div>
 
@@ -374,7 +372,7 @@ export function TrainingPreferencesForm({
                       <FormItem>
                         <div className="flex items-center justify-between">
                           <FormLabel>
-                            Preferowany czas trwania sesji (minuty)
+                            Preferred Session Duration (minutes)
                           </FormLabel>
 
                           <span className="text-sm font-medium">
@@ -403,7 +401,7 @@ export function TrainingPreferencesForm({
                     name="equipment"
                     render={({ field }) => (
                       <FormItem className="space-y-3">
-                        <FormLabel>Dostępny Sprzęt</FormLabel>
+                        <FormLabel>Available Equipment</FormLabel>
 
                         <FormControl>
                           <RadioGroup
@@ -418,7 +416,7 @@ export function TrainingPreferencesForm({
                                 />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Brak
+                                None
                               </FormLabel>
                             </FormItem>
 
@@ -429,7 +427,7 @@ export function TrainingPreferencesForm({
                                 />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Podstawowy domowy
+                                Basic Home
                               </FormLabel>
                             </FormItem>
 
@@ -440,7 +438,7 @@ export function TrainingPreferencesForm({
                                 />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Pełna siłownia
+                                Full Gym
                               </FormLabel>
                             </FormItem>
                           </RadioGroup>
@@ -456,26 +454,25 @@ export function TrainingPreferencesForm({
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Ograniczenia</h3>
+                <h3 className="text-lg font-medium">Restrictions</h3>
 
                 <FormField
                   control={form.control}
                   name="restrictions"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ograniczenia lub uwagi</FormLabel>
+                      <FormLabel>Restrictions or Notes</FormLabel>
 
                       <FormControl>
                         <Textarea
-                          placeholder="Np. kontuzja kolana, problemy z kręgosłupem..."
+                          placeholder="E.g., knee injury, back problems..."
                           className="min-h-[80px]"
                           {...field}
                         />
                       </FormControl>
 
                       <FormDescription>
-                        Wpisz wszelkie ograniczenia zdrowotne, kontuzje lub inne
-                        uwagi.
+                        Enter any health restrictions, injuries, or other notes.
                       </FormDescription>
 
                       <FormMessage />
@@ -485,7 +482,7 @@ export function TrainingPreferencesForm({
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                Generuj plan
+                Generate Plan
               </Button>
             </form>
           </Form>
@@ -495,7 +492,7 @@ export function TrainingPreferencesForm({
       <Dialog open={isLoading}>
         <DialogContent className="sm:max-w-md [&>button]:hidden">
           <DialogTitle className="sr-only">
-            Generowanie planu treningowego
+            Generating Training Plan
           </DialogTitle>
 
           <div className="flex justify-center">
@@ -510,8 +507,8 @@ export function TrainingPreferencesForm({
 
           <DialogDescription asChild>
             <p className="text-center text-sm text-muted-foreground">
-              Trwa generowanie Twojego spersonalizowanego planu treningowego.
-              Może to chwilę potrwać, proszę czekać...
+              Generating your personalized training plan. This may take a
+              moment, please wait...
             </p>
           </DialogDescription>
         </DialogContent>

@@ -21,7 +21,7 @@ export function ForgotPasswordView() {
     const result = await forgotPassword(data);
 
     if (!result.success) {
-      toast.error("Error", {
+      toast.error("Password Reset Failed", {
         description: result.message,
       });
       return;

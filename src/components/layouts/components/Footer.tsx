@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <p className="text-sm text-muted-foreground">
-              © {year} Trenova. Wszelkie prawa zastrzeżone.
+              © {year} Trenova. All rights reserved.
             </p>
           </div>
           <nav>
@@ -38,8 +38,8 @@ interface LinkItem {
 }
 
 const links: LinkItem[] = [
-  { text: "Polityka prywatności", href: "/privacy-policy" },
-  { text: "Regulamin", href: "/terms-of-service" },
-  { text: "Kontakt", href: "/contact" },
-  { text: "O nas", href: "/about" },
+  { text: "Privacy Policy", href: "/privacy-policy" },
+  { text: "Terms of Service", href: "/terms-of-service" },
+  { text: "Contact", href: "/contact" },
+  { text: "About Us", href: "/about" },
 ];

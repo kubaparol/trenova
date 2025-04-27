@@ -51,7 +51,7 @@ export default function Header({ user: initialUser }: HeaderProps) {
             variant="ghost"
             size="icon"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label={isMenuOpen ? "Zamknij menu" : "Otwórz menu"}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           >
             <Menu className="h-6 w-6" />
           </Button>
@@ -65,16 +65,16 @@ export default function Header({ user: initialUser }: HeaderProps) {
                 <Link href={ProjectUrls.trainingPlans}>Dashboard</Link>
               </Button>
               <Button variant="ghost" onClick={handleLogout}>
-                Wyloguj się
+                Log Out
               </Button>
             </>
           ) : (
             <>
               <Button variant="ghost" asChild>
-                <Link href={ProjectUrls.signIn}>Zaloguj się</Link>
+                <Link href={ProjectUrls.signIn}>Sign In</Link>
               </Button>
               <Button asChild>
-                <Link href={ProjectUrls.signUp}>Zarejestruj się</Link>
+                <Link href={ProjectUrls.signUp}>Sign Up</Link>
               </Button>
             </>
           )}
@@ -98,7 +98,7 @@ export default function Header({ user: initialUser }: HeaderProps) {
                     onClick={handleLogout}
                     className="w-full justify-start"
                   >
-                    Wyloguj się
+                    Log Out
                   </Button>
                 </>
               ) : (
@@ -112,7 +112,7 @@ export default function Header({ user: initialUser }: HeaderProps) {
                       href={ProjectUrls.signIn}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Zaloguj się
+                      Sign In
                     </Link>
                   </Button>
                   <Button asChild className="w-full justify-start">
@@ -120,7 +120,7 @@ export default function Header({ user: initialUser }: HeaderProps) {
                       href={ProjectUrls.signUp}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Zarejestruj się
+                      Sign Up
                     </Link>
                   </Button>
                 </>

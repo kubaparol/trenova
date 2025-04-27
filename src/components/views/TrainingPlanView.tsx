@@ -68,9 +68,9 @@ async function TrainingPlanViewLoader(props: TrainingPlanViewProps) {
 
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Zmień nazwę planu</DialogTitle>
+                <DialogTitle>Change Plan Name</DialogTitle>
                 <DialogDescription>
-                  Wprowadź nową nazwę dla swojego planu treningowego.
+                  Enter a new name for your training plan.
                 </DialogDescription>
               </DialogHeader>
 

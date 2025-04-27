@@ -30,7 +30,7 @@ export function SignUpView() {
     const result = await signUp(data);
 
     if (!result.success) {
-      toast.error("Error", {
+      toast.error("Sign Up Failed", {
         description: result.message,
       });
       return;

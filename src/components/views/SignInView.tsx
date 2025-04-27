@@ -22,7 +22,7 @@ export function SignInView() {
     const result = await signIn(data);
 
     if (!result.success) {
-      toast.error("Error", {
+      toast.error("Sign In Failed", {
         description: result.message,
       });
     }
