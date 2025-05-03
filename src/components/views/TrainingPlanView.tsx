@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Exercise, PlanDay } from "@/types";
+import { PlanDay } from "@/types";
 import {
   Dialog,
   DialogContent,
@@ -18,13 +18,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
-import { Pencil } from "lucide-react";
+import { Pencil, PlayCircle } from "lucide-react";
 import {
   TrainingPlanNameFormValues,
   UpdateTrainingPlanNameForm,
 } from "../forms/UpdateTrainingPlanNameForm";
 import { updateTrainingPlanName } from "@/db/actions/training-plans/update-name";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import Link from "next/link";
+import { Badge } from "../ui/badge";
+import { ProjectUrls } from "@/constants";
+import { getTrainingSessions } from "@/db/actions/training-sessions/get-sessions";
+import { formatDuration } from "@/utils";
+import dayjs from "dayjs";
 
 interface TrainingPlanViewProps {
   id: string;
@@ -41,7 +47,10 @@ export function TrainingPlanView(props: TrainingPlanViewProps) {
 async function TrainingPlanViewLoader(props: TrainingPlanViewProps) {
   const { id } = props;
 
-  const trainingPlan = await getTrainingPlanById({ id });
+  const [trainingPlan, sessions] = await Promise.all([
+    getTrainingPlanById({ id }),
+    getTrainingSessions({ plan_id: id }),
+  ]);
 
   const handleUpdateTrainingPlanName = async (
     id: string,
@@ -53,43 +62,174 @@ async function TrainingPlanViewLoader(props: TrainingPlanViewProps) {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex items-center gap-4">
-          <PlanHeader name={trainingPlan.name} />
+    <div className="container mx-auto px-4 py-8 max-w-5xl space-y-8">
+      {/* Header Section */}
+      <div className="space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <h1 className="text-3xl md:text-4xl font-bold">
+            {trainingPlan.name}
+          </h1>
 
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-1">
-                <Pencil className="h-4 w-4" />
-                <span>Change Name</span>
-              </Button>
-            </DialogTrigger>
+          <div className="flex gap-2">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Pencil className="h-4 w-4" />
+                  <span>Rename Plan</span>
+                </Button>
+              </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Change Plan Name</DialogTitle>
-                <DialogDescription>
-                  Enter a new name for your training plan.
-                </DialogDescription>
-              </DialogHeader>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Change Plan Name</DialogTitle>
+                  <DialogDescription>
+                    Enter a new name for your training plan.
+                  </DialogDescription>
+                </DialogHeader>
 
-              <UpdateTrainingPlanNameForm
-                trainingPlanId={id}
-                defaultValues={{ name: trainingPlan.name }}
-                onSubmit={handleUpdateTrainingPlanName}
-              />
-            </DialogContent>
-          </Dialog>
+                <UpdateTrainingPlanNameForm
+                  trainingPlanId={id}
+                  defaultValues={{ name: trainingPlan.name }}
+                  onSubmit={handleUpdateTrainingPlanName}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
+      </div>
 
-        <PlanDescription description={trainingPlan.description} />
-      </CardHeader>
+      {/* Plan Description Section */}
+      <p className="text-muted-foreground">{trainingPlan.description}</p>
 
-      <CardContent>
-        <PlanDaysAccordion days={trainingPlan.plan_details.days} />
-      </CardContent>
-    </Card>
+      {/* Training Days Section */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">Training Days</h2>
+
+        <Accordion
+          type="single"
+          collapsible
+          defaultValue="day-0"
+          className="w-full space-y-4"
+        >
+          {trainingPlan.plan_details.days
+            .filter((day) => day.exercises.length > 0)
+            .map((day, index) => (
+              <AccordionItem
+                key={index}
+                value={`day-${index}`}
+                className="border-b-0"
+              >
+                <Card className="py-0">
+                  <AccordionTrigger className="px-6">
+                    {day.day}
+                  </AccordionTrigger>
+
+                  <AccordionContent>
+                    <TrainingDayCard id={id} day={day} />
+                  </AccordionContent>
+                </Card>
+              </AccordionItem>
+            ))}
+        </Accordion>
+      </div>
+
+      {/* Session History Section */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">Session History</h2>
+
+        <div className="divide-y">
+          {sessions.items.length > 0 ? (
+            sessions.items.map((session, index) => (
+              <Card key={index} className="py-4 my-4">
+                <CardContent className="p-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                    <div>
+                      <h3 className="font-medium">{session.plan_day_name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {dayjs(session.completed_at).format("DD/MM/YYYY")}
+                      </p>
+                    </div>
+
+                    <Badge variant="secondary">
+                      Duration: {formatDuration(session.duration_seconds)}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <div className="p-8 text-center">
+              <p className="text-gray-500">
+                No session history recorded for this plan yet.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TrainingDayCard({ id, day }: { id: string; day: PlanDay }) {
+  return (
+    <CardContent className="space-y-5">
+      <div className="space-y-3">
+        {day.exercises.map((exercise, index) => {
+          const formatWorkload = () => {
+            if (exercise.duration_minutes || exercise.duration_seconds) {
+              const minutes = exercise.duration_minutes
+                ? `${exercise.duration_minutes}m`
+                : "";
+              const seconds = exercise.duration_seconds
+                ? `${exercise.duration_seconds}s`
+                : "";
+              return `${minutes} ${seconds}`.trim();
+            }
+            return `${exercise.repetitions} reps`;
+          };
+
+          return (
+            <div key={index} className="bg-muted/50 p-3 rounded-md">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <h3 className="font-medium">{exercise.name}</h3>
+
+                <div className="flex flex-wrap gap-2">
+                  <Badge
+                    variant="outline"
+                    className="bg-blue-400/10 text-blue-600 dark:bg-blue-300/20 dark:text-blue-300"
+                  >
+                    {exercise.sets ? `${exercise.sets} sets` : "1 set"}
+                  </Badge>
+
+                  <Badge
+                    variant="outline"
+                    className="bg-green-400/10 text-green-600 dark:bg-green-300/20 dark:text-green-300"
+                  >
+                    {formatWorkload()}
+                  </Badge>
+
+                  <Badge
+                    variant="outline"
+                    className="bg-purple-400/10 text-purple-600 dark:bg-purple-300/20 dark:text-purple-300"
+                  >
+                    {exercise.rest_time_seconds}s rest
+                  </Badge>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="flex justify-end">
+        <Button asChild className="gap-2" size="sm">
+          <Link href={`${ProjectUrls.trainingPlanSession(id)}?day=${day.day}`}>
+            <PlayCircle className="h-4 w-4" />
+            <span>Start Session</span>
+          </Link>
+        </Button>
+      </div>
+    </CardContent>
   );
 }
 
@@ -111,86 +251,3 @@ function TrainingPlanViewSkeleton() {
     </div>
   );
 }
-
-const PlanDaysAccordion = ({ days }: { days: PlanDay[] }) => {
-  if (!days || days.length === 0) {
-    return (
-      <p className="text-muted-foreground italic">
-        No training days defined for this plan.
-      </p>
-    );
-  }
-
-  return (
-    <Accordion type="multiple" className="w-full">
-      {days.map((day, index) => (
-        <AccordionItem key={index} value={`day-${index}`}>
-          <AccordionTrigger className="text-left font-medium">
-            {day.day}
-          </AccordionTrigger>
-          <AccordionContent>
-            <ExerciseList exercises={day.exercises} />
-          </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
-  );
-};
-
-const PlanHeader = ({ name }: { name: string }) => {
-  return (
-    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-      {name}
-    </h1>
-  );
-};
-
-const PlanDescription = ({ description }: { description: string }) => {
-  return <p className="text-muted-foreground mb-6">{description}</p>;
-};
-
-const ExerciseList = ({ exercises }: { exercises: Exercise[] }) => {
-  if (!exercises || exercises.length === 0) {
-    return (
-      <p className="text-muted-foreground italic">
-        No exercises scheduled for this day.
-      </p>
-    );
-  }
-
-  return (
-    <ul className="divide-y divide-border">
-      {exercises.map((exercise, index) => (
-        <ExerciseListItem key={index} exercise={exercise} />
-      ))}
-    </ul>
-  );
-};
-
-const ExerciseListItem = ({ exercise }: { exercise: Exercise }) => {
-  // Format duration or repetitions
-  const formatWorkload = () => {
-    if (exercise.duration_minutes || exercise.duration_seconds) {
-      const minutes = exercise.duration_minutes
-        ? `${exercise.duration_minutes}m`
-        : "";
-      const seconds = exercise.duration_seconds
-        ? `${exercise.duration_seconds}s`
-        : "";
-      return `${minutes} ${seconds}`.trim();
-    }
-    return `${exercise.repetitions} reps`;
-  };
-
-  return (
-    <li className="py-3 border-b last:border-b-0">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <span className="font-medium">{exercise.name}</span>
-        <div className="text-sm text-muted-foreground">
-          {exercise.sets} sets × {formatWorkload()},{" "}
-          {exercise.rest_time_seconds}s rest
-        </div>
-      </div>
-    </li>
-  );
-};

@@ -136,6 +136,42 @@ export interface DeleteTrainingPlanOutput {
   message: string;
 }
 
+// --- Training Sessions ---
+
+/** Input for marking a training session as complete and saving it. */
+export interface CompleteTrainingSessionInput {
+  plan_id: string; // ID of the plan the session belongs to
+  plan_day_name: string; // Name of the specific day completed (e.g., "Day 1 - Chest")
+  duration_seconds: number; // Total duration of the session in seconds
+}
+
+/** Output after successfully completing a training session. */
+export interface CompleteTrainingSessionOutput {
+  id: string; // The ID of the newly created training_sessions record
+  message: string;
+}
+
+/** Represents a single completed training session item in the history list. */
+export type TrainingSessionListItem = Pick<
+  Tables<"training_sessions">,
+  "id" | "completed_at" | "plan_day_name" | "duration_seconds" | "plan_id"
+> & { plan_name?: string }; // plan_name might be joined in the action
+
+/** Input for fetching the user's training session history with pagination. */
+export interface GetTrainingSessionsInput {
+  plan_id?: string;
+  page?: number; // default: 1
+  limit?: number; // default: 10
+}
+
+/** Output for fetching a list of user training sessions. */
+export interface TrainingSessionListOutput {
+  items: TrainingSessionListItem[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 // --- Support ---
 
 /** Input for submitting a support request. */

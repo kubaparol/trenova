@@ -2,10 +2,11 @@
 
 ## 1. Resources
 
-| Resource      | Database Table        | Description                                  |
-| ------------- | --------------------- | -------------------------------------------- |
-| Users         | auth.users            | User authentication managed by Supabase Auth |
-| TrainingPlans | public.training_plans | User's saved training plans                  |
+| Resource         | Database Table           | Description                                      |
+| ---------------- | ------------------------ | ------------------------------------------------ |
+| Users            | auth.users               | User authentication managed by Supabase Auth     |
+| TrainingPlans    | public.training_plans    | User's saved training plans                      |
+| TrainingSessions | public.training_sessions | User's completed workout session history records |
 
 ## 2. Server Actions
 
@@ -112,7 +113,7 @@ type ChangePasswordOutput = {
 | getTrainingPlanById    | src/db/actions/training-plans/get-by-id.ts      | Get a specific training plan                      |
 | createTrainingPlan     | src/db/actions/training-plans/create.ts         | Create a new training plan using AI               |
 | updateTrainingPlanName | src/db/actions/training-plans/update-name.ts    | Update a training plan's name                     |
-| deleteTrainingPlan     | src/db/actions/training-plans/delete.ts         | Delete a training plan                            |
+| deleteTrainingPlan     | src/db/actions/training-plans/delete.ts         | Delete a training plan (cascades to sessions)     |
 | deleteAccount          | src/db/actions/auth/delete-account.ts           | Delete the user's account and all associated data |
 
 #### getUserTrainingPlans (src/db/actions/training-plans/get-user-plans.ts)
@@ -147,7 +148,7 @@ type TrainingPlanListOutput = {
 **Errors:**
 
 - 401: Unauthorized
-- 403: Forbidden (not user's plan)
+- 403: Forbidden
 - 404: Plan not found
 
 #### getTrainingPlanById (src/db/actions/training-plans/get-by-id.ts)
@@ -294,7 +295,7 @@ type UpdateTrainingPlanNameOutput = {
 
 #### deleteTrainingPlan (src/db/actions/training-plans/delete.ts)
 
-Deletes a specific training plan.
+Deletes a specific training plan. Associated records in `training_sessions` are automatically deleted due to the `ON DELETE CASCADE` foreign key constraint.
 
 **Input:**
 
@@ -363,6 +364,81 @@ type DeleteAccountOutput = {
 
 - 401: Unauthorized
 
+### Training Sessions
+
+| Action Name             | File Path                                        | Description                           |
+| ----------------------- | ------------------------------------------------ | ------------------------------------- |
+| completeTrainingSession | src/db/actions/training-sessions/complete.ts     | Save a completed training session     |
+| getTrainingSessions     | src/db/actions/training-sessions/get-sessions.ts | Get the user's session history (list) |
+
+#### completeTrainingSession (src/db/actions/training-sessions/complete.ts)
+
+Saves the details of a fully completed training session for a specific day of a plan.
+
+**Input:**
+
+```typescript
+type CompleteTrainingSessionInput = {
+  plan_id: string; // ID of the plan the session belongs to
+  plan_day_name: string; // Name of the specific day completed (e.g., "Day 1 - Chest")
+  duration_seconds: number; // Total duration of the session in seconds
+};
+```
+
+**Output:**
+
+```typescript
+type CompleteTrainingSessionOutput = {
+  id: string; // The ID of the newly created training_sessions record
+  message: string;
+};
+```
+
+**Errors:**
+
+- 400: Invalid input (e.g., duration <= 0, missing fields)
+- 401: Unauthorized
+- 403: Forbidden (e.g., trying to save session for a plan not owned by user)
+- 404: Plan not found (referenced `plan_id` does not exist)
+- 500: Database error during insert
+
+#### getTrainingSessions (src/db/actions/training-sessions/get-sessions.ts)
+
+Retrieves the history of completed training sessions for the current user, with pagination.
+
+**Input:**
+
+```typescript
+type GetTrainingSessionsInput = {
+  page?: number; // default: 1
+  limit?: number; // default: 10
+};
+```
+
+**Output:**
+
+```typescript
+type TrainingSessionListOutput = {
+  items: {
+    id: string;
+    completed_at: string;
+    plan_day_name: string;
+    duration_seconds: number;
+    plan_id: string;
+    plan_name?: string; // Requires join with training_plans
+  }[];
+  total: number;
+  page: number;
+  limit: number;
+};
+```
+
+**Errors:**
+
+- 401: Unauthorized
+- 403: Forbidden
+- 500: Database error during select
+
 ## 3. Authentication and Authorization
 
 Trenova will use Supabase Authentication services for handling user authentication, which will be integrated with Next.js Server Actions:
@@ -381,7 +457,7 @@ Trenova will use Supabase Authentication services for handling user authenticati
 
 **Authorization:**
 
-- Row-Level Security (RLS) policies in Supabase ensure users can only access their own data
+- Row-Level Security (RLS) policies in Supabase ensure users can only access their own data (training plans, training sessions)
 - Server actions verify user permissions before performing operations
 - Middleware checks authentication status for protected routes
 
@@ -401,11 +477,18 @@ Trenova will use Supabase Authentication services for handling user authenticati
 
 - Name must be between 1 and 255 characters
 - User must be authenticated to create or manage training plans
-- Users can only access their own training plans
+- Users can only access their own training plans and sessions
 - AI models receive structured preference data (provided in the `createTrainingPlan` call) and generate a complete workout plan
 - Generated plans maintain a consistent structure for frontend rendering
 - Rate limiting is applied to AI-generated content to prevent abuse
 - All database operations use Supabase's data access APIs with RLS policies
+
+### Training Session Validation
+
+- `plan_id` must reference an existing `training_plans` record owned by the user.
+- `plan_day_name` must be a non-empty string.
+- `duration_seconds` must be a positive integer.
+- User must be authenticated.
 
 ### Password Change Validation
 

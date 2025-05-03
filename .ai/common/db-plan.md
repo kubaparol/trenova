@@ -23,11 +23,15 @@ These custom types ensure data consistency for predefined choices.
 
 ## 2. Tables
 
+### 2.1. `auth.users`
+
+Provided by Supabase Auth. Contains user authentication information. Key column: `id` (uuid).
+
 ### 2.2. `training_plans`
 
 Stores the training plans generated for users. Linked many-to-one with `auth.users`.
 
-```sql
+````sql
 CREATE TABLE public.training_plans (
   id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(), -- Unique identifier for the plan
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE, -- User who owns the plan, cascades deletes
@@ -48,11 +52,37 @@ COMMENT ON COLUMN public.training_plans.description IS 'User-editable descriptio
 COMMENT ON COLUMN public.training_plans.plan_details IS 'JSONB structure containing the detailed workout schedule and exercises.';
 -- COMMENT ON COLUMN public.training_plans.preferences_snapshot IS 'Removed: JSONB snapshot of key user preferences used to generate this specific plan.';
 
-```
+### 2.3. `training_sessions`
+
+Stores records of completed workout sessions based on a specific day within a training plan.
+
+```sql
+CREATE TABLE public.training_sessions (
+    id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(), -- Unique identifier for the session record
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE, -- User who completed the session
+    plan_id uuid NOT NULL REFERENCES public.training_plans(id) ON DELETE CASCADE, -- The plan this session belongs to
+    completed_at timestamptz NOT NULL, -- Timestamp when the session was marked as fully completed
+    plan_day_name text NOT NULL, -- Name of the specific day from the training plan (e.g., "Day 1 - Chest & Triceps")
+    duration_seconds integer NOT NULL CHECK (duration_seconds > 0), -- Total duration of the workout session in seconds
+    created_at timestamptz NOT NULL DEFAULT now() -- Timestamp when the record was created (useful for auditing)
+);
+
+-- Add comments for clarity
+COMMENT ON TABLE public.training_sessions IS 'Stores records of completed workout sessions.';
+COMMENT ON COLUMN public.training_sessions.user_id IS 'The user who completed this session.';
+COMMENT ON COLUMN public.training_sessions.plan_id IS 'The training plan this session is part of. Cascades delete.';
+COMMENT ON COLUMN public.training_sessions.completed_at IS 'Timestamp recorded when the user marked the final exercise of the session as complete.';
+COMMENT ON COLUMN public.training_sessions.plan_day_name IS 'The name of the specific day within the plan that was completed (denormalized for easier history display).';
+COMMENT ON COLUMN public.training_sessions.duration_seconds IS 'Total time spent in the session, from start to completion, in seconds.';
+COMMENT ON COLUMN public.training_sessions.created_at IS 'Timestamp indicating when this session record was inserted into the database.';
+
+````
 
 ## 3. Relationships
 
 - **`training_plans` to `auth.users`**: Many-to-One. Established via `training_plans.user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE`.
+- **`training_sessions` to `auth.users`**: Many-to-One. Established via `training_sessions.user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE`.
+- **`training_sessions` to `training_plans`**: Many-to-One. Established via `training_sessions.plan_id uuid NOT NULL REFERENCES public.training_plans(id) ON DELETE CASCADE`.
 
 ## 4. Indexes
 
@@ -62,6 +92,14 @@ In addition to the default Primary Key indexes and potential Foreign Key indexes
 -- Optimizes fetching the most recent plans for a specific user
 CREATE INDEX idx_training_plans_user_created_at
 ON public.training_plans (user_id, created_at DESC);
+
+-- Optimizes fetching session history for a specific user, ordered by completion date
+CREATE INDEX idx_training_sessions_user_completed_at
+ON public.training_sessions (user_id, completed_at DESC);
+
+-- May be automatically created by FK, but ensures index exists for plan_id lookups/cascades
+CREATE INDEX idx_training_sessions_plan_id
+ON public.training_sessions (plan_id);
 ```
 
 ## 5. Row Level Security (RLS)
@@ -72,12 +110,14 @@ RLS is enabled to ensure users can only access and modify their own data.
 -- Enable RLS for profiles and training_plans tables
 -- ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY; -- Removed
 ALTER TABLE public.training_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.training_sessions ENABLE ROW LEVEL SECURITY;
 
 -- Grant all actions to the anon and authenticated roles initially (policies will restrict)
 -- Supabase typically handles initial grants, but ensuring they exist.
 -- Adjust roles as necessary for your Supabase setup if not using standard 'anon' and 'authenticated'.
 -- GRANT ALL ON TABLE public.profiles TO anon, authenticated; -- Removed
 GRANT ALL ON TABLE public.training_plans TO anon, authenticated;
+GRANT ALL ON TABLE public.training_sessions TO anon, authenticated;
 
 
 -- Policies for 'profiles' table -- Removed
@@ -94,6 +134,28 @@ CREATE POLICY "Allow individual user access to own plans"
 ON public.training_plans
 FOR SELECT
 USING (auth.uid() = user_id);
+
+-- Policies for 'training_sessions' table
+DROP POLICY IF EXISTS "Allow individual user access to own sessions" ON public.training_sessions;
+CREATE POLICY "Allow individual user access to own sessions"
+ON public.training_sessions
+FOR SELECT
+USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Allow individual user to insert own sessions" ON public.training_sessions;
+CREATE POLICY "Allow individual user to insert own sessions"
+ON public.training_sessions
+FOR INSERT
+WITH CHECK (auth.uid() = user_id);
+
+-- Allow users to delete their own sessions (though primary mechanism is cascade delete via plan)
+DROP POLICY IF EXISTS "Allow individual user to delete own sessions" ON public.training_sessions;
+CREATE POLICY "Allow individual user to delete own sessions"
+ON public.training_sessions
+FOR DELETE
+USING (auth.uid() = user_id);
+
+-- UPDATE policy is omitted for MVP as sessions are immutable upon creation.
 ```
 
 ## 6. Triggers and Functions
@@ -106,3 +168,5 @@ These automate certain database operations.
 - **`plan_details` JSONB Structure:** While the exact structure isn't defined here, it's expected to be consistent (e.g., `{"day1": [{"exercise": "Push-up", "sets": 3, "reps": 10, "rest_seconds": 60}, ...], "day2": ...}`). The application layer is responsible for generating and parsing this structure.
 - **Admin Access:** For MVP, administrative access (e.g., for support) is intended to be handled outside the application's RLS, likely directly via Supabase Studio or specific admin roles/policies if implemented later.
 - **Default Plan Name:** The application backend is responsible for generating a sensible default name for `training_plans.name` upon creation (e.g., "Plan - {created_at::date})").
+- **`training_sessions.completed_at`:** This timestamp reflects when the session was _marked complete_ in the application, not necessarily when the database row was created (which is tracked by `created_at`).
+- **`training_sessions.plan_day_name` Denormalization:** Storing the day name directly simplifies fetching history but means the data exists both here and within the related `training_plans.plan_details` JSONB. This is a deliberate choice for MVP simplicity, prioritizing read performance for the history view over strict normalization. Ensure the application layer consistently populates this field.

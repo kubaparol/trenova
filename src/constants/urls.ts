@@ -11,5 +11,7 @@ export const ProjectUrls = {
   createTrainingPlan: "/training-plans/create",
   trainingPlans: "/training-plans",
   trainingPlan: (id: string) => `/training-plans/${id}`,
+  trainingPlanSession: (id: string) => `/training-plans/${id}/session`,
+  trainingHistory: "/training-history",
   settings: "/settings",
 } as const;

@@ -11,6 +11,7 @@ Główne funkcjonalności MVP obejmują:
 - Generowanie planu treningowego przez AI na podstawie danych z formularza
 - Przeglądanie i podstawowe zarządzanie wygenerowanymi planami
 - Wsparcie techniczne przez e-mail
+- Podstawowe śledzenie postępów ukończonych dni treningowych (rozpoczęcie sesji, oznaczanie ukończenia elementów, automatyczny zapis po ukończeniu ostatniego elementu, przeglądanie historii)
 
 Aplikacja będzie dostępna wyłącznie w języku angielskim, z architekturą umożliwiającą łatwe dodanie innych języków w przyszłości. Trenova przyjmuje podejście mobile-first i będzie w pełni responsywna.
 
@@ -94,11 +95,22 @@ Główne motywacje użytkowników Trenova to:
 - Analityka użytkownika (Google Analytics)
 - Zgodność z RODO
 
+### 3.7. Podstawowe śledzenie postępów treningowych
+
+- Umożliwienie użytkownikowi rozpoczęcia sesji treningowej dla konkretnego dnia aktywnego planu.
+- Interfejs sesji wyświetlający listę ćwiczeń/serii z podświetleniem aktywnego elementu.
+- Możliwość sekwencyjnego oznaczania ukończenia poszczególnych ćwiczeń/serii jednym kliknięciem/dotknięciem. Brak możliwości cofnięcia lub pominięcia.
+- Automatyczne uruchamianie licznika czasu odpoczynku (jeśli zdefiniowany) po oznaczeniu ukończenia elementu. Wizualna sygnalizacja końca odpoczynku.
+- Automatyczny zapis sesji w historii **tylko** po oznaczeniu ukończenia **ostatniego** elementu w danym dniu. Zapisywany jest całkowity czas trwania sesji.
+- Przerwanie sesji przed ukończeniem ostatniego elementu (np. zamknięcie karty, nawigacja) skutkuje **całkowitą utratą** danych dla tej sesji.
+- Widok historii ukończonych sesji zawierający datę, nazwę planu, nazwę dnia planu i całkowity czas trwania.
+- Powiązane rekordy sesji są usuwane wraz z usunięciem planu.
+
 ## 4. Granice produktu
 
 Poniższe funkcje NIE są uwzględnione w MVP:
 
-- Śledzenie postępów (wpisywanie ciężarów, powtórzeń, ukończonych treningów)
+- Śledzenie postępów (wpisywanie ciężarów, powtórzeń, ukończonych treningów) -> **Wyjątek**: Wprowadzono _bardzo podstawowe_ śledzenie ukończenia dni treningowych i czasu trwania sesji zgodnie z sekcją 3.7. Zaawansowane śledzenie (np. ciężary, RPE, zapis częściowy) pozostaje poza zakresem.
 - Biblioteka ćwiczeń z filmami instruktażowymi czy opisami techniki
 - Funkcje społecznościowe (udostępnianie planów, rankingi, grupy)
 - Planowanie diety i śledzenie kalorii
@@ -270,6 +282,61 @@ US-017: Odzyskiwanie hasła
   - System wysyła link do resetowania hasła na podany adres
   - Użytkownik może ustawić nowe hasło po kliknięciu w link
 
+### Podstawowe śledzenie postępów
+
+US-018: Rozpoczęcie sesji treningowej
+
+- Jako zalogowany użytkownik, chcę rozpocząć sesję treningową dla wybranego dnia planu, aby móc śledzić jej przebieg.
+- Kryteria akceptacji:
+  - Przycisk "Rozpocznij Sesję" jest dostępny w widoku dnia aktywnego planu.
+  - Kliknięcie przycisku uruchamia widok sesji i rozpoczyna liczenie całkowitego czasu.
+  - Widok sesji wyświetla listę ćwiczeń/serii zgodnie z planem dla danego dnia.
+  - Pierwszy element listy jest podświetlony jako aktywny.
+
+US-019: Oznaczanie ukończenia elementów sesji
+
+- Jako zalogowany użytkownik w trakcie sesji treningowej, chcę oznaczać ukończenie kolejnych ćwiczeń/serii, aby przejść przez zaplanowany trening.
+- Kryteria akceptacji:
+  - Użytkownik może oznaczyć ukończenie tylko aktywnego (podświetlonego) elementu jednym kliknięciem/dotknięciem.
+  - Po oznaczeniu ukończenia, kolejny element na liście jest podświetlany jako aktywny.
+  - Nie ma możliwości cofnięcia oznaczenia ani pominięcia elementu.
+  - Jeśli po ukończonym elemencie zdefiniowano czas odpoczynku, uruchamiany jest widoczny licznik.
+  - Po zakończeniu odliczania czasu odpoczynku, użytkownik może oznaczyć kolejny element.
+
+US-020: Automatyczny zapis ukończonej sesji
+
+- Jako zalogowany użytkownik, chcę aby sesja została automatycznie zapisana po ukończeniu ostatniego ćwiczenia/serii, aby znalazła się w mojej historii.
+- Kryteria akceptacji:
+  - Po oznaczeniu ukończenia ostatniego elementu w planie dnia, sesja jest automatycznie kończona.
+  - Całkowity czas trwania sesji (od rozpoczęcia do ukończenia ostatniego elementu) jest obliczany.
+  - Rekord sesji (ID użytkownika, ID planu, data ukończenia, nazwa dnia, czas trwania) jest zapisywany w bazie danych.
+  - Użytkownik jest informowany o pomyślnym zapisie sesji (np. przekierowanie do historii lub komunikat).
+
+US-021: Utrata postępu przy przerwaniu sesji
+
+- Jako użytkownik, rozumiem, że jeśli przerwę sesję treningową przed ukończeniem ostatniego elementu, moje postępy dla tej sesji zostaną utracone.
+- Kryteria akceptacji:
+  - Zamknięcie przeglądarki/karty, odświeżenie strony lub przejście do innej części aplikacji w trakcie aktywnej sesji powoduje jej przerwanie.
+  - Żadne dane dotyczące przerwanej sesji nie są zapisywane w historii.
+  - Wyświetlenie ostrzeżenia o ryzyku utraty danych przed rozpoczęciem sesji.
+
+US-022: Przeglądanie historii ukończonych sesji
+
+- Jako zalogowany użytkownik, chcę przeglądać historię moich ukończonych sesji treningowych, aby monitorować swoją aktywność.
+- Kryteria akceptacji:
+  - Dostępny jest dedykowany widok historii.
+  - Widok wyświetla listę ukończonych sesji.
+  - Każdy wpis na liście zawiera: datę ukończenia, nazwę planu, nazwę dnia planu i całkowity czas trwania sesji.
+  - Lista jest posortowana chronologicznie (np. od najnowszej).
+
+US-023: Usuwanie danych sesji wraz z planem
+
+- Jako zalogowany użytkownik, oczekuję, że po usunięciu planu treningowego, powiązana z nim historia sesji również zostanie usunięta.
+- Kryteria akceptacji:
+  - Podczas operacji usuwania planu treningowego (US-010).
+  - System usuwa wszystkie rekordy sesji z bazy danych, które są powiązane z usuwanym `plan_id`.
+  - Usunięte sesje nie są już widoczne w historii użytkownika.
+
 ## 6. Metryki sukcesu
 
 ### Metryki ukończenia procesu
@@ -289,6 +356,9 @@ US-017: Odzyskiwanie hasła
 - Liczba wygenerowanych planów na użytkownika
 - Procent zarejestrowanych użytkowników, którzy generują co najmniej jeden plan
 - Częstotliwość powrotów: Jak często użytkownicy wracają do aplikacji
+- Współczynnik wykorzystania funkcji śledzenia: Procent aktywnych użytkowników (którzy wygenerowali plan), którzy rozpoczynają co najmniej jedną sesję treningową.
+- Współczynnik ukończenia sesji: Procent rozpoczętych sesji treningowych, które zostały pomyślnie ukończone i zapisane.
+- Średnia liczba ukończonych sesji na użytkownika (korzystającego z funkcji).
 
 ### Metryki techniczne
 
