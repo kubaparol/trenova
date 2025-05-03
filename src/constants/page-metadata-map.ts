@@ -42,6 +42,19 @@ export const pageMetadataMap: Record<string, Metadata> = {
       },
     ],
   },
+  "/training-plans/[id]/session": {
+    breadcrumbs: [
+      {
+        label: "Training Plans",
+        href: "/training-plans",
+      },
+      {
+        label: "Session",
+        href: "/training-plans/[id]/session",
+        isCurrent: true,
+      },
+    ],
+  },
   "/settings": {
     title: "Settings",
     description: "Manage your account settings",
