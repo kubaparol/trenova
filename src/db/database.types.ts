@@ -61,6 +61,44 @@ export type Database = {
         };
         Relationships: [];
       };
+      training_sessions: {
+        Row: {
+          completed_at: string;
+          created_at: string;
+          duration_seconds: number;
+          id: string;
+          plan_day_name: string;
+          plan_id: string;
+          user_id: string;
+        };
+        Insert: {
+          completed_at: string;
+          created_at?: string;
+          duration_seconds: number;
+          id?: string;
+          plan_day_name: string;
+          plan_id: string;
+          user_id: string;
+        };
+        Update: {
+          completed_at?: string;
+          created_at?: string;
+          duration_seconds?: number;
+          id?: string;
+          plan_day_name?: string;
+          plan_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "training_sessions_plan_id_fkey";
+            columns: ["plan_id"];
+            isOneToOne: false;
+            referencedRelation: "training_plans";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -69,7 +107,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      [_ in never]: never;
+      session_status: "IN_PROGRESS" | "PAUSED" | "COMPLETED" | "ABANDONED";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -187,6 +225,8 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      session_status: ["IN_PROGRESS", "PAUSED", "COMPLETED", "ABANDONED"],
+    },
   },
 } as const;
