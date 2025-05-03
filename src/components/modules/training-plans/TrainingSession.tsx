@@ -50,6 +50,7 @@ export function TrainingSession(props: TrainingSessionProps) {
   const [initialRestTime, setInitialRestTime] = useState<number>(0);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
   const [isCompletingSession, setIsCompletingSession] = useState(false);
+  const [currentSet, setCurrentSet] = useState<number>(1);
 
   // References
   const sessionStartTime = useRef<number>(Date.now());
@@ -93,34 +94,42 @@ export function TrainingSession(props: TrainingSessionProps) {
   }, [activeExerciseIndex]);
 
   // Handle exercise completion
-  const handleCompleteExercise = () => {
+  const handleCompleteSet = () => {
     if (sessionState !== "exercising") return;
 
     const currentExercise = exercises[activeExerciseIndex];
+    const totalSets = currentExercise.sets;
     const isLastExercise = activeExerciseIndex === exercises.length - 1;
+    const isLastSetOfExercise = currentSet === totalSets;
 
-    // Mark current exercise as complete
-    const updatedCompletedExercises = [...completedExercises];
-    updatedCompletedExercises[activeExerciseIndex] = true;
-    setCompletedExercises(updatedCompletedExercises);
+    if (isLastSetOfExercise) {
+      // Mark current exercise as complete in the progress tracker
+      const updatedCompletedExercises = [...completedExercises];
+      updatedCompletedExercises[activeExerciseIndex] = true;
+      setCompletedExercises(updatedCompletedExercises);
 
-    // Check if this is the last exercise
-    if (isLastExercise) {
-      handleCompleteSession();
-      return;
-    }
-
-    // Check if we need a rest period
-    const restTime = currentExercise.rest_time_seconds;
-    if (restTime > 0) {
-      startRestPeriod(restTime);
+      // Check if this is the last exercise of the session
+      if (isLastExercise) {
+        handleCompleteSession();
+      } else {
+        // Move to the first set of the next exercise, no rest
+        setActiveExerciseIndex(activeExerciseIndex + 1);
+        setCurrentSet(1); // Reset set counter for new exercise
+        setSessionState("exercising"); // Ensure state is exercising
+      }
     } else {
-      // No rest needed, move to next exercise
-      setActiveExerciseIndex(activeExerciseIndex + 1);
+      // Not the last set, start rest period if applicable
+      const restTime = currentExercise.rest_time_seconds;
+      if (restTime > 0) {
+        startRestPeriod(restTime);
+      } else {
+        // No rest needed, move to the next set immediately
+        setCurrentSet(currentSet + 1);
+      }
     }
   };
 
-  // Start rest period
+  // Start rest period (between sets)
   const startRestPeriod = (seconds: number) => {
     setSessionState("resting");
     setRestTimeRemaining(seconds);
@@ -132,7 +141,7 @@ export function TrainingSession(props: TrainingSessionProps) {
           // Rest period finished
           clearInterval(restTimerInterval.current!);
           setSessionState("exercising");
-          setActiveExerciseIndex(activeExerciseIndex + 1);
+          setCurrentSet((prevSet) => prevSet + 1); // Move to the next set
           return 0;
         }
         return prev - 1;
@@ -220,9 +229,9 @@ export function TrainingSession(props: TrainingSessionProps) {
       restTimerInterval.current = null; // Clear the ref
     }
 
-    // Move to the next exercise immediately
+    // Move to the next set immediately
     setSessionState("exercising");
-    setActiveExerciseIndex(activeExerciseIndex + 1);
+    setCurrentSet(currentSet + 1); // Go to next set
     setRestTimeRemaining(0); // Reset rest time
     setInitialRestTime(0); // Reset initial rest time
   };
@@ -290,8 +299,8 @@ export function TrainingSession(props: TrainingSessionProps) {
               <Progress value={restProgressPercentage} />
 
               <p className="text-sm text-info-foreground mt-2">
-                Get ready for the next exercise:{" "}
-                {exercises[activeExerciseIndex + 1]?.name || ""}
+                Rest before next set of:{" "}
+                {exercises[activeExerciseIndex]?.name || ""}
               </p>
             </div>
 
@@ -344,18 +353,21 @@ export function TrainingSession(props: TrainingSessionProps) {
                     </span>
                   )}
                   <span className="px-2 py-1 bg-muted rounded-full">
-                    {exercise.rest_time_seconds}s rest
+                    {exercise.rest_time_seconds}s rest (per set)
                   </span>
                 </div>
 
                 {isClickable && (
-                  <div className="mt-3 flex justify-end">
+                  <div className="mt-4 ml-8 space-y-2">
+                    <p className="text-sm font-medium text-primary">
+                      Current Set: {currentSet} / {exercise.sets}
+                    </p>
                     <Button
-                      onClick={handleCompleteExercise}
+                      onClick={handleCompleteSet}
                       variant="default"
                       disabled={isCompletingSession}
                     >
-                      Mark as Complete
+                      Complete Set {currentSet}
                     </Button>
                   </div>
                 )}
