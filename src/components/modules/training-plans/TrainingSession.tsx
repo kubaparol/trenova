@@ -19,7 +19,11 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
+  DoorOpen,
+  FastForward,
   Loader2,
+  LogOut,
+  Play,
   Timer,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -306,6 +310,7 @@ export function TrainingSession(props: TrainingSessionProps) {
 
             <div className="mt-3 flex justify-end">
               <Button onClick={handleSkipRest} variant="secondary" size="sm">
+                <FastForward className="mr-2 h-4 w-4" />
                 Skip Rest
               </Button>
             </div>
@@ -385,6 +390,7 @@ export function TrainingSession(props: TrainingSessionProps) {
             onClick={handleLeaveClick}
             disabled={isCompletingSession}
           >
+            <LogOut className="mr-2 h-4 w-4" />
             Leave Session
           </Button>
         )}
@@ -417,6 +423,7 @@ export function TrainingSession(props: TrainingSessionProps) {
               onClick={() => setIsLeaveDialogOpen(false)}
               disabled={isCompletingSession}
             >
+              <Play className="mr-2 h-4 w-4" />
               Continue Training
             </Button>
             <Button
@@ -424,6 +431,7 @@ export function TrainingSession(props: TrainingSessionProps) {
               onClick={handleConfirmLeave}
               disabled={isCompletingSession}
             >
+              <DoorOpen className="mr-2 h-4 w-4" />
               Leave Session
             </Button>
           </DialogFooter>
