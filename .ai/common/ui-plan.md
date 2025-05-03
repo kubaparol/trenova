@@ -17,6 +17,8 @@ Trenova to aplikacja webowa oferująca automatyczne generowanie spersonalizowany
    - Nawigacja główna (górny pasek)
    - Lista planów treningowych
    - Szczegóły planu treningowego
+   - Widok Sesji Treningowej (podczas aktywnego treningu)
+   - Historia Treningów
    - Formularz danych treningowych
    - Ekran generowania planu treningowego
    - Profil użytkownika / preferencje treningowe
@@ -143,6 +145,7 @@ Architektura UI opiera się na następujących zasadach:
   - Przejrzysta prezentacja danych
   - Responsywny układ (pionowy na mobile)
   - Czytelna typografia
+  - Przycisk "Rozpocznij Sesję" dla każdego dnia planu
   - Dostępne akordeony i przyciski
 
 ### 2.7. Formularz danych treningowych
@@ -213,6 +216,44 @@ Architektura UI opiera się na następujących zasadach:
 - **UX i dostępność**:
   - Jasne komunikaty o sukcesie/błędzie
   - Dostępne pola formularza
+
+### 2.11. Widok Sesji Treningowej
+
+- **Ścieżka**: `/training-plans/[planId]/session/[dayName]` (lub podobna, identyfikująca sesję)
+- **Główny cel**: Umożliwić użytkownikowi sekwencyjne oznaczanie ukończenia elementów treningu i automatyczne zapisanie sesji po ukończeniu ostatniego.
+- **Kluczowe informacje**:
+  - Lista ćwiczeń/serii na dany dzień, z wyraźnym podświetleniem aktywnego elementu.
+  - Całkowity czas trwania sesji (licznik od startu).
+  - Licznik czasu odpoczynku (gdy aktywny).
+  - Wyraźne ostrzeżenie o ryzyku utraty danych w przypadku przerwania sesji.
+- **Kluczowe komponenty**:
+  - Lista elementów sesji (`SessionExerciseItem`).
+  - Komponent licznika czasu odpoczynku (`RestTimer`) z wizualizacją.
+  - Ogólny licznik czasu sesji.
+  - Brak przycisków nawigacyjnych poza interakcją z listą elementów (kliknięcie/dotknięcie oznacza ukończenie).
+- **UX i dostępność**:
+  - Minimalistyczny interfejs skupiony na zadaniu.
+  - Automatyczne przewijanie do aktywnego elementu.
+  - Jasne wizualne oznaczenie aktywnego elementu i stanu (ćwiczenie/odpoczynek).
+  - Brak możliwości cofnięcia, pominięcia czy manualnego zakończenia sesji.
+  - Automatyczny zapis i np. przekierowanie do historii po ukończeniu ostatniego elementu.
+
+### 2.12. Historia Treningów
+
+- **Ścieżka**: `/training-history`
+- **Główny cel**: Wyświetlić listę ukończonych sesji treningowych użytkownika.
+- **Kluczowe informacje**:
+  - Lista sesji posortowana chronologicznie (najnowsze na górze).
+  - Dla każdej sesji: data ukończenia, nazwa planu, nazwa dnia planu, całkowity czas trwania.
+  - Stan pusty, gdy brak ukończonych sesji.
+- **Kluczowe komponenty**:
+  - Lista elementów historii (`TrainingHistoryItem`).
+  - Stan pusty (`EmptyState`).
+  - Paginacja (jeśli potrzebna).
+- **UX i dostępność**:
+  - Czytelna prezentacja danych historycznych.
+  - Skeleton screens podczas ładowania.
+  - Dostępne elementy listy dla nawigacji klawiaturą.
 
 ## 3. Mapa podróży użytkownika
 
@@ -286,6 +327,26 @@ Architektura UI opiera się na następujących zasadach:
 7. Po poprawnej walidacji system aktualizuje hasło użytkownika.
 8. Użytkownik otrzymuje potwierdzenie zmiany hasła i pozostaje zalogowany na stronie ustawień.
 
+### 3.9. Ukończenie Sesji Treningowej
+
+1. Użytkownik przegląda szczegóły planu treningowego (`/training-plans/[id]`).
+2. Klika przycisk "Rozpocznij Sesję" dla wybranego dnia.
+3. Zostaje przekierowany do Widoku Sesji Treningowej.
+4. Widzi listę ćwiczeń/serii, pierwszy element jest podświetlony.
+5. Oznacza ukończenie aktywnego elementu (kliknięcie/dotknięcie).
+6. Jeśli jest czas odpoczynku, uruchamia się licznik; po zakończeniu użytkownik oznacza kolejny element.
+7. Powtarza kroki 5-6 dla wszystkich elementów w sekwencji.
+8. Po oznaczeniu ukończenia **ostatniego** elementu, sesja jest automatycznie zapisywana.
+9. Użytkownik jest informowany o sukcesie i np. przekierowywany do Historii Treningów (`/training-history`).
+10. **Ważne**: Jeśli użytkownik przerwie sesję w dowolnym momencie przed krokiem 8 (zamknie kartę, przejdzie gdzie indziej), postęp tej sesji jest **tracony** i nic nie jest zapisywane.
+
+### 3.10. Przeglądanie Historii Treningów
+
+1. Zalogowany użytkownik klika link "Historia" w głównej nawigacji.
+2. Zostaje przekierowany do strony Historii Treningów (`/training-history`).
+3. Widzi listę swoich ukończonych sesji treningowych, posortowaną od najnowszej.
+4. Może przewijać listę lub użyć paginacji (jeśli zaimplementowana).
+
 ## 4. Układ i struktura nawigacji
 
 ### 4.1. Nawigacja dla niezalogowanych użytkowników
@@ -305,6 +366,7 @@ Architektura UI opiera się na następujących zasadach:
   - Logo aplikacji (link do listy planów)
   - Link do listy planów
   - Link do Ustawień (`/settings`)
+  - Link do Historii Treningów (`/training-history`)
   - Przycisk wylogowania
 - **Pływający przycisk akcji (FAB)** dla kluczowej akcji "Nowy plan" widoczny na ekranie listy planów
 - **Nawigacja kontekstowa** w widoku szczegółów planu:
@@ -348,3 +410,13 @@ Architektura UI opiera się na następujących zasadach:
 - **PlanDescription**: Komponent wyświetlający opis planu
 - **PreferencesForm**: Formularz preferencji treningowych
 - **PlanGenerationIndicator**: Wskaźnik postępu/stanu generowania planu (używany w widoku formularza po wysłaniu)
+
+### 5.5. Komponenty specyficzne dla Śledzenia Postępów
+
+- **StartSessionButton**: Przycisk w widoku dnia planu inicjujący sesję.
+- **WorkoutSessionView**: Główny kontener widoku aktywnej sesji.
+- **SessionExerciseItem**: Element listy w widoku sesji, obsługujący kliknięcie/dotknięcie jako ukończenie.
+- **RestTimer**: Komponent wyświetlający i animujący licznik czasu odpoczynku.
+- **SessionTimer**: Komponent wyświetlający całkowity czas trwania sesji.
+- **TrainingHistoryList**: Kontener listy ukończonych sesji.
+- **TrainingHistoryItem**: Pojedynczy wpis w historii sesji.
