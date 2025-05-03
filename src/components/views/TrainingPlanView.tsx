@@ -140,20 +140,22 @@ async function TrainingPlanViewLoader(props: TrainingPlanViewProps) {
         <div className="divide-y">
           {sessions.items.length > 0 ? (
             sessions.items.map((session, index) => (
-              <div key={index} className="py-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                  <div>
-                    <h3 className="font-medium">{session.plan_day_name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {dayjs(session.completed_at).format("DD/MM/YYYY")}
-                    </p>
-                  </div>
+              <Card key={index} className="py-4 my-4">
+                <CardContent className="p-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                    <div>
+                      <h3 className="font-medium">{session.plan_day_name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {dayjs(session.completed_at).format("DD/MM/YYYY")}
+                      </p>
+                    </div>
 
-                  <Badge variant="secondary">
-                    Duration: {formatDuration(session.duration_seconds)}
-                  </Badge>
-                </div>
-              </div>
+                    <Badge variant="secondary">
+                      Duration: {formatDuration(session.duration_seconds)}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
             ))
           ) : (
             <div className="p-8 text-center">

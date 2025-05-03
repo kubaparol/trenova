@@ -19,18 +19,15 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
-  DoorOpen,
   FastForward,
   Loader2,
   LogOut,
-  Play,
   Timer,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-// NEW: Define CircularProgress component
 interface CircularProgressProps extends React.SVGProps<SVGSVGElement> {
   value: number; // Percentage (0-100)
   strokeWidth?: number;
@@ -518,7 +515,6 @@ export function TrainingSession(props: TrainingSessionProps) {
               onClick={() => setIsLeaveDialogOpen(false)}
               disabled={isCompletingSession}
             >
-              <Play className="mr-2 h-4 w-4" />
               Continue Training
             </Button>
             <Button
@@ -526,7 +522,6 @@ export function TrainingSession(props: TrainingSessionProps) {
               onClick={handleConfirmLeave}
               disabled={isCompletingSession}
             >
-              <DoorOpen className="mr-2 h-4 w-4" />
               Leave Session
             </Button>
           </DialogFooter>
