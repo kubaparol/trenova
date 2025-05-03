@@ -167,7 +167,7 @@ export function TrainingSession(props: TrainingSessionProps) {
     if (sessionState !== "exercising") return;
 
     const currentExercise = orderedExercises[activeExerciseIndex];
-    const totalSets = currentExercise.sets;
+    const totalSets = currentExercise.sets || 1;
     const isLastExercise = activeExerciseIndex === orderedExercises.length - 1;
     const isLastSetOfExercise = currentSet === totalSets;
 
@@ -540,7 +540,7 @@ export function TrainingSession(props: TrainingSessionProps) {
                 {isClickable && (
                   <div className="mt-4 ml-8 space-y-2">
                     <p className="text-sm font-medium text-primary">
-                      Current Set: {currentSet} / {exercise.sets}
+                      Current Set: {currentSet} / {exercise.sets || 1}
                     </p>
                     <Button
                       onClick={handleCompleteSet}
