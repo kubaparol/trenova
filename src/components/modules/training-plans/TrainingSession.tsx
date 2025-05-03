@@ -17,6 +17,8 @@ import { Exercise } from "@/types";
 import { formatDuration } from "@/utils";
 import {
   AlertTriangle,
+  ArrowDown,
+  ArrowUp,
   CheckCircle,
   Clock,
   FastForward,
@@ -27,6 +29,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface CircularProgressProps extends React.SVGProps<SVGSVGElement> {
   value: number; // Percentage (0-100)
@@ -92,14 +95,17 @@ interface TrainingSessionProps {
 }
 
 export function TrainingSession(props: TrainingSessionProps) {
-  const { id, exercises, dayName, onCompleteSession } = props;
+  const { id, exercises: initialExercises, dayName, onCompleteSession } = props;
 
   const router = useRouter();
 
+  const [autoAnimate] = useAutoAnimate();
+
   // State management
+  const [orderedExercises, setOrderedExercises] = useState<Exercise[]>([]);
   const [sessionState, setSessionState] = useState<SessionState>("loading");
   const [activeExerciseIndex, setActiveExerciseIndex] = useState<number>(0);
-  const [completedExercises, setCompletedExercises] = useState<boolean[]>([]);
+  const [completedMask, setCompletedMask] = useState<boolean[]>([]);
   const [sessionDuration, setSessionDuration] = useState<number>(0);
   const [restTimeRemaining, setRestTimeRemaining] = useState<number>(0);
   const [initialRestTime, setInitialRestTime] = useState<number>(0);
@@ -117,8 +123,9 @@ export function TrainingSession(props: TrainingSessionProps) {
 
   // Initialize the session
   useEffect(() => {
-    // Initialize completed exercises array with all false
-    setCompletedExercises(new Array(exercises.length).fill(false));
+    // Initialize ordered exercises and completion mask based on props
+    setOrderedExercises([...initialExercises]);
+    setCompletedMask(new Array(initialExercises.length).fill(false));
 
     // Start session timer
     sessionStartTime.current = Date.now();
@@ -138,7 +145,7 @@ export function TrainingSession(props: TrainingSessionProps) {
         clearInterval(sessionTimerInterval.current);
       if (restTimerInterval.current) clearInterval(restTimerInterval.current);
     };
-  }, [exercises]);
+  }, [initialExercises]);
 
   // Update restTimeRef whenever restTimeRemaining changes
   useEffect(() => {
@@ -159,16 +166,16 @@ export function TrainingSession(props: TrainingSessionProps) {
   const handleCompleteSet = () => {
     if (sessionState !== "exercising") return;
 
-    const currentExercise = exercises[activeExerciseIndex];
+    const currentExercise = orderedExercises[activeExerciseIndex];
     const totalSets = currentExercise.sets;
-    const isLastExercise = activeExerciseIndex === exercises.length - 1;
+    const isLastExercise = activeExerciseIndex === orderedExercises.length - 1;
     const isLastSetOfExercise = currentSet === totalSets;
 
     if (isLastSetOfExercise) {
       // Mark current exercise as complete in the progress tracker
-      const updatedCompletedExercises = [...completedExercises];
-      updatedCompletedExercises[activeExerciseIndex] = true;
-      setCompletedExercises(updatedCompletedExercises);
+      const updatedCompletedMask = [...completedMask];
+      updatedCompletedMask[activeExerciseIndex] = true;
+      setCompletedMask(updatedCompletedMask);
 
       // Check if this is the last exercise of the session
       if (isLastExercise) {
@@ -257,13 +264,14 @@ export function TrainingSession(props: TrainingSessionProps) {
 
   // Calculate progress percentage
   const calculateProgress = () => {
-    const completedCount = completedExercises.filter(Boolean).length;
-    return (completedCount / exercises.length) * 100;
+    if (orderedExercises.length === 0) return 0;
+    const completedCount = completedMask.filter(Boolean).length;
+    return (completedCount / orderedExercises.length) * 100;
   };
 
   // Render exercise status indicator
   const renderExerciseStatus = (index: number) => {
-    if (completedExercises[index]) {
+    if (completedMask[index]) {
       return <CheckCircle className="h-5 w-5 text-green-500" />;
     }
     if (index === activeExerciseIndex) {
@@ -325,6 +333,44 @@ export function TrainingSession(props: TrainingSessionProps) {
     }, intervalTime);
   };
 
+  // --- START NEW: Exercise Reordering Logic ---
+  const moveExercise = (index: number, direction: "up" | "down") => {
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+
+    // Basic validation (should be covered by button disabled state, but good practice)
+    if (
+      targetIndex < 0 ||
+      targetIndex >= orderedExercises.length ||
+      index === activeExerciseIndex ||
+      targetIndex === activeExerciseIndex ||
+      completedMask[index] ||
+      completedMask[targetIndex]
+    ) {
+      return;
+    }
+
+    const newOrder = [...orderedExercises];
+    const newCompletedMask = [...completedMask];
+
+    // Swap exercises
+    [newOrder[index], newOrder[targetIndex]] = [
+      newOrder[targetIndex],
+      newOrder[index],
+    ];
+    // Swap corresponding completion status
+    [newCompletedMask[index], newCompletedMask[targetIndex]] = [
+      newCompletedMask[targetIndex],
+      newCompletedMask[index],
+    ];
+
+    setOrderedExercises(newOrder);
+    setCompletedMask(newCompletedMask);
+
+    // Note: activeExerciseIndex doesn't need adjustment here because
+    // we prevent moving the active exercise or swapping with it.
+  };
+  // --- END NEW: Exercise Reordering Logic ---
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
       {/* Header */}
@@ -347,7 +393,7 @@ export function TrainingSession(props: TrainingSessionProps) {
           ></div>
         </div>
         <div className="text-sm text-muted-foreground text-right">
-          {completedExercises.filter(Boolean).length} of {exercises.length}{" "}
+          {completedMask.filter(Boolean).length} of {orderedExercises.length}{" "}
           completed
         </div>
       </div>
@@ -391,7 +437,7 @@ export function TrainingSession(props: TrainingSessionProps) {
 
               <p className="text-sm text-info-foreground text-center">
                 Rest before next set of:{" "}
-                {exercises[activeExerciseIndex]?.name || ""}
+                {orderedExercises[activeExerciseIndex]?.name || ""}
               </p>
             </div>
 
@@ -412,15 +458,28 @@ export function TrainingSession(props: TrainingSessionProps) {
 
       {/* Exercise list */}
       <ScrollArea className="mb-6 px-1">
-        <div className="space-y-3">
-          {exercises.map((exercise, index) => {
+        <div ref={autoAnimate} className="space-y-3">
+          {orderedExercises.map((exercise, index) => {
             const isActive = index === activeExerciseIndex;
-            const isCompleted = completedExercises[index];
+            const isCompleted = completedMask[index];
             const isClickable = isActive && sessionState === "exercising";
+
+            // Determine if move buttons should be enabled
+            const canMove = !isActive && !isCompleted;
+            const canMoveUp =
+              canMove &&
+              index > 0 &&
+              !completedMask[index - 1] && // Cannot swap with completed
+              activeExerciseIndex !== index - 1; // Cannot swap with active
+            const canMoveDown =
+              canMove &&
+              index < orderedExercises.length - 1 &&
+              !completedMask[index + 1] && // Cannot swap with completed
+              activeExerciseIndex !== index + 1; // Cannot swap with active
 
             return (
               <div
-                key={index}
+                key={exercise.name}
                 ref={isActive ? activeExerciseRef : null}
                 className={`p-4 rounded-lg border transition-colors ${
                   isActive
@@ -433,6 +492,30 @@ export function TrainingSession(props: TrainingSessionProps) {
                 <div className="flex items-center gap-3 mb-2">
                   {renderExerciseStatus(index)}
                   <h3 className="font-medium">{exercise.name}</h3>
+                  {canMove && (
+                    <div className="ml-auto flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => moveExercise(index, "up")}
+                        disabled={!canMoveUp}
+                        className="h-7 w-7"
+                        aria-label={`Move ${exercise.name} up`}
+                      >
+                        <ArrowUp className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => moveExercise(index, "down")}
+                        disabled={!canMoveDown}
+                        className="h-7 w-7"
+                        aria-label={`Move ${exercise.name} down`}
+                      >
+                        <ArrowDown className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex flex-wrap gap-2 ml-8 text-sm">
