@@ -109,12 +109,14 @@ export function TrainingSession(props: TrainingSessionProps) {
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
   const [isCompletingSession, setIsCompletingSession] = useState(false);
   const [currentSet, setCurrentSet] = useState<number>(1);
+  const [isSkippingRest, setIsSkippingRest] = useState(false);
 
   // References
   const sessionStartTime = useRef<number>(Date.now());
   const sessionTimerInterval = useRef<NodeJS.Timeout | null>(null);
   const restTimerInterval = useRef<NodeJS.Timeout | null>(null);
   const activeExerciseRef = useRef<HTMLDivElement>(null);
+  const restTimeRef = useRef(restTimeRemaining);
 
   // Initialize the session
   useEffect(() => {
@@ -140,6 +142,11 @@ export function TrainingSession(props: TrainingSessionProps) {
       if (restTimerInterval.current) clearInterval(restTimerInterval.current);
     };
   }, [exercises]);
+
+  // Update restTimeRef whenever restTimeRemaining changes
+  useEffect(() => {
+    restTimeRef.current = restTimeRemaining;
+  }, [restTimeRemaining]);
 
   // Scroll to active exercise when it changes
   useEffect(() => {
@@ -279,19 +286,46 @@ export function TrainingSession(props: TrainingSessionProps) {
       : 0;
 
   const handleSkipRest = () => {
-    if (sessionState !== "resting") return;
-
-    // Clear the rest timer
-    if (restTimerInterval.current) {
-      clearInterval(restTimerInterval.current);
-      restTimerInterval.current = null; // Clear the ref
+    // Prevent skipping if not resting, already skipping, or no timer running
+    if (
+      sessionState !== "resting" ||
+      isSkippingRest ||
+      !restTimerInterval.current
+    ) {
+      return;
     }
 
-    // Move to the next set immediately
-    setSessionState("exercising");
-    setCurrentSet(currentSet + 1); // Go to next set
-    setRestTimeRemaining(0); // Reset rest time
-    setInitialRestTime(0); // Reset initial rest time
+    setIsSkippingRest(true);
+
+    // Clear the normal (1-second) interval
+    clearInterval(restTimerInterval.current);
+    restTimerInterval.current = null;
+
+    const skipAnimationDuration = 500; // ms
+    const updatesPerInterval = 20; // How many updates per second (smoothness)
+    const intervalTime = 1000 / updatesPerInterval; // ms between updates
+    const startTime = Date.now();
+    const initialSkipTime = restTimeRef.current; // Get the time remaining when clicked
+
+    // Start the fast interval for animation
+    restTimerInterval.current = setInterval(() => {
+      const elapsedTime = Date.now() - startTime;
+      const progress = Math.min(elapsedTime / skipAnimationDuration, 1);
+      const newTime = Math.max(0, Math.round(initialSkipTime * (1 - progress)));
+
+      setRestTimeRemaining(newTime);
+
+      // Animation finished
+      if (progress >= 1) {
+        clearInterval(restTimerInterval.current!);
+        restTimerInterval.current = null;
+        setIsSkippingRest(false);
+        setSessionState("exercising");
+        setCurrentSet((prevSet) => prevSet + 1); // Move to the next set
+        // No need to reset restTimeRemaining here, it's already 0
+        // No need to reset initialRestTime, it's set in startRestPeriod
+      }
+    }, intervalTime);
   };
 
   return (
@@ -347,11 +381,10 @@ export function TrainingSession(props: TrainingSessionProps) {
                 <h3 className="font-medium">Rest Time</h3>
               </div>
 
-              {/* Circular Progress Indicator */}
               <div className="relative">
                 <CircularProgress
                   value={restProgressPercentage}
-                  size={80} // Increased size for better visibility
+                  size={80}
                   strokeWidth={6}
                 />
                 <span className="absolute inset-0 flex items-center justify-center font-mono text-2xl text-info-foreground">
@@ -359,20 +392,21 @@ export function TrainingSession(props: TrainingSessionProps) {
                 </span>
               </div>
 
-              {/* Removed linear Progress bar */}
-              {/* <Progress value={restProgressPercentage} /> */}
-
               <p className="text-sm text-info-foreground text-center">
                 Rest before next set of:{" "}
                 {exercises[activeExerciseIndex]?.name || ""}
               </p>
             </div>
-            {/* End Rest Timer Content Update */}
 
             <div className="mt-3 flex justify-end">
-              <Button onClick={handleSkipRest} variant="secondary" size="sm">
+              <Button
+                onClick={handleSkipRest}
+                variant="secondary"
+                size="sm"
+                disabled={isSkippingRest}
+              >
                 <FastForward className="mr-2 h-4 w-4" />
-                Skip Rest
+                {isSkippingRest ? "Skipping..." : "Skip Rest"}
               </Button>
             </div>
           </div>
