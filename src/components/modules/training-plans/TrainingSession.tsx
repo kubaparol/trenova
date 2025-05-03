@@ -29,7 +29,61 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Progress } from "@/components/ui/progress";
+
+// NEW: Define CircularProgress component
+interface CircularProgressProps extends React.SVGProps<SVGSVGElement> {
+  value: number; // Percentage (0-100)
+  strokeWidth?: number;
+  size?: number;
+}
+
+const CircularProgress: React.FC<CircularProgressProps> = ({
+  value,
+  strokeWidth = 4,
+  size = 60, // Adjust size as needed
+  className,
+  ...props
+}) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (value / 100) * circumference;
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      className={className}
+      {...props}
+    >
+      {/* Background Circle */}
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        stroke="currentColor" // Use text color for theme compatibility
+        strokeWidth={strokeWidth}
+        fill="transparent"
+        className="text-muted" // Background track color
+      />
+      {/* Progress Arc */}
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        stroke="currentColor" // Use text color for theme compatibility
+        strokeWidth={strokeWidth}
+        fill="transparent"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        transform={`rotate(-90 ${size / 2} ${size / 2})`} // Start from the top
+        className="text-info transition-[stroke-dashoffset] duration-300 ease-linear" // Progress color and transition
+        strokeLinecap="round" // Optional: Makes the ends rounded
+      />
+    </svg>
+  );
+};
+// END NEW
 
 type SessionState = "loading" | "exercising" | "resting" | "finished";
 
@@ -280,33 +334,40 @@ export function TrainingSession(props: TrainingSessionProps) {
       <div
         className={`transition-all duration-300 ease-in-out overflow-hidden ${
           sessionState === "resting"
-            ? "max-h-[200px] opacity-100 mb-6"
+            ? "max-h-[250px] opacity-100 mb-6"
             : "max-h-0 opacity-0"
         }`}
       >
         <Card className="border-info/50 py-0">
           <div className="p-4">
-            <div className="animate-pulse">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Timer className="h-5 w-5 text-info" />
-                  <h3 className="font-medium text-info-foreground">
-                    Rest Time
-                  </h3>
-                </div>
+            {/* Rest Timer Content - Updated */}
+            <div className="flex flex-col items-center gap-3 animate-pulse">
+              <div className="flex items-center gap-2 text-info-foreground">
+                <Timer className="h-5 w-5" />
+                <h3 className="font-medium">Rest Time</h3>
+              </div>
 
-                <span className="font-mono text-lg text-info-foreground">
+              {/* Circular Progress Indicator */}
+              <div className="relative">
+                <CircularProgress
+                  value={restProgressPercentage}
+                  size={80} // Increased size for better visibility
+                  strokeWidth={6}
+                />
+                <span className="absolute inset-0 flex items-center justify-center font-mono text-2xl text-info-foreground">
                   {restTimeRemaining}s
                 </span>
               </div>
 
-              <Progress value={restProgressPercentage} />
+              {/* Removed linear Progress bar */}
+              {/* <Progress value={restProgressPercentage} /> */}
 
-              <p className="text-sm text-info-foreground mt-2">
+              <p className="text-sm text-info-foreground text-center">
                 Rest before next set of:{" "}
                 {exercises[activeExerciseIndex]?.name || ""}
               </p>
             </div>
+            {/* End Rest Timer Content Update */}
 
             <div className="mt-3 flex justify-end">
               <Button onClick={handleSkipRest} variant="secondary" size="sm">
