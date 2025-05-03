@@ -55,6 +55,17 @@ export const pageMetadataMap: Record<string, Metadata> = {
       },
     ],
   },
+  "/training-history": {
+    title: "Training History",
+    description: "View your training history",
+    breadcrumbs: [
+      {
+        label: "Training History",
+        href: "/training-history",
+        isCurrent: true,
+      },
+    ],
+  },
   "/settings": {
     title: "Settings",
     description: "Manage your account settings",

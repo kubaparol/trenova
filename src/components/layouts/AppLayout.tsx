@@ -76,7 +76,7 @@ export function AppLayout(props: AppLayoutProps) {
           </div>
         </header>
 
-        <div className="flex-1 px-4 py-4 flex flex-col md:gap-6 md:py-6 lg:px-6">
+        <div className="flex-1 px-4 py-4 flex flex-col gap-6 md:py-6 lg:px-6">
           {(pageMetadata.title || pageMetadata.description) && (
             <header>
               {pageMetadata?.title && (

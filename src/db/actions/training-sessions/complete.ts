@@ -101,6 +101,7 @@ export async function completeTrainingSession(
   }
 
   revalidatePath(ProjectUrls.trainingPlan(input.plan_id));
+  revalidatePath(ProjectUrls.trainingHistory);
 
   // 10. Format and Return Success Response
   return {

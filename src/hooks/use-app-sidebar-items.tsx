@@ -1,4 +1,10 @@
-import { Dumbbell, LogOut, LucideIcon, SettingsIcon } from "lucide-react";
+import {
+  Dumbbell,
+  GalleryVerticalEnd,
+  LogOut,
+  LucideIcon,
+  SettingsIcon,
+} from "lucide-react";
 
 import { ProjectUrls } from "@/constants/urls";
 import { signOut } from "@/db/actions/auth/sign-out";
@@ -30,6 +36,11 @@ export const useAppSidebarItems = (): AppSidebarItem[] => {
       title: "Training Plans",
       icon: Dumbbell,
       url: ProjectUrls.trainingPlans,
+    },
+    {
+      title: "Training History",
+      icon: GalleryVerticalEnd,
+      url: ProjectUrls.trainingHistory,
     },
     {
       title: "Settings",
