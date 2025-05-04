@@ -61,7 +61,7 @@ export const WorkoutsByPlanChart = ({ data }: WorkoutsByPlanChartProps) => {
         ) : (
           <ChartContainer
             config={{
-              count: { color: "hsl(var(--primary))" },
+              count: { color: "var(--primary)" },
             }}
           >
             <BarChart
@@ -82,8 +82,8 @@ export const WorkoutsByPlanChart = ({ data }: WorkoutsByPlanChartProps) => {
                 content={
                   <ChartTooltipContent
                     formatter={(value) => [
-                      `${value} workout${Number(value) !== 1 ? "s" : ""}`,
-                      "Count",
+                      `${value} workout ${Number(value) !== 1 ? "s" : ""}`,
+                      "count",
                     ]}
                     labelFormatter={(value) => {
                       const item = chartData.find((i) => i.name === value);
@@ -94,7 +94,7 @@ export const WorkoutsByPlanChart = ({ data }: WorkoutsByPlanChartProps) => {
               />
               <Bar
                 dataKey="count"
-                fill="hsl(var(--primary))"
+                fill="var(--primary)"
                 radius={[0, 4, 4, 0]}
                 name="Workout Count"
               />

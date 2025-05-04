@@ -8,9 +8,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ProjectUrls } from "@/constants";
 
 interface LastSessionCardProps {
   lastSession?: {
+    plan_id: string;
     plan_name: string;
     completed_at: string;
     duration_seconds: number;
@@ -41,7 +45,15 @@ export const LastSessionCard = ({ lastSession }: LastSessionCardProps) => {
 
       <CardContent>
         <div className="text-2xl font-bold line-clamp-1">
-          {lastSession ? lastSession.plan_name : "No data yet"}
+          {lastSession ? (
+            <Button asChild size="lg" variant="link" className="px-0 text-2xl">
+              <Link href={ProjectUrls.trainingPlan(lastSession.plan_id)}>
+                {lastSession.plan_name}
+              </Link>
+            </Button>
+          ) : (
+            "No data yet"
+          )}
         </div>
         <p className="text-xs text-muted-foreground mt-1.5">
           {lastSession

@@ -67,7 +67,7 @@ export const DurationTrendChart = ({ data }: DurationTrendChartProps) => {
         ) : (
           <ChartContainer
             config={{
-              duration: { color: "hsl(var(--primary))" },
+              duration: { color: "var(--primary)" },
             }}
           >
             <ResponsiveContainer width="100%" height={300}>
@@ -85,12 +85,12 @@ export const DurationTrendChart = ({ data }: DurationTrendChartProps) => {
                   >
                     <stop
                       offset="5%"
-                      stopColor="hsl(var(--primary))"
+                      stopColor="var(--primary)"
                       stopOpacity={0.8}
                     />
                     <stop
                       offset="95%"
-                      stopColor="hsl(var(--primary))"
+                      stopColor="var(--primary)"
                       stopOpacity={0.1}
                     />
                   </linearGradient>
@@ -119,7 +119,7 @@ export const DurationTrendChart = ({ data }: DurationTrendChartProps) => {
                 <Area
                   type="monotone"
                   dataKey="duration"
-                  stroke="hsl(var(--primary))"
+                  stroke="var(--primary)"
                   fillOpacity={1}
                   fill="url(#colorDuration)"
                   name="Duration"

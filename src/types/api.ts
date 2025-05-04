@@ -193,6 +193,7 @@ export interface SupportRequestOutput {
 export interface UserDashboardDataOutput {
   hasTrainingData: boolean; // Indicates if the user has any completed sessions
   lastSession?: {
+    plan_id: string;
     plan_name: string;
     completed_at: string; // ISO string format
     duration_seconds: number;

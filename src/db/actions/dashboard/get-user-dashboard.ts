@@ -85,6 +85,7 @@ export async function getUserDashboardData(): Promise<UserDashboardDataOutput> {
   const hasTrainingData = true;
   const latestSession = sessionsData[0];
   const lastSession: UserDashboardDataOutput["lastSession"] = {
+    plan_id: latestSession.plan_id,
     plan_name: latestSession.training_plans?.name ?? "Unknown Plan",
     completed_at: latestSession.completed_at,
     duration_seconds: latestSession.duration_seconds,
