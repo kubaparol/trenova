@@ -61,7 +61,7 @@ export default function Header({ user: initialUser }: HeaderProps) {
         </div>
 
         {/* Desktop navigation */}
-        <nav className="hidden md:flex items-center ">
+        <nav className="hidden md:flex items-center space-x-2">
           {currentUser ? (
             <>
               <Button variant="default" asChild>
