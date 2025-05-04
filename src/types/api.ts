@@ -127,7 +127,11 @@ export interface UpdateTrainingPlanNameInput {
 }
 
 /** Output after successfully updating a training plan's name. */
-export type UpdateTrainingPlanNameOutput = TrainingPlanListItem; // Reuses the list item structure
+export interface UpdateTrainingPlanNameOutput {
+  id: string;
+  name: string;
+  created_at: string;
+}
 
 /** Input for deleting a training plan. */
 export interface DeleteTrainingPlanInput {
