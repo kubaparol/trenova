@@ -9,6 +9,7 @@ import { User } from "@supabase/supabase-js";
 import { supabaseClient } from "@/db/supabase.client";
 import { signOut } from "@/db/actions/auth/sign-out";
 import Logo from "@/components/shared/Logo";
+import { ModeToggle } from "@/components/shared/ModeToggle";
 
 interface HeaderProps {
   user: User | null;
@@ -46,7 +47,7 @@ export default function Header({ user: initialUser }: HeaderProps) {
         </Link>
 
         {/* Mobile menu button */}
-        <div className="md:hidden">
+        <div className="md:hidden space-x-4">
           <Button
             variant="ghost"
             size="icon"
@@ -55,10 +56,12 @@ export default function Header({ user: initialUser }: HeaderProps) {
           >
             <Menu className="h-6 w-6" />
           </Button>
+
+          <ModeToggle />
         </div>
 
         {/* Desktop navigation */}
-        <nav className="hidden md:flex items-center space-x-4">
+        <nav className="hidden md:flex items-center ">
           {currentUser ? (
             <>
               <Button variant="default" asChild>
@@ -78,6 +81,8 @@ export default function Header({ user: initialUser }: HeaderProps) {
               </Button>
             </>
           )}
+
+          <ModeToggle />
         </nav>
 
         {/* Mobile navigation */}
