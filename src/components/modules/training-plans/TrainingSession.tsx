@@ -372,7 +372,7 @@ export function TrainingSession(props: TrainingSessionProps) {
   // --- END NEW: Exercise Reordering Logic ---
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-4xl">
+    <>
       {/* Header */}
       <div className="mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
@@ -610,6 +610,6 @@ export function TrainingSession(props: TrainingSessionProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

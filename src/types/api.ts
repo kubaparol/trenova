@@ -48,10 +48,13 @@ export interface GetUserPlansInput {
 }
 
 /** Represents a single training plan item in a list. Derived from training_plans table. */
-export type TrainingPlanListItem = Pick<
-  Tables<"training_plans">, // Defaults to Row type
-  "id" | "name" | "created_at" | "user_id"
->;
+export interface TrainingPlanListItem {
+  id: string;
+  name: string;
+  created_at: string;
+  description: string | null;
+  plan_details: PlanDetails;
+}
 
 /** Output for fetching a list of user training plans. */
 export interface TrainingPlanListOutput {
@@ -203,7 +206,8 @@ export interface UserDashboardDataOutput {
     goal: number; // Static goal (e.g., 5)
   };
   systematicsScore: {
-    sessions_last_14_days: number;
+    total_sessions: number;
+    days_since_first_session: number;
     score: "very_good" | "good" | "average" | "poor";
   };
   trainingSummary: {

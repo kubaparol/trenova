@@ -62,7 +62,7 @@ async function TrainingPlanViewLoader(props: TrainingPlanViewProps) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl space-y-8">
+    <div className="space-y-8">
       {/* Header Section */}
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">

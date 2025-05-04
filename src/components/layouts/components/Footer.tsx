@@ -38,8 +38,8 @@ interface LinkItem {
 }
 
 const links: LinkItem[] = [
-  { text: "Privacy Policy", href: "/privacy-policy" },
-  { text: "Terms of Service", href: "/terms-of-service" },
-  { text: "Contact", href: "/contact" },
-  { text: "About Us", href: "/about" },
+  { text: "Privacy Policy", href: "#" },
+  { text: "Terms of Service", href: "#" },
+  { text: "Contact", href: "#" },
+  { text: "About Us", href: "#" },
 ];

@@ -76,7 +76,7 @@ export function AppLayout(props: AppLayoutProps) {
           </div>
         </header>
 
-        <div className="flex-1 px-4 py-4 flex flex-col gap-6 md:py-6 lg:px-6">
+        <div className="flex-1 px-4 py-4 flex flex-col gap-6 md:py-6 lg:px-6 max-w-7xl container mx-auto">
           {(pageMetadata.title || pageMetadata.description) && (
             <header>
               {pageMetadata?.title && (
@@ -92,6 +92,7 @@ export function AppLayout(props: AppLayoutProps) {
               )}
             </header>
           )}
+
           {children}
         </div>
       </SidebarInset>
