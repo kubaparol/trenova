@@ -2,7 +2,6 @@ import { SignUpVerifyView } from "@/components/views/SignUpVerifyView";
 import { ProjectUrls } from "@/constants";
 import { supabaseClient } from "@/db/supabase.server";
 import { redirect } from "next/navigation";
-export const runtime = "edge";
 
 export default async function SignUpSuccessPage() {
   const supabase = await supabaseClient();
