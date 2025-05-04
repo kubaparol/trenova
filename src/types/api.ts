@@ -48,10 +48,13 @@ export interface GetUserPlansInput {
 }
 
 /** Represents a single training plan item in a list. Derived from training_plans table. */
-export type TrainingPlanListItem = Pick<
-  Tables<"training_plans">, // Defaults to Row type
-  "id" | "name" | "created_at" | "user_id"
->;
+export interface TrainingPlanListItem {
+  id: string;
+  name: string;
+  created_at: string;
+  description: string | null;
+  plan_details: PlanDetails;
+}
 
 /** Output for fetching a list of user training plans. */
 export interface TrainingPlanListOutput {

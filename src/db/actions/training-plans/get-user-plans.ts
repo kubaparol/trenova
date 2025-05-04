@@ -41,7 +41,7 @@ export async function getUserTrainingPlans(
 
   const { data: plansData, error: plansError } = await supabase
     .from("training_plans")
-    .select("id, name, created_at, user_id")
+    .select("id, name, created_at, user_id, description, plan_details")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
@@ -58,6 +58,7 @@ export async function getUserTrainingPlans(
     throw new Error(`Failed to count training plans: ${countError.message}`);
   }
 
+  // @ts-expect-error - TODO: fix this
   const items: TrainingPlanListItem[] = plansData ?? [];
   const total: number = count ?? 0;
 

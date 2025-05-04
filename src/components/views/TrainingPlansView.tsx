@@ -11,7 +11,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "../ui/button";
 import { ArrowRight, Trash2, Dumbbell } from "lucide-react";
 import { getUserTrainingPlans } from "@/db/actions/training-plans/get-user-plans";
-import dayjs from "dayjs";
 import Link from "next/link";
 import { ProjectUrls } from "@/constants";
 import {
@@ -49,15 +48,36 @@ async function TrainingPlansViewLoader() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {trainingPlans.items.map((plan) => (
-        <Card key={plan.id} className="h-full flex flex-col">
+        <Card
+          key={plan.id}
+          className="h-full flex flex-col hover:shadow-md transition-shadow"
+        >
           <CardHeader>
             <CardTitle className="line-clamp-2">{plan.name}</CardTitle>
-            <CardDescription>
-              {dayjs(plan.created_at).format("MMM D, YYYY")}
+            <CardDescription className="line-clamp-2 pt-1">
+              {plan.description ?? "No description available."}
             </CardDescription>
           </CardHeader>
 
-          <CardFooter className="flex gap-2 pt-2">
+          <CardContent className="flex flex-col flex-grow pt-2">
+            <div className="text-sm text-muted-foreground space-y-1">
+              <p>
+                <strong>{plan.plan_details?.days?.length ?? 0}</strong> workout
+                days
+              </p>
+              <p>
+                <strong>
+                  {plan.plan_details?.days?.reduce(
+                    (sum, day) => sum + (day.exercises?.length ?? 0),
+                    0
+                  ) ?? 0}
+                </strong>{" "}
+                total exercises
+              </p>
+            </div>
+          </CardContent>
+
+          <CardFooter className="flex gap-2">
             <Link href={ProjectUrls.trainingPlan(plan.id)} className="flex-1">
               <Button variant="default" className="w-full group">
                 View Details
