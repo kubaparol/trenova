@@ -9,6 +9,17 @@ type Metadata = {
 };
 
 export const pageMetadataMap: Record<string, Metadata> = {
+  "/dashboard": {
+    title: "Dashboard",
+    description: "View your dashboard",
+    breadcrumbs: [
+      {
+        label: "Dashboard",
+        href: "/dashboard",
+        isCurrent: true,
+      },
+    ],
+  },
   "/training-plans": {
     title: "Training Plans",
     description: "View and manage your training plans",
