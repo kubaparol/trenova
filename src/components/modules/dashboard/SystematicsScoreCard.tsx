@@ -8,12 +8,14 @@ import {
 } from "@/components/ui/tooltip";
 
 interface SystematicsScoreCardProps {
-  sessions: number;
+  totalSessions: number;
+  daysSinceFirstSession: number;
   score: "very_good" | "good" | "average" | "poor";
 }
 
 export const SystematicsScoreCard = ({
-  sessions,
+  totalSessions,
+  daysSinceFirstSession,
   score,
 }: SystematicsScoreCardProps) => {
   const getScoreInfo = (score: string) => {
@@ -71,7 +73,8 @@ export const SystematicsScoreCard = ({
           {scoreInfo.text}
         </div>
         <p className="text-xs text-muted-foreground mt-1.5">
-          {sessions} workout{sessions !== 1 ? "s" : ""} in the last 14 days
+          {totalSessions} workout{totalSessions !== 1 ? "s" : ""} in the last{" "}
+          {daysSinceFirstSession} day{daysSinceFirstSession !== 1 ? "s" : ""}
         </p>
       </CardContent>
     </Card>

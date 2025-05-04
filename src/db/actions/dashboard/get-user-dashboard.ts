@@ -6,21 +6,31 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 
 dayjs.extend(isBetween);
 dayjs.extend(isoWeek);
 dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 type SessionWithPlanName = Tables<"training_sessions"> & {
   training_plans: { name: string } | null;
 };
 
 function getSystematicsScore(
-  sessionsLast14Days: number
+  totalSessions: number,
+  daysSinceFirstSession: number
 ): UserDashboardDataOutput["systematicsScore"]["score"] {
-  if (sessionsLast14Days >= 10) return "very_good";
-  if (sessionsLast14Days >= 7) return "good";
-  if (sessionsLast14Days >= 4) return "average";
+  if (daysSinceFirstSession <= 0 || totalSessions <= 0) {
+    return "poor"; // No data or invalid data
+  }
+
+  const averageFrequency = totalSessions / daysSinceFirstSession;
+
+  // Thresholds based on average sessions per day (approximating the 14-day logic)
+  if (averageFrequency >= 0.7) return "very_good"; // ~10 sessions in 14 days
+  if (averageFrequency >= 0.5) return "good"; // ~7 sessions in 14 days
+  if (averageFrequency >= 0.28) return "average"; // ~4 sessions in 14 days
   return "poor";
 }
 
@@ -71,7 +81,11 @@ export async function getUserDashboardData(): Promise<UserDashboardDataOutput> {
       hasTrainingData: false,
       lastSession: null,
       weeklyProgress: { completed_count: 0, goal: 5 },
-      systematicsScore: { sessions_last_14_days: 0, score: "poor" },
+      systematicsScore: {
+        total_sessions: 0,
+        days_since_first_session: 0,
+        score: "poor",
+      },
       trainingSummary: {
         completed_this_week: 0,
         total_duration_seconds: 0,
@@ -84,6 +98,8 @@ export async function getUserDashboardData(): Promise<UserDashboardDataOutput> {
 
   const hasTrainingData = true;
   const latestSession = sessionsData[0];
+  let earliestSessionDate = dayjs(latestSession.completed_at);
+
   const lastSession: UserDashboardDataOutput["lastSession"] = {
     plan_id: latestSession.plan_id,
     plan_name: latestSession.training_plans?.name ?? "Unknown Plan",
@@ -94,10 +110,8 @@ export async function getUserDashboardData(): Promise<UserDashboardDataOutput> {
   const now = dayjs();
   const startOfCurrentWeek = now.startOf("isoWeek"); // Monday
   const endOfCurrentWeek = now.endOf("isoWeek"); // Sunday
-  const fourteenDaysAgo = now.subtract(14, "days").startOf("day");
 
   let completedThisWeekCount = 0;
-  let sessionsLast14DaysCount = 0;
   let totalDurationSeconds = 0;
   let longestDurationSeconds = 0;
   const durationTrendData: UserDashboardDataOutput["charts"]["durationTrend"] =
@@ -106,6 +120,10 @@ export async function getUserDashboardData(): Promise<UserDashboardDataOutput> {
 
   for (const session of sessionsData) {
     const completedAtDate = dayjs(session.completed_at);
+
+    if (completedAtDate.isSameOrBefore(earliestSessionDate)) {
+      earliestSessionDate = completedAtDate;
+    }
 
     if (
       completedAtDate.isBetween(
@@ -116,10 +134,6 @@ export async function getUserDashboardData(): Promise<UserDashboardDataOutput> {
       )
     ) {
       completedThisWeekCount++;
-    }
-
-    if (completedAtDate.isSameOrAfter(fourteenDaysAgo)) {
-      sessionsLast14DaysCount++;
     }
 
     totalDurationSeconds += session.duration_seconds;
@@ -142,13 +156,19 @@ export async function getUserDashboardData(): Promise<UserDashboardDataOutput> {
       ? Math.round(totalDurationSeconds / sessionsData.length)
       : 0;
 
-  const systematicsScoreValue = getSystematicsScore(sessionsLast14DaysCount);
+  const systematicsScoreValue = getSystematicsScore(
+    sessionsData.length,
+    dayjs().diff(earliestSessionDate, "day") + 1
+  );
 
   const workoutsByPlanArray = Array.from(workoutsByPlanMap.entries()).map(
     ([plan_name, count]) => ({ plan_name, count })
   );
 
   durationTrendData.reverse();
+
+  const daysSinceFirstSession = dayjs().diff(earliestSessionDate, "day") + 1;
+  const totalSessionsCount = sessionsData.length;
 
   const result: UserDashboardDataOutput = {
     hasTrainingData,
@@ -158,7 +178,8 @@ export async function getUserDashboardData(): Promise<UserDashboardDataOutput> {
       goal: 5,
     },
     systematicsScore: {
-      sessions_last_14_days: sessionsLast14DaysCount,
+      total_sessions: totalSessionsCount,
+      days_since_first_session: daysSinceFirstSession,
       score: systematicsScoreValue,
     },
     trainingSummary: {

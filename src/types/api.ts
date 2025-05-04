@@ -206,7 +206,8 @@ export interface UserDashboardDataOutput {
     goal: number; // Static goal (e.g., 5)
   };
   systematicsScore: {
-    sessions_last_14_days: number;
+    total_sessions: number;
+    days_since_first_session: number;
     score: "very_good" | "good" | "average" | "poor";
   };
   trainingSummary: {
