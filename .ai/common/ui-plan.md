@@ -22,6 +22,7 @@ Trenova to aplikacja webowa oferująca automatyczne generowanie spersonalizowany
    - Formularz danych treningowych
    - Ekran generowania planu treningowego
    - Profil użytkownika / preferencje treningowe
+   - Panel Użytkownika (Dashboard)
    - Zarządzanie kontem
 
 Architektura UI opiera się na następujących zasadach:
@@ -255,6 +256,32 @@ Architektura UI opiera się na następujących zasadach:
   - Skeleton screens podczas ładowania.
   - Dostępne elementy listy dla nawigacji klawiaturą.
 
+### 2.13. Panel Użytkownika (Dashboard)
+
+- **Ścieżka**: `/dashboard`
+- **Główny cel**: Zapewnienie użytkownikowi skonsolidowanego, wizualnego przeglądu jego aktywności treningowej, postępów i statystyk.
+- **Kluczowe informacje**:
+  - Widget Ostatniego Treningu (nazwa planu, data, czas trwania).
+  - Widget Tygodniowego Postępu (pasek postępu, ukończone/cel).
+  - Widget Oceny Systematyczności (ocena tekstowa).
+  - Widget Podsumowania Treningów (statystyki: ukończone w tyg., całkowity czas, najdłuższy, średni czas).
+  - Wykres Trendu Czasu Treningów (liniowy: data vs czas trwania).
+  - Wykres Ilości Treningów wg Planu (słupkowy: plan vs liczba sesji).
+  - Stan Pusty: Wyświetlany, gdy brak ukończonych sesji; zawiera rozmyte placeholdery widgetów, komunikat i CTA do rozpoczęcia treningu.
+- **Kluczowe komponenty**:
+  - Kontener layoutu dashboardu (`DashboardLayout`).
+  - Komponenty widgetów (`LastTrainingWidget`, `WeeklyProgressWidget`, `SystematicsScoreWidget`, `TrainingSummaryWidget`).
+  - Komponenty wykresów (`DurationTrendChart`, `WorkoutsByPlanChart` - wykorzystujące np. Recharts).
+  - Komponent stanu pustego (`EmptyDashboardState`).
+  - Komponenty szkieletowe (`Skeleton`) dla poszczególnych widgetów podczas ładowania danych.
+- **UX i dostępność**:
+  - Czytelna prezentacja danych w widgetach i na wykresach.
+  - Responsywny układ dostosowujący się do różnych rozmiarów ekranu.
+  - Wykorzystanie skeleton states do płynnego ładowania danych.
+  - Zapewnienie dostępności wykresów (np. odpowiednie etykiety osi, legendy, możliwość nawigacji klawiaturą, jeśli biblioteka na to pozwala).
+  - Jasne komunikowanie stanu pustego i prowadzenie użytkownika do wykonania pierwszej akcji (treningu).
+  - Spójność stylistyczna z resztą aplikacji (Shadcn/ui).
+
 ## 3. Mapa podróży użytkownika
 
 ### 3.1. Rejestracja i pierwsze generowanie planu
@@ -347,6 +374,21 @@ Architektura UI opiera się na następujących zasadach:
 3. Widzi listę swoich ukończonych sesji treningowych, posortowaną od najnowszej.
 4. Może przewijać listę lub użyć paginacji (jeśli zaimplementowana).
 
+### 3.11. Przeglądanie Panelu Użytkownika
+
+1. Zalogowany użytkownik klika link "Panel" (lub podobny) w głównej nawigacji.
+2. Zostaje przekierowany na stronę Panelu Użytkownika (`/dashboard`).
+3. Jeśli użytkownik ma ukończone sesje treningowe:
+   a. System pobiera zagregowane dane.
+   b. Podczas ładowania wyświetlane są komponenty szkieletowe (skeleton states).
+   c. Po załadowaniu, widoczne są widgety i wykresy z jego statystykami i trendami.
+4. Jeśli użytkownik nie ma jeszcze ukończonych sesji:
+   a. Wyświetlany jest specjalny stan pusty.
+   b. Widoczne są rozmyte "placeholdery" dla widgetów i wykresów.
+   c. Wyświetlany jest komunikat (np. "Wykonaj pierwszy trening aby odblokować statystyki").
+   d. Wyświetlany jest przycisk/link kierujący do listy planów treningowych, aby zachęcić do rozpoczęcia.
+5. Użytkownik może analizować swoje postępy i trendy na podstawie wyświetlonych danych.
+
 ## 4. Układ i struktura nawigacji
 
 ### 4.1. Nawigacja dla niezalogowanych użytkowników
@@ -365,6 +407,7 @@ Architektura UI opiera się na następujących zasadach:
 - **Górny pasek (header)** zawiera:
   - Logo aplikacji (link do listy planów)
   - Link do listy planów
+  - Link do Panelu Użytkownika (`/dashboard`)
   - Link do Ustawień (`/settings`)
   - Link do Historii Treningów (`/training-history`)
   - Przycisk wylogowania
@@ -420,3 +463,14 @@ Architektura UI opiera się na następujących zasadach:
 - **SessionTimer**: Komponent wyświetlający całkowity czas trwania sesji.
 - **TrainingHistoryList**: Kontener listy ukończonych sesji.
 - **TrainingHistoryItem**: Pojedynczy wpis w historii sesji.
+
+### 5.6. Komponenty specyficzne dla Panelu Użytkownika
+
+- **DashboardLayout**: Główny kontener/układ strony panelu.
+- **LastTrainingWidget**: Widget wyświetlający informacje o ostatniej sesji.
+- **WeeklyProgressWidget**: Widget z paskiem postępu dla celu tygodniowego.
+- **SystematicsScoreWidget**: Widget pokazujący ocenę systematyczności.
+- **TrainingSummaryWidget**: Widget z kluczowymi statystykami sumarycznymi.
+- **DurationTrendChart**: Komponent wykresu liniowego (np. wykorzystujący Recharts) pokazujący trend czasu trwania sesji.
+- **WorkoutsByPlanChart**: Komponent wykresu słupkowego (np. wykorzystujący Recharts) pokazujący liczbę sesji per plan.
+- **EmptyDashboardState**: Komponent wyświetlany, gdy użytkownik nie ma jeszcze danych do pokazania na panelu.

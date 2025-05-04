@@ -1,6 +1,7 @@
 import {
   Dumbbell,
   GalleryVerticalEnd,
+  HomeIcon,
   LogOut,
   LucideIcon,
   SettingsIcon,
@@ -27,11 +28,11 @@ export const useAppSidebarItems = (): AppSidebarItem[] => {
   };
 
   return [
-    // {
-    //   title: "Dashboard",
-    //   icon: HomeIcon,
-    //   url: ProjectUrls.home,
-    // },
+    {
+      title: "Dashboard",
+      icon: HomeIcon,
+      url: ProjectUrls.dashboard,
+    },
     {
       title: "Training Plans",
       icon: Dumbbell,

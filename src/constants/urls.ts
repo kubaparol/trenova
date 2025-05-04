@@ -1,5 +1,8 @@
 export const ProjectUrls = {
+  // Root
   home: "/",
+
+  // Auth
   signIn: "/sign-in",
   signUp: "/sign-up",
   signUpVerify: "/sign-up-verify",
@@ -8,6 +11,9 @@ export const ProjectUrls = {
   resetPassword: "/reset-password",
   resetPasswordSent: "/reset-password-sent",
   resetPasswordSuccess: "/reset-password-success",
+
+  // Application
+  dashboard: "/dashboard",
   createTrainingPlan: "/training-plans/create",
   trainingPlans: "/training-plans",
   trainingPlan: (id: string) => `/training-plans/${id}`,

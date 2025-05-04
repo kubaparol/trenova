@@ -12,6 +12,7 @@ Główne funkcjonalności MVP obejmują:
 - Przeglądanie i podstawowe zarządzanie wygenerowanymi planami
 - Wsparcie techniczne przez e-mail
 - Podstawowe śledzenie postępów ukończonych dni treningowych (rozpoczęcie sesji, oznaczanie ukończenia elementów, automatyczny zapis po ukończeniu ostatniego elementu, przeglądanie historii)
+- Panel Użytkownika (Dashboard) ze statystykami i wizualizacją postępów
 
 Aplikacja będzie dostępna wyłącznie w języku angielskim, z architekturą umożliwiającą łatwe dodanie innych języków w przyszłości. Trenova przyjmuje podejście mobile-first i będzie w pełni responsywna.
 
@@ -105,6 +106,20 @@ Główne motywacje użytkowników Trenova to:
 - Przerwanie sesji przed ukończeniem ostatniego elementu (np. zamknięcie karty, nawigacja) skutkuje **całkowitą utratą** danych dla tej sesji.
 - Widok historii ukończonych sesji zawierający datę, nazwę planu, nazwę dnia planu i całkowity czas trwania.
 - Powiązane rekordy sesji są usuwane wraz z usunięciem planu.
+
+### 3.8. Panel Użytkownika (Dashboard)
+
+- Dostępny dla zalogowanych użytkowników, oferujący skonsolidowany widok aktywności treningowej.
+- Składa się z widgetów:
+  - **Ostatni trening:** Wyświetla nazwę planu, datę i czas trwania ostatniej sesji.
+  - **Tygodniowy postęp:** Pasek postępu pokazujący ukończone sesje w bieżącym tygodniu (pon-nd) względem stałego celu 5 treningów.
+  - **Ocena systematyczności:** Ocena tekstowa (Bardzo dobra, Dobra, Średnia, Słaba) na podstawie liczby sesji w ostatnich 14 dniach.
+  - **Podsumowanie treningów:** Statystyki: ukończone treningi (tydzień), całkowity czas, najdłuższy trening, średni czas treningu (bazujące na aktualnych danych `training_sessions`).
+  - **Wykresy:**
+    - Trend czasu treningów (liniowy: data vs czas trwania).
+    - Ilość treningów wg planu (słupkowy: liczba sesji pogrupowana wg nazwy planu).
+- **Stan początkowy/pusty:** Gdy brak sesji, widgety są widoczne jako rozmyte "placeholdery" z komunikatem "Wykonaj pierwszy trening aby odblokować statystyki" i linkiem/przyciskiem do listy planów.
+- Wykorzystuje dane z tabeli `training_sessions` i `training_plans`.
 
 ## 4. Granice produktu
 
@@ -337,6 +352,57 @@ US-023: Usuwanie danych sesji wraz z planem
   - System usuwa wszystkie rekordy sesji z bazy danych, które są powiązane z usuwanym `plan_id`.
   - Usunięte sesje nie są już widoczne w historii użytkownika.
 
+US-024: Przeglądanie panelu użytkownika
+
+- Jako zalogowany użytkownik, chcę mieć dostęp do panelu użytkownika, aby uzyskać szybki przegląd mojej aktywności treningowej i postępów.
+- Kryteria akceptacji:
+  - Panel jest dostępny w nawigacji aplikacji.
+  - Panel wyświetla widgety: Ostatni trening, Tygodniowy postęp, Ocena systematyczności, Podsumowanie treningów, Wykresy.
+  - Dane w widgetach są aktualne i bazują na mojej historii ukończonych sesji.
+
+US-025: Widok ostatniego treningu na panelu
+
+- Jako zalogowany użytkownik, chcę widzieć na panelu informacje o moim ostatnim ukończonym treningu, aby szybko przypomnieć sobie ostatnią aktywność.
+- Kryteria akceptacji:
+  - Widget "Ostatni trening" wyświetla nazwę planu, datę i czas trwania ostatniej zarejestrowanej sesji.
+  - Jeśli nie mam ukończonych sesji, widget wyświetla odpowiedni stan (np. brak danych).
+
+US-026: Śledzenie tygodniowego postępu na panelu
+
+- Jako zalogowany użytkownik, chcę widzieć na panelu mój tygodniowy postęp w realizacji celu treningowego, aby monitorować regularność.
+- Kryteria akceptacji:
+  - Widget "Tygodniowy postęp" pokazuje wizualnie (np. pasek postępu) liczbę ukończonych sesji w bieżącym tygodniu (poniedziałek-niedziela) względem celu 5 treningów.
+
+US-027: Ocena systematyczności treningów na panelu
+
+- Jako zalogowany użytkownik, chcę widzieć na panelu ocenę mojej systematyczności treningowej, aby ocenić swoją regularność w ostatnim czasie.
+- Kryteria akceptacji:
+  - Widget "Ocena systematyczności" wyświetla ocenę (Bardzo dobra, Dobra, Średnia, Słaba) na podstawie liczby sesji w ostatnich 14 dniach.
+
+US-028: Przeglądanie podsumowania statystyk na panelu
+
+- Jako zalogowany użytkownik, chcę widzieć na panelu podsumowanie moich ogólnych statystyk treningowych, aby zrozumieć mój całkowity wysiłek.
+- Kryteria akceptacji:
+  - Widget "Podsumowanie treningów" wyświetla: liczbę ukończonych treningów w ostatnim tygodniu, całkowity czas trwania wszystkich sesji, czas trwania najdłuższej sesji i średni czas trwania sesji.
+  - Statystyki odzwierciedlają aktualny stan danych w historii sesji.
+
+US-029: Wizualizacja trendów treningowych na panelu
+
+- Jako zalogowany użytkownik, chcę widzieć na panelu wykresy przedstawiające moje trendy treningowe, aby lepiej zrozumieć wzorce mojej aktywności.
+- Kryteria akceptacji:
+  - Panel zawiera wykres liniowy pokazujący trend czasu trwania moich sesji w czasie.
+  - Panel zawiera wykres słupkowy pokazujący liczbę ukończonych sesji dla każdego z moich planów treningowych.
+  - Wykresy są czytelne i poprawnie wizualizują dane historyczne.
+
+US-030: Stan początkowy panelu użytkownika
+
+- Jako nowy użytkownik bez ukończonych treningów, chcę, aby panel użytkownika informował mnie, co zrobić, aby zobaczyć statystyki.
+- Kryteria akceptacji:
+  - Gdy nie mam zarejestrowanych sesji, panel wyświetla specjalny stan.
+  - Statystyki i wykresy są widoczne jako nieaktywne/rozmyte.
+  - Wyświetlany jest komunikat zachęcający do wykonania pierwszego treningu (np. "Wykonaj pierwszy trening aby odblokować statystyki").
+  - Dostępny jest przycisk/link kierujący do listy moich planów treningowych.
+
 ## 6. Metryki sukcesu
 
 ### Metryki ukończenia procesu
@@ -359,6 +425,9 @@ US-023: Usuwanie danych sesji wraz z planem
 - Współczynnik wykorzystania funkcji śledzenia: Procent aktywnych użytkowników (którzy wygenerowali plan), którzy rozpoczynają co najmniej jedną sesję treningową.
 - Współczynnik ukończenia sesji: Procent rozpoczętych sesji treningowych, które zostały pomyślnie ukończone i zapisane.
 - Średnia liczba ukończonych sesji na użytkownika (korzystającego z funkcji).
+- Wskaźnik wyświetleń panelu użytkownika: Procent aktywnych użytkowników, którzy odwiedzają panel użytkownika.
+- Czas spędzony na panelu użytkownika: Średni czas sesji użytkownika na stronie panelu.
+- Korelacja między korzystaniem z panelu a częstotliwością/ukończeniem treningów: Analiza, czy użytkownicy przeglądający panel częściej trenują.
 
 ### Metryki techniczne
 

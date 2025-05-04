@@ -186,3 +186,40 @@ export interface SupportRequestOutput {
   id: string; // ID assigned to the support request
   message: string;
 }
+
+// --- Dashboard ---
+
+/** Output type for the `getUserDashboardData` server action. */
+export interface UserDashboardDataOutput {
+  hasTrainingData: boolean; // Indicates if the user has any completed sessions
+  lastSession?: {
+    plan_id: string;
+    plan_name: string;
+    completed_at: string; // ISO string format
+    duration_seconds: number;
+  } | null;
+  weeklyProgress: {
+    completed_count: number;
+    goal: number; // Static goal (e.g., 5)
+  };
+  systematicsScore: {
+    sessions_last_14_days: number;
+    score: "very_good" | "good" | "average" | "poor";
+  };
+  trainingSummary: {
+    completed_this_week: number; // Sessions in the current Mon-Sun week
+    total_duration_seconds: number; // Sum of duration for all sessions
+    longest_duration_seconds: number; // Max duration across all sessions
+    average_duration_seconds: number; // Average duration across all sessions
+  };
+  charts: {
+    durationTrend: {
+      date: string; // ISO string date part
+      duration_seconds: number;
+    }[]; // Array of all sessions for the trend line
+    workoutsByPlan: {
+      plan_name: string;
+      count: number;
+    }[]; // Count of sessions grouped by plan name
+  };
+}
