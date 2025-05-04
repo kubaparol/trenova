@@ -82,8 +82,8 @@ export const WorkoutsByPlanChart = ({ data }: WorkoutsByPlanChartProps) => {
                 content={
                   <ChartTooltipContent
                     formatter={(value) => [
-                      `${value} workout ${Number(value) !== 1 ? "s" : ""}`,
-                      "count",
+                      `${value} workout${Number(value) !== 1 ? "s" : ""}`,
+                      " count",
                     ]}
                     labelFormatter={(value) => {
                       const item = chartData.find((i) => i.name === value);

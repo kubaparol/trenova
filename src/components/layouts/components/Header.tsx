@@ -65,7 +65,7 @@ export default function Header({ user: initialUser }: HeaderProps) {
           {currentUser ? (
             <>
               <Button variant="default" asChild>
-                <Link href={ProjectUrls.trainingPlans}>Dashboard</Link>
+                <Link href={ProjectUrls.dashboard}>Dashboard</Link>
               </Button>
               <Button variant="ghost" onClick={handleLogout}>
                 Log Out
