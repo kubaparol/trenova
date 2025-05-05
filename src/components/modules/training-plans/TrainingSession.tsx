@@ -250,7 +250,7 @@ export function TrainingSession(props: TrainingSessionProps) {
   // Handle leave confirmation
   const handleLeaveClick = () => {
     if (sessionState === "finished") {
-      router.push(ProjectUrls.trainingPlans);
+      router.push(ProjectUrls.trainingPlan(id));
       return;
     }
 

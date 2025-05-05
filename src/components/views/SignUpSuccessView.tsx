@@ -8,7 +8,7 @@ export function SignUpSuccessView() {
       icon={PartyPopper}
       title="Welcome aboard!"
       description="Your account is ready. Let's get started!"
-      linkHref={ProjectUrls.trainingPlans}
+      linkHref={ProjectUrls.dashboard}
       linkText="Start exploring"
     />
   );

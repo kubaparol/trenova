@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import Logo from "../shared/Logo";
+import { ProjectUrls } from "@/constants";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -10,8 +12,8 @@ export function AuthLayout({ children }: AuthLayoutProps) {
     <div className="flex flex-col min-h-screen">
       <header className="w-full py-4 px-4 md:px-6 lg:px-8 border-b">
         <div className="container mx-auto flex justify-between items-center">
-          <Link href="/" className="flex items-center">
-            <span className="text-xl font-bold text-primary">Trenova</span>
+          <Link href={ProjectUrls.home} className="flex items-center">
+            <Logo />
           </Link>
         </div>
       </header>

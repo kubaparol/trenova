@@ -9,7 +9,7 @@ export function ResetPasswordSuccessView() {
       iconClassName="text-green-600"
       title="Password Reset Successful"
       description="Your password has been successfully changed. You can now go to application."
-      linkHref={ProjectUrls.trainingPlans}
+      linkHref={ProjectUrls.dashboard}
       linkText="Go to application"
     />
   );

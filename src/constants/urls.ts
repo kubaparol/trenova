@@ -1,6 +1,9 @@
 export const ProjectUrls = {
   // Root
   home: "/",
+  aboutUs: "/about-us",
+  privacyPolicy: "/privacy-policy",
+  termsOfService: "/terms-of-service",
 
   // Auth
   signIn: "/sign-in",

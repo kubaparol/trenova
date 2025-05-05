@@ -48,7 +48,7 @@ async function DashboardViewLoader() {
           goal={data?.weeklyProgress.goal || 0}
         />
         <SystematicsScoreCard
-          totalSessions={2}
+          totalSessions={data?.systematicsScore.total_sessions || 0}
           daysSinceFirstSession={
             data?.systematicsScore.days_since_first_session || 0
           }
