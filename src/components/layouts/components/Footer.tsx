@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { ProjectUrls } from "@/constants";
 import Link from "next/link";
 
 export default function Footer() {
@@ -16,12 +18,13 @@ export default function Footer() {
             <ul className="flex flex-wrap gap-4 justify-center">
               {links.map((link, index) => (
                 <li key={index}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  <Button
+                    asChild
+                    variant="link"
+                    className="text-accent-foreground px-0"
                   >
-                    {link.text}
-                  </Link>
+                    <Link href={link.href}>{link.text}</Link>
+                  </Button>
                 </li>
               ))}
             </ul>
@@ -38,8 +41,7 @@ interface LinkItem {
 }
 
 const links: LinkItem[] = [
-  { text: "Privacy Policy", href: "#" },
-  { text: "Terms of Service", href: "#" },
-  { text: "Contact", href: "#" },
-  { text: "About Us", href: "#" },
+  { text: "Privacy Policy", href: ProjectUrls.privacyPolicy },
+  { text: "Terms of Service", href: ProjectUrls.termsOfService },
+  { text: "About Us", href: ProjectUrls.aboutUs },
 ];

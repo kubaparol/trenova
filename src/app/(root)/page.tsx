@@ -1,13 +1,21 @@
-import BenefitsSection from "@/components/modules/home/BenefitsSection";
-import FAQSection from "@/components/modules/home/FAQSection";
+import AITechnologySection from "@/components/modules/home/AITechnologySection";
+import FinalCTASection from "@/components/modules/home/FinalCtaSection";
 import HeroSection from "@/components/modules/home/HeroSection";
+import HowItWorksSection from "@/components/modules/home/HowItWorksSection";
+import PersonalizationSection from "@/components/modules/home/PersonalizationSection";
+import ProgressTrackingSection from "@/components/modules/home/ProgressTrackingSection";
+import SocialProofSection from "@/components/modules/home/SocialProofSection";
 
 export default function Home() {
   return (
     <>
       <HeroSection />
-      <BenefitsSection />
-      <FAQSection />
+      <HowItWorksSection />
+      <PersonalizationSection />
+      <ProgressTrackingSection />
+      <AITechnologySection />
+      <SocialProofSection />
+      <FinalCTASection />
     </>
   );
 }
