@@ -77,23 +77,43 @@ export default function Header({ user: initialUser }: HeaderProps) {
         </Link>
 
         <div className="hidden lg:flex items-center space-x-4">
-          <Button asChild variant="ghost">
+          <Button
+            asChild
+            variant="link"
+            className="text-accent-foreground px-3"
+          >
             <Link href={`${ProjectUrls.home}#how-it-works`}>How It Works</Link>
           </Button>
 
-          <Button asChild variant="ghost">
+          <Button
+            asChild
+            variant="link"
+            className="text-accent-foreground px-3"
+          >
             <Link href={`${ProjectUrls.home}#features`}>Features</Link>
           </Button>
 
-          <Button asChild variant="ghost">
+          <Button
+            asChild
+            variant="link"
+            className="text-accent-foreground px-3"
+          >
             <Link href={`${ProjectUrls.home}#technology`}>Technology</Link>
           </Button>
 
-          <Button asChild variant="ghost">
+          <Button
+            asChild
+            variant="link"
+            className="text-accent-foreground px-3"
+          >
             <Link href={`${ProjectUrls.home}#testimonials`}>Testimonials</Link>
           </Button>
 
-          <Button asChild variant="ghost">
+          <Button
+            asChild
+            variant="link"
+            className="text-accent-foreground px-3"
+          >
             <Link href={ProjectUrls.aboutUs}>About Us</Link>
           </Button>
         </div>

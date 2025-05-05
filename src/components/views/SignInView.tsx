@@ -28,7 +28,7 @@ export function SignInView() {
     }
 
     if (result.success) {
-      router.push(ProjectUrls.trainingPlans);
+      router.push(ProjectUrls.dashboard);
     }
   };
 
