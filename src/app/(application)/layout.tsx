@@ -19,7 +19,7 @@ export default async function AppRootLayout(props: AppRootLayoutProps) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect(ProjectUrls.home);
+    redirect(ProjectUrls.signIn);
   }
 
   return <AppLayout>{children}</AppLayout>;
