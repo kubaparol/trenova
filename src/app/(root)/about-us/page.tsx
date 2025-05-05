@@ -1,34 +1,31 @@
 import React, { isValidElement, cloneElement, HTMLAttributes } from "react";
 import { Users, Target, Code2, Heart } from "lucide-react";
+import Image from "next/image";
 
 export default function AboutUs() {
   const team = [
     {
       name: "Sarah Chen",
       role: "CEO & Co-founder",
-      image:
-        "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=300",
+      image: "/images/about-us/sarah-chen.webp",
       bio: "Former professional athlete and AI researcher",
     },
     {
       name: "Marcus Rodriguez",
       role: "CTO & Co-founder",
-      image:
-        "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300",
+      image: "/images/about-us/marcus-rodriguez.webp",
       bio: "Machine learning expert with 15 years experience",
     },
     {
       name: "Emily Taylor",
       role: "Head of Fitness",
-      image:
-        "https://images.pexels.com/photos/3765114/pexels-photo-3765114.jpeg?auto=compress&cs=tinysrgb&w=300",
+      image: "/images/about-us/emily-taylor.webp",
       bio: "Certified trainer and nutrition specialist",
     },
     {
       name: "David Park",
       role: "Lead Developer",
-      image:
-        "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=300",
+      image: "/images/about-us/david-park.webp",
       bio: "Full-stack developer and fitness enthusiast",
     },
   ];
@@ -122,10 +119,12 @@ export default function AboutUs() {
                 key={index}
                 className="bg-card/50 rounded-lg overflow-hidden"
               >
-                <img
+                <Image
                   src={member.image}
                   alt={member.name}
-                  className="w-full h-48 object-cover"
+                  width={300}
+                  height={300}
+                  className="w-full h-72 object-cover"
                 />
 
                 <div className="p-4">
